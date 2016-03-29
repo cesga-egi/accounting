@@ -141,6 +141,7 @@
 <div id="granted_sites"></div>
 <br></br>
 <div id="acct_store"></div>
+<div><h4 style="text-align:center;"><a id="json_data">Download JSON Data</a></h4></div>
 </div>
     
 <span id="info"></span>
@@ -278,7 +279,8 @@ on(dgrid_table,'dgrid-error', function(update) {overlay.hide();});
   function update() { 
      overlay.show(); 
      destroyComponents();
-     render(getDataURL(option, tree));
+     data_url = getDataURL(option, tree);
+     render(data_url);
   }
 
 function error_handler (message) {
@@ -337,6 +339,7 @@ function error_handler (message) {
                                 else return str;};
 
   function render(data_url) { 
+     $('#json_data').attr("href",data_url);
      //Store
      var store = new Store({target: data_url});
 
