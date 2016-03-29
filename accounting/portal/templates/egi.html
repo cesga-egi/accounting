@@ -1,0 +1,499 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html"/>
+<link href="core/print.css" rel="stylesheet" media="print" type="text/css"/>-->
+<link rel="styleSheet" href="dtree/dtree.css" type="text/css"/>
+<link rel="stylesheet" href="dojo/resources/dojo.css" type="text/css"/>
+<link rel="stylesheet" href="dijit/themes/claro/claro.css" type="text/css"/>
+<link rel="stylesheet" href="dgrid/css/dgrid.css" type="text/css"/>
+<link rel="stylesheet" href="dgrid/css/skins/sage.css" type="text/css"/>
+<link rel="stylesheet" href="localgrid.css"/>
+<link rel="stylesheet" href="bootstrap/dist/css/bootstrap.css"/>
+<link rel="stylesheet" href="bootstrap-datepicker/dist/css/bootstrap-datepicker.css"/>
+<link rel="stylesheet" href="dojox/charting/resources/Legend.css"/>
+<link rel="stylesheet" href="bstrap.css"/>
+<link href="core/stylesheet.css" rel="stylesheet" type="text/css"/>
+<script src="dojo/dojo.js" data-dojo-config="async: true, isDebug: false, parseOnLoad: false, packages: [
+{ name: 'egi', location: '../', main: 'egi' },
+{ name: 'jquery', location: '../jquery/dist', main: 'jquery' },
+{ name: 'jquery-ui', location: '../jquery-ui', main: 'jquery-ui' },
+{ name: 'bootstrap', location: '../bootstrap/dist/js', main: 'bootstrap' },
+{ name: 'bootstrap-datepicker', location: '../bootstrap-datepicker/dist/js', main: 'bootstrap-datepicker' }]"></script>
+<title>EGI Production Accounting</title>
+</head>
+<body class="claro">
+<!-- load Dojo -->
+<script>
+define.amd.jQuery = true;
+require(["jquery"], function ($) {
+<!--#include virtual="default.html" -->
+});
+</script>
+<div class='wrap'>
+<div class='sidebar'>
+</div>
+<div class='central'>
+
+<!-- Wrap all page content here -->
+<div id="wrapper" class="">
+    <!-- Sidebar -->
+    <!-- /#sidebar-wrapper -->
+    <!-- Fixed navbar -->
+    <div id="page-content-wrapper" class="">
+        <div class="navbar navbar-default navbar-fixed-top">
+<img src="core/images/egi_logo_alpha.png" style="width:163px; height:25px; margin-top:10px; vertical-align:center; float:left;"></img>
+            <div class="container">
+                <div class="navbar-header">
+                   <div class=""><a href="#menu-toggle" style="position:absolute; left:0px;" class="btn btn-default" id="menu-toggle">&lt;</a>
+                    </div>
+
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"> 
+ <span class="icon-bar"></span>
+ <span class="icon-bar"></span>
+ <span class="icon-bar"></span>
+                                        </button> 
+<a class="navbar-brand" href="#" contenteditable="false">EGI Accounting Portal</a>
+
+                </div>
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="#" class="" contenteditable="false">Home</a>
+
+                        </li>
+                        <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown">Tree <b class="caret"></b></a>
+
+                            <ul class="dropdown-menu">
+                                <li><a href="#" class="">Main</a>
+
+                                </li>
+                                <li><a href="#" class="">OSG</a>
+
+                                </li>
+                                <li><a href="#" class="">Tier1</a>
+
+                                </li>
+                                <li><a href="#" class="">Tier2</a>
+
+                                </li>
+                    </ul>
+                    </li>
+                    <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports <b class="caret"></b></a>
+
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-header">WLCG</li>
+                            <li><a href="#" class="">Tier1</a>
+
+                            </li>
+                            <li><a href="#" class="">Tier2</a>
+
+                            </li>
+                            <li class="divider"></li>
+                            <li class="dropdown-header">InterNGI</li>
+                            <li><a href="#" class="">Usage Report</a>
+
+                            </li>
+                            <li><a href="#" class="">NGI Report</a>
+
+                            </li>
+                            </ul>
+                    </li>
+                    <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown">Restricted Views <b class="caret"></b></a>
+                                                        <ul class="dropdown-menu">
+                            <li><a href="#" class="">VO Manager</a>
+
+                            </li>
+                            <li><a href="#" class="">Site Admin</a>
+
+                            </li>
+                            <li class="divider"></li>
+                            
+                            <li><a href="#" class="">VO Member</a>
+
+                            </li>
+                  </ul>
+              </li>
+                  </ul>
+            
+                    
+                    <ol class="breadcrumb" style="float:right; margin-top:7px;">
+                        <li><a href="#" class="">Main Tree</a> 
+                        </li>
+                        <li><a href="#" class="">Production</a> 
+                        </li>
+                    </ol>
+                </div>
+                <!--/.nav-collapse -->
+            </div>
+        </div>
+        <!-- Begin page content -->
+        <div class="container">
+            <div class="page-header">
+                 <h4 class="" contenteditable="false" style="">Infrastructure Grid  Accounting</h4>
+
+            </div>
+            <form id='main_form' class="form form-horizontal center-block" style="margin:auto">
+                <div class="form-group">
+                  <div class="col-xs-4">
+                    <label for="inputMetric" class="control-label">Metric: </label>
+                    <select id="inputMetric" data-toggle="tooltip" title="Metric used for the accounting" data-dojo-props="position:['above']" placeholder="Select Metric" class="form-control col-xs-2"></select>
+                  </div>
+                  <div class="col-xs-3">
+                    <label for="from_date" class="control-label">Start Time:</label>
+                    <input type="text" class="form-control col-xs-2" id="from_date" placeholder="Select start date" contenteditable="false">
+                  </div>
+             
+                  <div class="col-xs-3">
+                    <label for="to_date" class="control-label">End Time:</label>
+                    <input type="text" class="form-control col-xs-2" id="to_date" placeholder="Select end date" contenteditable="false">
+                  </div>
+              </div>
+              <div class="form-group">
+                <div class="col-xs-4">
+                    <label for="inputX" class="control-label">X Dimension: </label>
+                    <select id="inputX" data-toggle="tooltip" title="X Dimension of the table" placeholder="Select Dimension" class="form-control col-xs-3"></select>
+                  </div>
+                  <div class="col-xs-2">
+                     <button id="interchange" data-toggle="tooltip" title="Interchange X and Y dimension" type="button" class="btn btn-default center-block" style = "margin-top: 26px" aria-label="Left Align">
+                        <span class="glyphicon glyphicon-resize-horizontal" aria-hidden="true"></span> 
+                     </button>
+                  </div>
+                <div class="col-xs-4">
+                    <label for="inputY" class="control-label">Y Dimension: </label>
+                    <select id="inputY" data-toggle="tooltip" title="Y Dimension of the table" placeholder="Select Dimension" class="form-control col-xs-3"></select>
+                  </div>
+              </div>
+              <div class="form-group">              
+      <div class="col-xs-6">            
+<div class="accordion" id="accordion2">
+        <div class="accordion-group">
+                <div class="accordion-heading">
+                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+                        <label>Advanced Options:</label>
+                        </a>
+                </div>
+
+                <div id="collapseOne" style="display:none" class="accordion-body collapse in">
+                        <div class="accordion-inner">
+              <div class="form-group">
+                <div class="col-xs-12">
+                  <div class="col-xs-3">
+                    <label class="">VO Groupings: </label></div>
+                  <div class="col-xs-9">
+               <label class="radio-inline"><input class="" type="radio" value="lhc" name="VOGroup">LHC</label>
+<label class="radio-inline"><input type="radio" class="" value="top10" name="VOGroup">TOP 10</label>
+<label class="radio-inline"><input type="radio" class="" value="all" name="VOGroup">ALL</label>
+                 <!--<label class="radio-inline"><input class="" type="radio" value="custom" name="VOGroup">Custom</label>--></div>
+          </div>
+          </div>
+          <div class="form-group">
+            <div class="col-xs-12">
+                <div class="col-xs-2">
+          <label class="">Local Jobs: </label>
+              </div>
+                <div class="col-xs-10">
+               <label class="radio-inline"><input class="" value="onlygridjobs" type="radio" name="localjobGroup">Grid Jobs Only</label>
+<label class="radio-inline"><input type="radio" class="" value="localgridjobs" name="localjobGroup">Grid and Local Jobs</label>
+                 <label class="radio-inline"><input class="" value="onlylocaljobs" type="radio" name="localjobGroup">Local Jobs Only</label></div>
+                </div>
+          </div>
+                        </div>
+      </div>
+                </div>
+       
+        </div>
+</div>        
+<br/>
+              </form>
+              </div>
+<div id="loadingOverlay" style="height:200px;">
+<div class="sage">
+<div id="acct_store"></div>
+</div>
+    
+<span id="info"></span>
+<div class="claro">
+   <div id="simplechart" class="claro" style="height:500px;"></div>
+   <br/>
+   <div id="legend" class="claro" style="height:500px;"></div>
+   <br/>
+   <div id="chart_pie1" class="claro" style="height:500px;"></div>
+   <br/>
+   <div id="chart_pie2" class="claro" style="height:500px;"></div>
+</div>
+</div></div>
+
+<div id='overlay' daja-doto-id="overlay" data-dojo-type="dojox.widget.Standby" data-dojo-props="target:'loadingOverlay', color:'white', image:'core/images/ajax-loader.gif'">
+</div>
+
+<script>
+define.amd.jQuery = true;
+require(["jquery"], function ($) {
+require(["jquery-ui", "bootstrap", "bootstrap-datepicker", "dojo/_base/declare", "dojox/charting/axis2d/Default", "dojox/charting/plot2d/Pie", "dgrid/OnDemandGrid" , "dgrid/ColumnSet", "dgrid/SummaryRow", "dstore/RequestMemory" , "dstore/Filter", "dojo/date/locale", "dojox/charting/Chart", "dojox/charting/themes/PlotKit/blue", "dojox/charting/themes/Claro", "dojox/charting/plot2d/Markers", "dojox/charting/widget/Legend", "dojox/charting/action2d/MouseZoomAndPan", "dojox/charting/action2d/Tooltip", "dojox/charting/action2d/Magnify", "dojox/charting/action2d/Highlight", "dojox/charting/action2d/MoveSlice" , "dojo/dom", "dojo/dom-construct", "dojo/parser", "dijit", "dijit/registry", "dojo/promise/all", "dojox/widget/Standby", "dojo/when", "dojo/on", "dojo/domReady!"],
+  function(jqueryui, bootstrap, datepicker, declare, Def, Pie, Grid, ColumnSet, SummaryRow, Store, Filter, locale, Chart, blue, claro, Markers, Legend, MouseZoomAndPan, Tooltip, Magnify, Highlight, MoveSlice, dom, domConstruct, parser, dijit, registry, all, standby, when, on, domReady){
+
+
+$("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+$('#collapseOne').css('display','');
+$('#collapseOne').collapse({
+active: false,
+collapsible: true
+});
+$("#inputMetric").on('mouseleave', function(e) {
+    $('#inputMetric').popover('destroy');
+});
+
+$("#inputMetric").on('mouseover', function(e) {
+    var $e = $(e.target); 
+    if ($e.is('option')) {
+        $('#inputMetric').popover('destroy');
+        $("#inputMetric").popover({
+            trigger: 'manual',
+            placement: 'down',
+            title: $e.attr("data-title"),
+            content: $e.attr("data-content")
+        }).popover('show');
+    }
+});
+var startDate = new Date('01/01/2004');
+var FromEndDate = new Date();
+var ToEndDate = new Date();
+
+ToEndDate.setDate(ToEndDate.getDate()+365);
+
+$('#from_date').datepicker({
+    
+    startView: "years",
+  minViewMode: "months",
+    format: 'MM yyyy',
+    startDate: startDate,
+    endDate: FromEndDate, 
+    autoclose: true
+})
+    .on('changeDate', function(selected){
+        startDate = new Date(selected.date.valueOf());
+        startDate.setDate(startDate.getDate(new Date(selected.date.valueOf())));
+        $('.to_date').datepicker('setStartDate', startDate);
+    }); 
+$('#to_date')
+    .datepicker({
+        viewMode: 'years',
+        minViewMode: "months",
+        format: 'MM yyyy',
+        startDate: startDate,
+        endDate: FromEndDate,
+        autoclose: true
+    })
+    .on('changeDate', function(selected){
+        FromEndDate = new Date(selected.date.valueOf());
+        FromEndDate.setDate(FromEndDate.getDate(new Date(selected.date.valueOf())));
+        $('.from_date').datepicker('setEndDate', FromEndDate);
+    });
+
+pastyear = new Date(new Date().setYear(new Date().getFullYear() - 1));
+$('#from_date').datepicker("update", new Date(pastyear.getFullYear(), pastyear.getMonth()));
+$('#to_date').datepicker("update", new Date(new Date().getFullYear(), new Date().getMonth()));
+$('input:radio[name=VOGroup]').val(['lhc']);
+$('input:radio[name=localjobGroup]').val(['localgridjobs']);
+$('#main_form').change(function(){update();});
+$('#interchange').on('click', function(event){
+   var xrange = $('#inputX').val();
+   var yrange = $('#inputY').val();
+   $('#inputX').val(yrange);
+   $('#inputY').val(xrange);
+   $('#inputX').trigger("change");
+});
+parser.parse();
+overlay = registry.byId("overlay"); 
+overlay.show();
+render(getDataURL(option, tree));
+dgrid_table = dom.byId("acct_store"); 
+on(dgrid_table,'dgrid-refresh-complete', function(update) {overlay.hide();});
+   
+  function update() { 
+     overlay.show(); 
+     destroyComponents();
+     render(getDataURL(option, tree));
+  }
+
+  function getDataURL(option, tree) {
+        var query = $('#inputMetric').val();
+        var from_date = $('#from_date').datepicker("getDate");
+        var to_date = $('#to_date').datepicker("getDate");
+        var yrange = $('#inputX').val();
+        var xrange = $('#inputY').val();
+        var sYear = from_date.getFullYear();
+        var sMonth = from_date.getMonth();
+        var eYear = to_date.getFullYear();
+        var eMonth = to_date.getMonth();
+        var VOGroup = $('input:radio[name=VOGroup]:checked').val();
+        var localjobGroup = $('input:radio[name=localjobGroup]:checked').val();
+        return "custom_xml.php?query="+query+"&option="+option+"&sYear="+sYear+
+               "&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="
+               +yrange+"&xrange="+xrange+"&nodteam=0&groupVO="+VOGroup+"&listVO=&groupData="+
+               "Production&newCateg=&localJobs="+localjobGroup+"&tree="+tree+"&optval=";
+  }
+
+  function destroyComponents() {
+
+     //We destroy all the previous dynamic components
+     domConstruct.empty("acct_store");
+     domConstruct.empty("simplechart");
+     var legend = dijit.byId('legend');
+     if (legend) {legend.destroy(true);};
+     domConstruct.empty("legend");
+     domConstruct.empty("info");
+     domConstruct.empty("chart_pie1");
+     domConstruct.empty("chart_pie2");
+  }
+     //Helpers
+     imtitulo =  {'njobs' : 'Total number of jobs', 'normcpu' : 'Normalised CPU time (kSI2K)', 'normcpu-HEPSPEC06' : 'Normalised CPU time (HEPSPEC06)', 'sumcpu' : 'Total CPU time used', 'sumelap' : 'Total elapsed time', 'normelap' : 'Normalised Elapsed time (kSI2K)', 'normelap-HEPSPEC06' : 'Normalised Elapsed time (HEPSPEC06)', 'sumelcpu' : 'Total Elapsed-CPU', 'cpueff' : 'CPU Efficiency (%)', 'vm_num' : 'Total number of VM run', 'sum_elap' : 'Sum Elapsed time (hours)', 'sum_cpu' : 'Sum CPU time (hours)', 'net_in' : 'Inbound Network Traffic', 'net_out' : 'Outbound Network Traffic', 'disk' : 'Disk Used'};
+     addCommas = function(nStr) { 
+                     nStr += ''; x = nStr.split('.'); 
+                     x1 = x[0]; x2 = x.length > 1 ? '.' + x[1] : ''; 
+                     var rgx = /(\d+)(\d{3})/; 
+                     while (rgx.test(x1)) x1 = x1.replace(rgx, '$1' + ',' + '$2'); 
+                     return x1 + x2; 
+                     };
+     boldcommas = function(data) { return '<b>' + addCommas(data) + '</b>' };
+     bold = function(data) { return '<b>' + data + '</b>' };
+     fcomas = function(data) { return addCommas(data); };
+     todate = function(object){ return locale.format(new Date(object.id), {selector: 'date', locale: 'en', datePattern: 'MMM yyyy'}); };
+     strtodate = function(str){ return locale.format(new Date(str), {selector: 'date', locale: 'en', datePattern: 'MMM yyyy'}); };
+
+  function render(data_url) { 
+     //Store
+     var store = new Store({target: data_url});
+
+     //Table
+     all({xlegend: store.get('xlegend'), ylegend: store.get('ylegend'), var: store.get('var')}).
+     then(function(response){
+        var index;
+        var yrange = response['var']['yrange']; 
+        var xrange = response['var']['xrange']; 
+        var query_name = response['var']['query']; 
+        var ylegend = response['ylegend']
+        var xlegend = response['xlegend']
+        var field_list = "";
+        ylength = Object.keys(ylegend).length-2;
+        xlength = Object.keys(xlegend).length-2;
+
+        if (yrange == 'DATE') field_id = '{field:"id",label:"Date", get: todate, formatter: bold}';
+        else field_id = '{field:"id",label:"'+yrange+'", formatter: bold}';
+
+        for (index = 0; index < ylength; index++) {
+           y = ylegend[index];
+           if (xrange == 'DATE') { label = strtodate(y); } else { label = y; };
+           field_list += '{field:"' + y + '", label:"' + label + '", formatter: addCommas}'; 
+           if (index + 1 < ylength) field_list += ', ';
+        } 
+        var layout = eval ('[[['+field_id+']],[['+field_list+']],[[ {field:"Total",label:"Total", formatter: boldcommas}, {field:"Percent",label:"Percent", formatter: bold} ]]]');
+        var filter = new store.Filter();
+        var wo_totals = filter.ne('id','Total');
+        var wo_percent = filter.ne('id','Percent');
+        var wo_xlegend = filter.ne('id','xlegend');
+        var wo_ylegend = filter.ne('id','ylegend');
+        var wo_var = filter.ne('id','var');
+        var w_totals = filter.eq('id','Total');
+        var store_wo_totals = store.filter(wo_totals).filter(wo_percent).filter(wo_xlegend).filter(wo_ylegend).filter(wo_var);
+        var store_totals = store.filter(w_totals);
+        var ComplexGrid = declare(([Grid, ColumnSet, SummaryRow]));
+        grid = new ComplexGrid({collection: store_wo_totals, className: "dgrid-autoheight", columnSets: layout}, 'acct_store');
+        all({total: store.get('Total'), percent: store.get('Percent')}).then (function (response){
+           grid.set('summary', response['total'], response['percent']);
+           grid.startup();
+        })
+
+        // Line chart
+        $('#info').append("<p>The information in the previous table is also shown in the following graph.</p>");
+        chart1 = new Chart("simplechart", {width:800, height:400, enableCache: true, title: imtitulo[query_name] + ' by ' + yrange + ' and ' + xrange, titlepos: "top"});
+        chart1.addPlot("default", {type: Markers}); 
+        var labels = [];
+        for (index = 0; index < ylength; index++) 
+           if (xrange == 'DATE') labels.push({value: (index+1), text: strtodate(ylegend[index])});
+           else labels.push({value: (index+1), text: ylegend[index]});
+        chart1.addAxis("x", {vertical:false, minorTicks: false, majorTickStep:1, includeZero:false, rotation: 40, labels: labels});
+        chart1.addAxis("y", {min:0, vertical: true, title: imtitulo[query_name]});
+        store_wo_totals.forEach(function(entry) {
+           values = [];
+
+           for (var key in entry)
+              if (key != 'Percent' && key != 'Total' && key != 'id') {
+                 value = entry[key];
+                 values.push({y: value, tooltip: '<p><b>'+ entry.id + '</b> &mdash; <b>' + key + '</b><br/> '+ addCommas(value) +'</p>'});
+              }
+           chart1.addSeries(entry.id, values, {stroke: {width: "2.0"}} );
+        }).then(function(){
+           new MouseZoomAndPan(chart1, "default", {axis: "x"});
+           chart1.setTheme(claro);
+           new Tooltip(chart1, "default");
+           new Magnify(chart1, "default", {duration: 60, scale: 3});
+           //console.log(chart1);
+           chart1.render();
+           if (xlength < 50) {
+           var legend = new Legend({chart: chart1, outline: true, horizontal: 12}, "legend");
+           }
+        })
+
+        // Pie charts 
+        store_totals.get('Total').then(function(entry){
+           var pie1_values = [];
+           other = 0;
+           grand_total = entry['Total'];
+           for (var key in entry) {
+              if (key != 'Percent' && key != 'Total' && key != 'id') {
+                 value = entry[key];
+                 if (value * 100 < grand_total) 
+                    other += value; 
+                  else 
+                    pie1_values.push({y: value, width: "1.0", 
+                                     text: key + ' (' + (value * 100/grand_total).toFixed(2) + '%)', 
+                                     tooltip: '<b>' + key + '</b><br/> '+ addCommas(value)});
+                 } 
+           }
+           if (other) pie1_values.push({y: other, 
+                                        width: "1.0", text: 'Other (' + (other*100/grand_total).toFixed(2) + '%)', 
+                                        tooltip: '<b>Other</b><br/> '+ addCommas(other)});
+           chart_pie1 = new Chart("chart_pie1", {width:800, height:400, enableCache: true, title: imtitulo[query_name] + ' by ' + xrange, titlepos: "top"});
+           chart_pie1.setTheme(blue);
+           var labels = [];
+           chart_pie1.addSeries(entry.id, pie1_values);
+           chart_pie1.addPlot("default", {type: Pie, font: "normal normal 9pt Verdana", radius: 160, labelWiring: "cccc", labelOffset:10, labelStyle: "columns", omitLabels: true}); 
+           var anim_a = new MoveSlice(chart_pie1, "default");
+           var anim_b = new Highlight(chart_pie1, "default");
+           var anim_c = new Tooltip(chart_pie1, "default");
+           chart_pie1.render();
+        });
+        var pie2_values = [];
+        other = 0;
+        store_wo_totals.forEach(function(entry) { 
+                 value = entry['Total'];
+                 if (value * 100 < grand_total) 
+                    other += value; 
+                  else 
+                    pie2_values.push({y: value, width: "1.0", 
+                                     text: entry.id + ' (' + (value * 100/grand_total).toFixed(2) + '%)', 
+                                     tooltip: '<b>' + entry.id + '</b><br/> '+ addCommas(value)});
+        }).then(function(){
+           if (other) pie2_values.push({y: other, 
+                                        width: "1.0", text: 'Other (' + (other*100/grand_total).toFixed(2) + '%)', 
+                                        tooltip: '<b>Other</b><br/> '+ addCommas(other)});
+           chart_pie2 = new Chart("chart_pie2", {width:800, height:400, enableCache: true, title: imtitulo[query_name] + ' by ' + yrange, titlepos: "top"});
+           chart_pie2.setTheme(blue);
+           var labels = [];
+           chart_pie2.addSeries('y', pie2_values);
+           chart_pie2.addPlot("default", {type: Pie, font: "normal normal 9pt Verdana", radius: 160, labelWiring: "cccc", labelOffset:10, labelStyle: "columns", omitLabels: true}); 
+           var anim_a2 = new MoveSlice(chart_pie2, "default");
+           var anim_b2 = new Highlight(chart_pie2, "default");
+           var anim_c2 = new Tooltip(chart_pie2, "default");
+           chart_pie2.render();
+        });
+     })
+
+  }})});
+</script>
+</body>
+</html>

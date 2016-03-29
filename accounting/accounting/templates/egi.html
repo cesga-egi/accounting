@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block option %}{% if site %}"SITE"{% else %}"REGION"{% endif %}{% endblock %}
+{% block tree %}"EGI"{% endblock %}
+{% block inputMetric %} 
+<option class='' data-toggle='tooltip' data-title='Number of jobs'  data-dojo-props='position:['above']' data-content='Total number of jobs' value='njobs'>Number of jobs</option>
+<option class='' data-toggle='tooltip' data-title='Normalized CPU Hours'  data-dojo-props='position:['above']' data-content='Raw CPU hours normalized with the SpecInt2000 benchmark' value='normcpu'>Normalized Sum CPU (kSI2K-hours)</option> 
+<option class='' data-title='Normalized CPU Hours (HEPSPEC06)'  data-dojo-props='position:['above']' data-content='Raw CPU hours normalized with the HEPSpec2006 benchmark' value='normcpu-HEPSPEC06'>Normalized Sum CPU (HEPSPEC06-hours)</option> 
+<option data-toggle='tooltip' data-title='Unnormalized CPU Hours' data-dojo-props='position:['above']' data-content='Raw CPU hours that are not normalized to a common benchmark' class='' value='sumcpu'>Sum CPU</option> 
+<option data-toggle='tooltip' data-title='Normalized Wall Hours' data-dojo-props='position:['above']' data-content='Wall Clock CPU hours normalized with the SpecInt2000 benchmark' class='' value='normelap'>Normalized Sum Elapsed (kSI2K-hours)</option> 
+<option data-toggle='tooltip' data-title='Normalized Wall Hours (HEPSPEC06)' data-dojo-props='position:['above']' data-content='Wall Clock CPU hours normalized with the HEPSPEC06 benchmark' class='' value='normelap-HEPSPEC06'>Normalized Sum Elapsed (HEPSPEC06-hours)</option> 
+<option data-toggle='tooltip' data-title='Unnormalized Wall CPU Hours' data-dojo-props='position:['above']' data-content='Wall clock CPU hours that are not normalized to a common benchmark' class='' value='sumelap'>Sum Elapsed</option>
+{% endblock %}
+{% block display_funcs %}
+vodislabel = function(str){ return '<b><a style="text-decoration:none" href="/discipline/'+ str +'/">'+str+'</a></b>' };
+sitelabel = function(str){ return '<b><a style="text-decoration:none" href="/egi/site/' + str + '">' + str + '</a></b>';};
+ngilabel = function(str){ return '<b><a style="text-decoration:none" href="/egi/ngi/' + str + '">' + str + '</a></b>';};
+countrylabel = function(str){ return '<b><a style="text-decoration:none" href="/egi/country/' + str + '">' + str + '</a></b>';};
+{% endblock %}
+{% block XOptions %} 
+<option data-title="Date" value="DATE" class="">Date</option>
+<option value="COUNTRY" class="">Country</option>
+{% if site %}
+<option value="REGION" class="">NGI</option>
+<option data-title="Site" value="SITE" class="">Site</option>
+<option class="" selected="selected" value="VO">VO</option>
+{% elif ngi %}
+<option value="REGION" class="">NGI</option>
+<option data-title="Site" selected="selected" value="SITE" class="">Site</option>
+<option class="" value="VO">VO</option>
+{% else %}
+<option selected="selected" value="REGION" class="">NGI</option>
+<option data-title="Site" value="SITE" class="">Site</option>
+<option class="" value="VO">VO</option>
+{% endif %}
+{% endblock %} 
+{% block YOptions %} 
+<option data-title="Date" value="DATE" selected="selected" class="">Date</option>
+<option value="REGION" class="">NGI</option>
+<option value="COUNTRY" class="">Country</option>
+<option data-title="Site" value="SITE" class="">Site</option>
+<option class="" value="VO">VO</option>
+{% endblock %} 
+{% block title %}Infrastructure Grid Accounting{% endblock %}
+{% block first_level %}<li><a href="/" class="">Production</a></li>{% endblock %}
+{% block second_level %}<li><a href="/egi" class="">EGI</a></li>{% endblock %}
+{% block third_level %}
+{% if site %}<li><a href="./{{site}}" class="">{{site}}</a></li>
+{% elif ngi %}<li><a href="./ngi/{{ngi}}" class="">{{ngi}}</a></li>
+{% elif country %}<li><a href="./country/{{country}}" class="">{{country}}</a></li>
+{% endif %}
+{% endblock %}{% block remote_url %}{% if site %}"https://accounting-devel-support.egi.cesga.es/custom_xml.php?&query="+query+"&option=SITE&optval={{site}}&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&tree="+tree{% elif ngi %}"https://accounting-devel-support.egi.cesga.es/custom_xml.php?query="+query+"&option=ROC&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&tree="+tree+"&optval={{ngi}}"{% elif country %}"https://accounting-devel-support.egi.cesga.es/custom_xml.php?query="+query+"&option=COUNTRY&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&tree="+tree+"&optval={{country}}"{% else %}"https://accounting-devel-support.egi.cesga.es/custom_xml.php?query="+query+"&option="+option+"&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&tree="+tree+"&optval="{% endif %}{% endblock %}

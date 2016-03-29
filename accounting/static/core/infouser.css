@@ -1,0 +1,55 @@
+fieldset {
+	margin: 0 0 1em 0;
+}
+
+legend {
+	padding: 0px 5px;
+	background-color: #FFFFFF;
+	font-size: 12px;
+	font-weight: bold;
+	color: #336699;
+}
+
+.boxoptions {
+        font-size: 11px;
+        font-family: Arial, Helvetica, sans-serif;
+        background-color: #ffdd76;
+        border: 1px dashed #336699;
+/*	width: 95%; */
+/*	padding-bottom: 10px;*/
+	/*padding: 1%; */
+	text-align: left;
+}
+
+.boxoptions {
+	/* for some reason, with firefox, this is necessary, and it does not change anything for the others */
+	margin-top: 1em;
+}
+
+.minusorplus {
+        vertical-align: middle;
+	font-family: monospace;
+	font-size: 11px;
+	font-weight: bold;
+}
+
+.minusorplus:after {
+	content: " ";
+}
+
+#boxoptionscontent {
+	text-indent: 10px;
+}
+#boxoptionscontent p {
+	font-size: 11px;
+	margin-top: 0.5em;
+}
+#boxoptionscontent li {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 11px;
+        color: #000000;
+        list-style-type: disc;
+}
+#boxoptionscontent ul {
+	margin-top: 0.5em;
+}

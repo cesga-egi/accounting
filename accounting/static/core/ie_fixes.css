@@ -1,0 +1,10 @@
+/* this is to solve the problems with the fieldset and legend tags in IE */
+fieldset {
+	position: relative;
+	padding: 15px 10px;
+}
+legend {
+	position: absolute;
+	top: -.5em;
+	left: .2em;
+}
