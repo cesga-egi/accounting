@@ -1,5 +1,5 @@
-@import url('https://eternicode.github.io/bootstrap-datepicker/bootstrap-datepicker/css/datepicker3.css');
-@import url('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css');
+@import url('/static/bootstrap-datepicker/dist/css/bootstrap-datepicker.css');
+@import url('/static/bootstrap/dist/css/bootstrap.css');
 /* Sticky footer styles
  * -------------------------------------------------- */
 
@@ -10,7 +10,15 @@ body {
   /* The html and body elements cannot have any padding or margin. */
 }
 
+.dgrid-page-size {
+text-color: white;
+background: #333;
+
+}
+
+
 #ngis_menu {max-height: 400px; overflow: hidden; overflow-y: auto;}
+#cloud_menu {max-height: 400px; overflow: hidden; overflow-y: auto;}
 /* Wrapper for page content to push down footer */
 #wrap {
   min-height: 100%;
@@ -34,7 +42,7 @@ body {
 /* Not required for template or sticky footer method. */
 
 #wrapper > .container {
-  padding: 60px 15px 0;
+  padding: 0px 15px 0;
 }
 .container .credit {
   margin: 20px 0;
@@ -63,6 +71,8 @@ code {
     -o-transition: all 0.5s ease;
     transition: all 0.5s ease;
 }
+
+.dgrid-cell {padding:0;};
 
 /*#wrapper.toggled {
     padding-left: 250px;
@@ -94,7 +104,7 @@ font-family: "Roboto";
 #page-content-wrapper {
     width: 100%;
     position: absolute;
-    padding: 15px;
+    /*padding: 15px;*/
 }
 
 /*#wrapper.toggled #page-content-wrapper {
@@ -187,7 +197,7 @@ padding: 0px; 0px; 0px; 0px;
 }
 
 .panel-body {
-font-size: 20pt;
+font-size: 1.5em;
 }
 
 .dojoxLegendText {
@@ -230,6 +240,28 @@ font-size: 20pt;
         top: 21px;
         content: '';
 }
+
+.dgrid {
+position:relative;
+min-height: 180px;
+height: auto;
+overflow: auto;
+width:99%;
+}
+
+.dgrid .dgrid-scroller {
+    position: relative;
+    overflow: visible;
+}
+ .dgrid-cell {
+    width: 100px;
+ }
+.dgrid-column-set-scroller-container {
+    position: relative;
+    overflow: visible;
+}
+
+
 
 @media(min-width:768px) {
  /*   #wrapper {

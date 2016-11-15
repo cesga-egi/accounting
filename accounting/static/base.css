@@ -1,0 +1,15 @@
+/*
+    Copied from DJANGO Admin
+    by Wilson Miner wilson@lawrence.com
+*/
+
+/* Import other styles */
+@import url('global.css');
+@import url('layout.css');
+
+/* Import patch for IE 6 Windows */
+/*\*/ @import "patch-iewin.css"; /**/
+
+html {
+  overflow-y: scroll;
+}

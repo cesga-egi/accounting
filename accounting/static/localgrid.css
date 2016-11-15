@@ -23,6 +23,12 @@
         text-transform: none;
         text-align: center;
 }
+.dgrid-header {
+        right: 0px;
+}
+.dgrid-scrollbar-width {
+       visibility: hidden;
+}
 .dgrid-column-set-0 {
         width: 170px;
 }
@@ -34,10 +40,10 @@
 }
 
 .field-Total {
-        width: 100px;
+        width: 150px;
 }
 .field-Percent {
-        width: 100px;
+        width: 150px;
 }
 .dgrid-column-set-1 .field-name {
         /* When rendered within the column set, simply fit the column set */

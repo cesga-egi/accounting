@@ -1,0 +1,26 @@
+
+
+
+
+<table>
+ <tr><td><img alt="3d-WLCG-white.emf" src="/static/wlcg_logo.jpg"></td>
+ <td><h1>Accounting Summary </h1>
+    <h2>{{ my_page.centre }} </h2>
+      </td>
+      <td><h2>January - December 2014 </h2></td> 
+  
+ 
+ <tr>
+ <td> {%include "Accounting_Summary_Exp_Table.html" with my_exp=my_page.exp1 %} </td>
+<td> {%include "Accounting_Summary_Exp_Table.html" with my_exp=my_page.exp2 %} </td>
+ </tr>
+ <tr>
+ <td> {%include "Accounting_Summary_Exp_Table.html" with my_exp=my_page.exp3 %} </td>
+<td> {%include "Accounting_Summary_Exp_Table.html" with my_exp=my_page.exp4 %} </td>
+ </tr>
+ 
+  
+ 
+ 
+
+ </table>

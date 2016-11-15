@@ -1,0 +1,14 @@
+
+
+ <table id="table_usage">
+  <tr><th rowspan="2"> {{ my_exp.name }}</th><th colspan="2">cpu</th><td rowspan="17"/>
+      <th colspan="2">disk occupancy</th><td rowspan="17"/><th colspan="2">tape occupancy</th></tr>
+<tr><th>Elapsed HS06-hours * #cores</th><th>% of total</th><th>Disk TBytes</th><th>% of total</th><th>Tape TBytes</th><th>% of total </th></tr>
+   {% for site in my_exp.sites %}
+  <tr><td> {{site.name}}</td>
+   {% for v in site.values %}
+    <td>{{ v }}</td>
+   {%endfor%}  
+  </tr>
+ {%endfor%}
+ </table>

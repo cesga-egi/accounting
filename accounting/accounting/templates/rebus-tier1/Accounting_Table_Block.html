@@ -1,0 +1,45 @@
+
+<tr>
+
+  <td  rowspan="  {% if my_block.block_rowspan  %}
+   {{ my_block.block_rowspan }}
+  {% else %}
+  10  
+  {% endif %}"  style="border-right:None"> 
+  
+  
+   {{ my_block.block_title}}</td>
+ 
+  {%  for my_row in my_block.rows %}
+    {% if forloop.first %}
+    {% else %}
+      <tr>
+    {% endif %}
+     <th  {% if my_row.row_colspan %} colspan="{{my_row.row_colspan}}" {%else%}rowspan="2"{%endif%}
+      style="border-left:None"> {{ my_row.row_title  }}</th>
+          
+          {% for my_content in my_row.row_content %}
+		    {% if  not forloop.first %}
+      		<tr>
+    		{% endif %}
+              {% if my_content.row_title %} <th>{{ my_content.row_title }} </th> {%endif%}
+               {% for entry in my_content.row_content %}
+               <td> {{ entry }}</td>
+               {%endfor%}
+
+    		{% if forloop.first %}
+    		{% else %}
+      		</tr>
+    		{% endif %}
+              
+          {% endfor %}
+
+    {% if forloop.first %}
+    {% else %}
+      </tr>
+    {% endif %}
+  
+
+  {% endfor %}
+</tr>
+ 

@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'django_extensions',
+    'accounting',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -56,7 +58,7 @@ ROOT_URLCONF = 'accounting.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['/usr/local/accounting/accounting/templates/'],
+        'DIRS': ['/usr/local/accounting/accounting/templates/','/usr/local/accounting/accounting/templates/rebus-tier1/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -64,6 +66,10 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'accounting.context_processors.support_server',
+            ],
+            'builtins': [
+                'accounting.templatetags.filters',
             ],
         },
     },
@@ -120,3 +126,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+SUPPORT_SERVER = 'https://accounting-devel-support.egi.cesga.es/'

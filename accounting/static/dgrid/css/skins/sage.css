@@ -7,6 +7,7 @@
 
 .sage .dgrid-header-row {
 	border-bottom: none;
+        right: 0px;
 }
 
 .sage .dgrid-header,
@@ -23,7 +24,7 @@
 }
 
 .sage .dgrid-header th {
-	padding: 7px 3px;
+	padding: 4px 0px;
 	font-weight: bold;
 	color: #fff;
 	text-shadow: 0 -1px 0 rgba(0,0,0,.9);

@@ -49,8 +49,20 @@ define([
             //      get, formatter, and renderCell functions.
             //      renderCell is called with an extra flag,
             //      so custom implementations can react to it.
+            addCommas = function(nStr) {
+                     nStr += ''; x = nStr.split('.'); 
+                     x1 = x[0]; x2 = x.length > 1 ? '.' + x[1] : ''; 
+                     var rgx = /(\d+)(\d{3})/; 
+                     while (rgx.test(x1)) x1 = x1.replace(rgx, '$1' + ',' + '$2'); 
+                     return x1 + x2; 
+                     };
+            fcomas = function(data) { return addCommas(Math.round(data)); };
  
             var value = item[column.field] || '';
+            if (String(value).indexOf('%')<0) {
+               var comavalue = fcomas(parseInt(value)); 
+               if (comavalue.indexOf('NaN')<0) value = comavalue; 
+            }
             cell.appendChild(document.createTextNode(value));
         },
  

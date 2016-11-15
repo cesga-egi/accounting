@@ -1,0 +1,90 @@
+<script type="text/javascript" src="/static/trends_filters.js"></script>
+
+<div id=tooltip style="position:absolute;visibility:hidden"></div>
+
+<script type="text/javascript" src="/static/jquery.monthpicker.js"></script>
+
+<style type="text/css" media="screen">
+	#countries{
+		display: none;
+	}
+</style>
+
+
+<form id="filters-form" action="." method="get">
+	<div id="trends-eu" class="filters">
+		<div id="trends-at-settings" class="filterbox">
+			<div class="fieldwrapper">
+				<label>Plot Type:</label>
+				<input type="radio" id="plottypeb" name="plottype" value="b" {% ifequal plottype 'b' %}checked="checked"{% endifequal %}>
+				<label for='plottypeb'>Bar Plot</label>
+				<input type="radio" id="plottypel" name="plottype" value="l" {% ifequal plottype 'l' %}checked="checked"{% endifequal %}>
+				<label for='plottypel'>Line Plot</label>
+			</div>
+
+			<div class="fieldwrapper">
+				<label for="view">View:</label>
+				<select name="view" id="view">
+					<option value="1" {% ifequal view 1 %}selected="selected"{% endifequal %}>Number of Grid Jobs</option>
+					<option value="3" {% ifequal view 3 %}selected="selected"{% endifequal %}>CPU Time used</option>
+					<option value="5" {% ifequal view 5 %}selected="selected"{% endifequal %}>CPU Wall Clock Time used</option>
+					<option value="7" {% ifequal view 7 %}selected="selected"{% endifequal %}>CPU Efficiency</option>
+					<option value="9" {% ifequal view 9 %}selected="selected"{% endifequal %}>Percentage of Pledged Hours Used</option>
+				</select>
+			</div>
+
+			<div class="fieldwrapper">
+				<label for="groups">Sites group:</label>
+				<select name="group" id="groups">
+					<option value="tier0" {% ifequal group 'tier0' %}selected="selected"{% endifequal %}>CERN</option>
+					<option value="tier1" {% ifequal group 'tier1' %}selected="selected"{% endifequal %}>Tier-1 sites</option>
+					<option value="tier01" {% ifequal group 'tier01' %}selected="selected"{% endifequal %}>Tier-0 + Tier-1 sites</option>
+					<option value="tier2" {% ifequal group 'tier2' %}selected="selected"{% endifequal %}>Country (Tier-2 sites)</option>
+				</select>
+			</div>
+
+			<div class="fieldwrapper" id="vos">
+				<label for="vo">VO:</label>
+				<select id="vo" name="vo">
+					{% for name in vos %}
+						<option{% ifequal name  vo %} selected="selected"{% endifequal %} value="{{ name }}">{{ name }} </option>
+					{% endfor %}
+				</select>
+			</div>
+
+			<div class="fieldwrapper" id="sites">
+				<label for="site">Site Name:</label>
+				<select id="site" name="site">
+					<optgroup label="All Sites">
+					{% for name in sites %}
+						<option{% ifequal name site %} selected="selected"{% endifequal %} value="{{ name }}">{{ name }} </option>
+						{% if forloop.first%}
+							</optgroup><optgroup id="tier1_group" label="Sites">
+						{% endif %}
+					{% endfor %}
+					</optgroup>
+				</select>
+			</div>
+
+			<div class="fieldwrapper" id="countries">
+				<label for="country">Country:</label>
+				<select id="country" name="country">
+					<optgroup label="All Countries">
+					{% for name in countries %}
+						<option{% ifequal name country %} selected="selected"{% endifequal %} value="{{ name }}">{{ name }}</option>
+						{% if forloop.first%}
+							</optgroup><optgroup label="Countries">
+						{% endif %}
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+
+        {% include "filters_trends_dates.html" %}
+
+	</div>
+	<p class="submit">
+        <a href="https://tomtools.cern.ch/confluence/display/SAMDOC/MyWLCG+%28MyEGI%29+User%27s+Guide#MyWLCG%28MyEGI%29User%27sGuide-Trendsdatasource%26nbsp%3B" target="_blank">data source specification</a>
+		<input class="filters-submit" type="submit" value="Update Page" />
+	</p>
+</form>

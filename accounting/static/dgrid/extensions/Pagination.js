@@ -199,6 +199,7 @@ define([
 						put(this.paginationNode, 'select.dgrid-page-size[aria-label=' +
 							this.i18nPagination.rowsPerPage + ']');
 
+					put(this.paginationNode, "label[style='float:right;']", this.i18nPagination.rowsPerPage);
 					handle = this._paginationSizeChangeHandle =
 						on(paginationSizeSelect, 'change', lang.hitch(this, function () {
 							this.set('rowsPerPage', +this.paginationSizeSelect.value);

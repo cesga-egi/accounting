@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html"/>
+<link href="/static/core/print.css" rel="stylesheet" media="print" type="text/css"/>
+<link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'/>  
+<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'/>  
+<link rel="styleSheet" href="/static/dtree/dtree.css" type="text/css"/>
+<link rel="stylesheet" href="/static/dijit/themes/claro/claro.css" type="text/css"/>
+<link rel="stylesheet" href="/static/dojo/resources/dojo.css" type="text/css"/>
+<link rel="stylesheet" href="/static/dgrid/css/dgrid.css" type="text/css"/>
+<link rel="stylesheet" href="/static/dgrid/css/skins/sage.css" type="text/css"/>
+<link rel="stylesheet" href="/static/localgrid.css"/>
+<link rel="stylesheet" href="/static/bootstrap/dist/css/bootstrap.css"/>
+<link rel="stylesheet" href="/static/bootstrap-datepicker/dist/css/bootstrap-datepicker.css"/>
+<link rel="stylesheet" href="/static/dojox/charting/resources/Legend.css"/>
+<link rel="stylesheet" href="/static/bstrap.css"/>
+<link href="/static/core/stylesheet.css" rel="stylesheet" type="text/css"/>
+   <script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="//raw.github.com/botmonster/jquery-bootpag/master/lib/jquery.bootpag.min.js"></script>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+{% comment %}
+ - Variables:
+    * title:       dictionary
+    * breadcrumbs: list
+    * is_top_menu: boolean
+{% endcomment %}
+
+{% load i18n %}
+<title>WLCG Tier1 Report</title>
+
+{% block css-base %}
+{% endblock %}
+{% block css-add %}{% endblock %}
+{% block jquery-library%}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="/static/utils.js"></script>
+{% endblock %}
+{% block scripts-add %}
+{% endblock %}
+
+<body class="claro" style="overflow-x: hidden;">
+<div class='wrap'>
+
+<!-- Wrap all page content here -->
+<div id="wrapper" class="">
+    <!-- Sidebar -->
+    <!-- /#sidebar-wrapper -->
+    <!-- Fixed navbar -->
+    <div id="page-content-wrapper" style="width=100%;margin-left:0; margin-right:0;" class="">
+        {% include "navbar.html" %}
+        <div class="c" style="width=100%;margin:0;padding-left:1em; padding-right:1em;">
+            <div class="page-header">
+<img src="/static/AcctPortal_egi_ack.png" style="float: right; margin-top: -20px;" width="600" height="64" border="0" usemap="#map" />
+<map name="map">
+<area shape="rect" coords="309,32,432,49" href="http://go.egi.eu/eng" />
+<map/>
+                 <h4 class="" contenteditable="false" style="">WLCG Tier1 Report</h4>
+</div>
+<div id="container">
+    <div id="main-centeriser">
+        <div id="header">
+            <div id="content-main">
+                <!-- CONTENT BEGIN -->
+                {% block content-main %}{% endblock %}
+                <!-- CONTENT END -->
+            </div>
+        </div>
+        <div id="footer">
+            <p>
+            {% block footer-text %}
+            {% endblock %}
+            </p>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+{% block scripts-bottom-add %}{% endblock %}
+</html>
+
+
+
+

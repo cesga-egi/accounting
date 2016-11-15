@@ -15,7 +15,7 @@
 
 .dgrid-column-set-scroller-container {
 	font-size: 0;
-	position: absolute;
+/*	position: absolute;*/
 	bottom: 0;
 }
 .dgrid-autoheight .dgrid-column-set-scroller-container {

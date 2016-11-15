@@ -1,36 +1,56 @@
 {% extends "base.html" %}
+{% block description %}
+<div id="page_text" style="clear:both">
+The scientific discipline view shows the accounting data {% if not site %} from all HTC Resource centers in the EGI infrastructure{% endif %}{%if discipline %} related to the {{discipline}} scientific discipline{%endif%}{%if country %} in {{country}}{% elif ngi %} in {{ngi}}{% elif site %} in Resource Centre {{site}}{% else %}{%endif%}, organized according to the <a href="https://wiki.egi.eu/wiki/Scientific_Disciplines">EGI scientific discipline classification.</a>
 
-{% block option %}"VO_DISCIPLINE"{% endblock %}
+The metric shown is <span id="metric_description">Total number of jobs</span>, grouped by <span id="inputY_description">Region</span> and <span id="inputX_description">Date</span>, <span id="vo_description">the official EGI VOs </span> are shown. <span id="LocalJobs_description"></span>
+</div>
+{% endblock %}
+{% block option %}"DISCIPLINE"{% endblock %}
 {% block tree %}"VO_DISCIPLINE"{% endblock %}
 {% block inputMetric %} 
-<option class='' data-toggle='tooltip' data-title='Number of jobs'  data-dojo-props='position:['above']' data-content='Total number of jobs' value='njobs'>Number of jobs</option>
-<option class='' data-toggle='tooltip' data-title='Normalized CPU Hours'  data-dojo-props='position:['above']' data-content='Raw CPU hours normalized with the SpecInt2000 benchmark' value='sum_normcpu'>Normalized Sum CPU (kSI2K-hours)</option> 
-<option class='' data-title='Normalized CPU Hours (HEPSPEC06)'  data-dojo-props='position:['above']' data-content='Raw CPU hours normalized with the HEPSpec2006 benchmark' value='sum_normcpu_hs6'>Normalized Sum CPU (HEPSPEC06-hours)</option> 
-<option data-toggle='tooltip' data-title='Unnormalized CPU Hours' data-dojo-props='position:['above']' data-content='Raw CPU hours that are not normalized to a common benchmark' class='' value='sum_cpu'>Sum CPU</option> 
-<option data-toggle='tooltip' data-title='Normalized Wall Hours' data-dojo-props='position:['above']' data-content='Wall Clock CPU hours normalized with the SpecInt2000 benchmark' class='' value='sum_normelap'>Normalized Sum Elapsed (kSI2K-hours)</option> 
-<option data-toggle='tooltip' data-title='Normalized Wall Hours (HEPSPEC06)' data-dojo-props='position:['above']' data-content='Wall Clock CPU hours normalized with the HEPSPEC06 benchmark' class='' value='sum_normelap_hs6'>Normalized Sum Elapsed (HEPSPEC06-hours)</option> 
-<option data-toggle='tooltip' data-title='Unnormalized Wall CPU Hours' data-dojo-props='position:['above']' data-content='Wall clock CPU hours that are not normalized to a common benchmark' class='' value='sum_elap'>Sum Elapsed</option>
+<option class='' data-toggle='tooltip' data-title='Number of jobs'  data-dojo-props='position:['above']' data-content='Total number of jobs' selected="selected" value='njobs'>Number of jobs</option>
+<option class='' data-toggle='tooltip' data-title='Normalized CPU Hours'  data-dojo-props='position:['above']' data-content='Raw CPU hours normalized with the HEPSPEC06 benchmark' value='normcpu'>Normalized Sum CPU</option> 
+<option data-toggle='tooltip' data-title='Unnormalized CPU Hours' data-dojo-props='position:['above']' data-content='Raw CPU hours that are not normalized to a common benchmark' class='' value='sumcpu'>Sum CPU</option> 
+<option data-toggle='tooltip' data-title='Normalized Wall Hours' data-dojo-props='position:['above']' data-content='Wall Clock CPU hours normalized with the HEPSPEC06 benchmark' class='' value='normelap'>Normalized Sum Elapsed</option> 
+<option data-toggle='tooltip' data-title='Normalized Wall Hours * Number of Processors' data-dojo-props='position:['above']' data-content='Wall Clock CPU hours normalized with the HEPSPEC06 benchmark * Number of Processors' class='' value='normelap_processors'>Normalized Sum Elapsed * Number of Processors</option> 
+<option data-toggle='tooltip' data-title='Wall Hours * Number of Processors' data-dojo-props='position:['above']' data-content='Wall Clock CPU hours * Number of Processors' class='' value='elap_processors'>Sum Elapsed * Number of Processors</option> 
+<option data-toggle='tooltip' data-title='Unnormalized Wall CPU Hours' data-dojo-props='position:['above']' data-content='Wall clock CPU hours that are not normalized to a common benchmark' class='' value='sumelap'>Sum Elapsed</option>
+<option data-toggle='tooltip' data-title='Efficiency' data-dojo-props='position:['above']' data-content='CPU Time * 100 / (Wall time * Number of Processors)' class='' value='cpueff'>CPU Efficiency</option>
 {% endblock %}
 {% block display_funcs %}
-vodislabel = function(str){ return '<b><a style="text-decoration:none" href="/discipline/'+ str +'/">'+str+'</a></b>' };
-sitelabel = function(str){ return '<b><a style="text-decoration:none" href="/discipline/site/' + str + '">' + str + '</a></b>';};
-ngilabel = function(str){ return '<b><a style="text-decoration:none" href="/discipline/ngi/' + str + '">' + str + '</a></b>';};
-countrylabel = function(str){ return '<b><a style="text-decoration:none" href="/discipline/country/' + str + '">' + str + '</a></b>';};
+vodislabel = function(str){ return '<b><a style="text-decoration:none" href="/discipline/'+ str + '/' + state_url() +'">'+str+'</a></b>' };
+sitelabel = function(str) {return str;};
+ngilabel = function(str) {return str;};
+countrylabel = function(str) {return str;};
+{% endblock %}
+{% block disclaimer %}
+<div>
+<b>Warning:</b> Since VOs can belong to several disciplines at once, there are cases in which the accounting for one VO can be counted twice in several sister disciplines. This does not happen when displaying the accounting of a parent discipline which has subdisciplines with shared VOs.
+</div>
 {% endblock %}
 {% block XOptions %} 
 {% if discipline %}
 <option data-title="VO Subdiscipline" selected="selected" value="DISCIPLINE">VO Subdiscipline</option>
 <option data-title="Date" value="DATE" class="">Date</option>
+<option data-title="Year" value="Year" class="">Year</option>
+<option data-title="3M" value="3M" class="">Trimester</option>
+<option data-title="6M" value="6M" class="">Semester</option>
 <option data-title="Site" value="SITE" class="">Site</option>
-<option value="COUNTRY" class="">NGI</option>
+<option value="REGION" class="">NGI</option>
+<option value="COUNTRY" class="">Country</option>
 <option class="" value="VO">VO</option>
 {% else %}
-<option data-title="VO Discipline" selected="selected" value="DISCIPLINE">VO Discipline</option>
-<option data-title="VO Discipline 2" value="DISCIPLINE_2">VO Discipline Level 2</option>
-<option data-title="VO Discipline 3" value="DISCIPLINE_3">VO Discipline Level 3</option>
+<option data-title="Scientific Discipline" selected="selected" value="DISCIPLINE">Scientific Discipline</option>
+<option data-title="Scientific Discipline 2" value="DISCIPLINE_2">Scientific Discipline Level 2</option>
+<option data-title="Scientific Discipline 3" value="DISCIPLINE_3">Scientific Discipline Level 3</option>
 <option data-title="Date" value="DATE" class="">Date</option>
+<option data-title="Year" value="Year" class="">Year</option>
+<option data-title="3M" value="3M" class="">Trimester</option>
+<option data-title="6M" value="6M" class="">Semester</option>
 <option data-title="Site" value="SITE" class="">Site</option>
-<option data-title="NGI" value="COUNTRY" class="">NGI</option>
+<option value="REGION" class="">NGI</option>
+<option value="COUNTRY" class="">Country</option>
 <option data-title="Number of cores" value="NUMBER PROCESSORS" class="">Number of cores</option>
 <option data-title="Number of nodes" value="NODECOUNT" class="">Number of nodes</option>
 <!--<option data-title="SubmitHost" value="SubmitHost" class="">SubmitHost</option>-->
@@ -41,15 +61,19 @@ countrylabel = function(str){ return '<b><a style="text-decoration:none" href="/
 {% if discipline %}
 <option data-title="VO Subdiscipline" value="DISCIPLINE">VO Subdiscipline</option>
 <option data-title="Date" value="DATE" selected="selected" class="">Date</option>
-<option value="COUNTRY" class="">NGI</option>
+<option data-title="Year" value="Year" class="">Year</option>
+<option value="REGION" class="">NGI</option>
+<option value="COUNTRY" class="">Country</option>
 <option data-title="Site" value="SITE" class="">Site</option>
 <option class="" value="VO">VO</option>
 {% else %}
-<option data-title="VO Discipline" selected="selected" value="DISCIPLINE">VO Discipline</option>
-<option data-title="VO Discipline 2" value="DISCIPLINE_2">VO Discipline Level 2</option>
-<option data-title="VO Discipline 3" value="DISCIPLINE_3">VO Discipline Level 3</option>
+<option data-title="Scientific Discipline" selected="selected" value="DISCIPLINE">Scientific Discipline</option>
+<option data-title="Scientific Discipline 2" value="DISCIPLINE_2">Scientific Discipline Level 2</option>
+<option data-title="Scientific Discipline 3" value="DISCIPLINE_3">Scientific Discipline Level 3</option>
 <option data-title="Date" value="DATE" selected="selected" class="">Date</option>
-<option value="COUNTRY" class="">NGI</option>
+<option data-title="Year" value="Year" class="">Year</option>
+<option value="REGION" class="">NGI</option>
+<option value="COUNTRY" class="">Country</option>
 <option data-title="Site" value="SITE" class="">Site</option>
 <option data-title="Number of cores" value="NUMBER PROCESSORS" class="">Number of cores</option>
 <option data-title="Number of nodes" value="NODECOUNT" class="">Number of nodes</option>
@@ -57,9 +81,9 @@ countrylabel = function(str){ return '<b><a style="text-decoration:none" href="/
 <option class="" value="VO">VO</option>
 {% endif %}
 {% endblock %} 
-{% block title %}VO Discipline Grid Accounting{% endblock %}
-{% block first_level %}<span id="firstlevel"><li><a href="/discipline/" class="">VO Discipline</a></li></span>{% endblock %}
-{% block second_level %}<span id="secondlevel">{% if discipline %}<li><a href="#" class="">{{discipline}}</a></li>{% endif %}</span>{% endblock %}
+{% block title %}Scientific Discipline High Throughput Compute Accounting{% endblock %}
+{% block first_level %}<a href="/disciplines/" class="">Scientific Discipline</a></li></span>{% endblock %}
+{% block second_level %}{% if discipline %}<a href="/discipline/{{discipline}}/" class="">{{discipline}}</a>{% endif %}{% endblock %}
 {% block third_level %}<span id="thirdlevel"></span>{% endblock %}
-{% block remote_url %}{% if discipline %}"https://accounting-devel-support.egi.cesga.es/custom_xml.php?query="+query+"&option="+option+"&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&nodteam=0&groupVO="+VOGroup+"&listVO=&groupData="+"Production&newCateg=&localJobs="+localjobGroup+"&tree="+tree+"&optval={{ discipline }}"{% else %}"https://accounting-devel-support.egi.cesga.es/custom_xml.php?query="+query+"&option="+option+"&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&nodteam=0&groupVO="+VOGroup+"&listVO=&groupData="+"Production&newCateg=&localJobs="+localjobGroup+"&tree="+tree{% endif %}{% endblock %}
+{% block remote_url %}{% if discipline %}"{{SUPPORT_SERVER}}custom_xml.php?query="+query+"&option="+option+"&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&nodteam=0&groupVO="+VOGroup+"&listVO=&groupData="+"Production&newCateg=&localJobs="+localJobs+"&groupVO="+VOGroup+"&tree="+tree+"&optval={{ discipline }}"{% else %}"{{SUPPORT_SERVER}}custom_xml.php?query="+query+"&option="+option+"&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&localJobs="+localJobs+"&groupVO="+VOGroup+"&tree="+tree+"&optval="{% endif %}{% endblock %}
 

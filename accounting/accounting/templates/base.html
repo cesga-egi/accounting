@@ -16,7 +16,7 @@
 <link rel="stylesheet" href="/static/dojox/charting/resources/Legend.css"/>
 <link rel="stylesheet" href="/static/bstrap.css"/>
 <link href="/static/core/stylesheet.css" rel="stylesheet" type="text/css"/>
-<script src="/static/dojo/dojo.js" data-dojo-config="async: true, isDebug: true, parseOnLoad: false, packages: [
+<script src="/static/dojo/dojo.js" data-dojo-config="async: true, locale: 'en-us', isDebug: true, parseOnLoad: false, packages: [
 { name: 'egi', location: '../', main: 'egi' },
 { name: 'jquery', location: '../jquery/dist', main: 'jquery' },
 { name: 'jquery-ui', location: '../jquery-ui', main: 'jquery-ui' },
@@ -24,48 +24,90 @@
 { name: 'bootstrap-datepicker', location: '../bootstrap-datepicker/dist/js', main: 'bootstrap-datepicker' }]"></script>
 <title>EGI Production Accounting</title>
 </head>
-<body class="claro">
+<body class="claro" style="overflow-x: hidden; margin:0; padding:0;">
 <div class='wrap'>
 <div class='sidebar'>
 </div>
-<div class='central'>
 
 <!-- Wrap all page content here -->
 <div id="wrapper" class="">
     <!-- Sidebar -->
     <!-- /#sidebar-wrapper -->
     <!-- Fixed navbar -->
-    <div id="page-content-wrapper" class="">
+    <div id="page-content-wrapper" style="width=100%;margin-left:0; margin-right:0;" class="">
         {% include "navbar.html" %}
-        <div class="container">
-            <div class="page-header">
-                 <h4 class="" contenteditable="false" style="">{% block title %}{% endblock %}</h4>
-
+        <div class="c" style="width=100%;margin:0;padding-left:1em; padding-right:1em;">
+<div style="float: right; margin-top: -20px;">
+<img src="/static/AcctPortal_egi_ack.png" width="600" height="64" border="0" usemap="#map" />
+<map name="map">
+<area shape="rect" coords="309,32,432,49" href="http://go.egi.eu/eng" />
+</map>
+</div>
+            <div class="page-header" style="width: 100%">
+             <div>
+                 <h4 class="" contenteditable="false" style="display:block; ">{% block title %}{% endblock %}</h4>
             </div>
+</div>
             <form id='main_form' class="form form-horizontal center-block" style="margin:auto">
+                 {% if vo_admin %}
                 <div class="form-group">
                   <div class="col-xs-4">
-                    <label for="inputMetric" class="control-label">Metric: </label>
-                    <select id="inputMetric" data-toggle="tooltip" title="Metric used for the accounting" data-dojo-props="position:['above']" placeholder="Select Metric" class="form-control col-xs-2">
+                    <label for="permsinput" class="control-label">Selected VO: </label>
+                    <div class="input-group">
+                    <select id="permsinput" data-toggle="tooltip" title="Selected VO for the accounting" data-dojo-props="position:['above']" placeholder="Select VO" class="form-control col-xs-2">
+                    </select>
+                    <span class="input-group-btn"><a class="btn btn-default" data-toggle="popover" title="Description" data-content="Selects the VO for which the accounting is shown"><i class="glyphicon glyphicon-question-sign"></i></a></span>
+                  </div>
+                 </div>
+                 </div>
+                  {% elif site_admin %}
+                <div class="form-group">
+                  <div class="col-xs-4">
+                    <label for="permsinput" class="control-label">Selected Site: </label>
+                    <div class="input-group">
+                    <select id="permsinput" data-toggle="tooltip" title="Selected Site for the accounting" data-dojo-props="position:['above']" placeholder="Select Site" class="form-control col-xs-2">
+                    </select>
+                    <span class="input-group-btn"><a class="btn btn-default" data-toggle="popover" title="Description" data-content="Selects the Site for which the accounting is shown"><i class="glyphicon glyphicon-question-sign"></i></a></span>
+                  </div>
+                 </div>
+                 </div>
+                  {% endif %}
+                <div class="form-group">
+                  <div class="col-xs-4">
+                  <label for="inputMetric" class="control-label">Metric: </label>
+                  <div class="input-group">
+                    <select id="inputMetric" title="Metric used for the accounting" data-dojo-props="position:['above']" placeholder="Select Metric" class="form-control">
                     {% block inputMetric %}{% endblock %}
                     </select>
+                    <span class="input-group-btn"><a id="metric_help" class="btn btn-default" data-toggle="popover" title="Metric Description"><i class="glyphicon glyphicon-question-sign"></i></a></span>
                   </div>
+                  </div>
+
                   <div class="col-xs-3">
                     <label for="from_date" class="control-label">Start Time:</label>
-                    <input type="text" class="form-control col-xs-2" id="from_date" placeholder="Select start date" contenteditable="false">
+                    <div class="input-group">
+                       <input type="text" class="form-control col-xs-2" id="from_date" placeholder="Select start date" contenteditable="false">
+                       <span class="input-group-btn"><a class="btn btn-default" data-toggle="popover" title="Description" data-content="Define the start of the time period of your query."><i class="glyphicon glyphicon-question-sign"></i></a></span>
+                    </div>
                   </div>
              
                   <div class="col-xs-3">
                     <label for="to_date" class="control-label">End Time:</label>
-                    <input type="text" class="form-control col-xs-2" id="to_date" placeholder="Select end date" contenteditable="false">
+                    <div class="input-group">
+                       <input type="text" class="form-control col-xs-2" id="to_date" placeholder="Select end date" contenteditable="false">
+                       <span class="input-group-btn"><a class="btn btn-default" data-toggle="popover" title="Description" data-content="Define the end of the time period of your query."><i class="glyphicon glyphicon-question-sign"></i></a></span>
+                    </div>
                   </div>
               </div>
               <div class="form-group">
                 <div class="col-xs-4">
-                    <label for="inputX" class="control-label">X Dimension: </label>
-                    <select id="inputX" data-toggle="tooltip" title="X Dimension of the table" placeholder="Select Dimension" class="form-control col-xs-3">
+                    <label for="inputX" class="control-label">Row Variable: </label>
+                  <div class="input-group">
+                    <select id="inputX" data-toggle="tooltip" title="Row variable of the table" placeholder="Select Dimension" class="form-control col-xs-3">
                     {% block XOptions %}{% endblock %}
                     </select>
+                    <span class="input-group-btn"><a id="rangex_help" class="btn btn-default" data-toggle="popover" title="Row Variable Description"><i class="glyphicon glyphicon-question-sign"></i></a></span>
+                  </div>
                   </div>
                   <div class="col-xs-2">
                      <button id="interchange" data-toggle="tooltip" title="Interchange X and Y dimension" type="button" class="btn btn-default center-block" style = "margin-top: 26px" aria-label="Left Align">
@@ -73,12 +115,38 @@
                      </button>
                   </div>
                 <div class="col-xs-4">
-                    <label for="inputY" class="control-label">Y Dimension: </label>
-                    <select id="inputY" data-toggle="tooltip" title="Y Dimension of the table" placeholder="Select Dimension" class="form-control col-xs-3">
+                    <label for="inputY" class="control-label">Column Variable: </label>
+                  <div class="input-group">
+                    <select id="inputY" data-toggle="tooltip" title="Column dimension of the table" placeholder="Select Dimension" class="form-control col-xs-3">
                     {% block YOptions %}{% endblock %}
                     </select>
+                    <span class="input-group-btn"><a id="rangey_help" class="btn btn-default" data-toggle="popover" title="Column Variable Description"><i class="glyphicon glyphicon-question-sign"></i></a></span>
+                  </div>
                   </div>
               </div>
+              <div class="form-group">              
+{% if VOGroup %}
+                <div class="advanced">
+                <div class="input-group">
+                    <label class="radio-inline bold" style="font-weigth: bold">VO Filtering: </label>
+               <label class="radio-inline"><input class="" type="radio" data-content="The four VOs used on the WLCG Large Hadron Collider (ATLAS, ALICE, LHCb, CMS)" value="lhc" name="VOGroup">LHC</label>
+<label class="radio radio-inline"><input type="radio" class="" data-content="Top 10 VOs in the range selected with the most unnormalised CPU consumed" value="top10" checked="checked" name="VOGroup">TOP 10</label>
+<label class="radio radio-inline"><input type="radio" class="" data-content="All VOs" value="all" name="VOGroup">ALL</label>
+<label class="radio radio-inline"><input type="radio" class="" data-content="VOs officially registered on the EGI Operations Portal" value="egi" name="VOGroup">EGI Official</label>
+<label class="radio radio-inline"><input type="radio" class="" data-content="Custom set of virtual organisations" value="custom" name="VOGroup">Custom VO Selection</label>
+               <span class=""><a id="vogroup_help" class="btn btn-default" style="border: 0" data-toggle="popover" title="VOGroup Description"><i class="glyphicon glyphicon-question-sign"></i></a></span>
+               </div>
+<div id="checkboxes"></div>
+
+                <div class="input-group">
+          <label class="radio-inline bold" style="font-weigth: bold">Local Jobs: </label>
+               <label class="radio-inline"><input class="" data-content="Only show jobs managed by the e-infrastructure middleware" value="onlyinfrajobs" type="radio" checked="checked" name="localJobs">Infrastructure Jobs Only</label>
+<label class="radio-inline"><input type="radio" class="" data-content="All jobs" value="localinfrajobs" name="localJobs">Infrastructure and Local Jobs</label>
+                 <label class="radio-inline"><input class="" data-content="Jobs directly managed by the local resource management system of the Resource Centers" value="onlylocaljobs" type="radio" name="localJobs">Local Jobs Only</label>
+               <span class=""><a id="localjobs_help" class="btn btn-default" style="border: 0" data-toggle="popover" title="Local Jobs Description"><i class="glyphicon glyphicon-question-sign"></i></a></span>
+                </div> 
+        </div>
+{% endif %}
               <div class="form-group">
                   <div class="col-xs-4"></div>
                   <div class="col-xs-2">
@@ -89,71 +157,33 @@
                   </div>
                   <div class="col-xs-4"></div>
               </div>
-              <div class="form-group">              
-      <div class="col-xs-6">            
-{% if VOGroup %}
-<div class="accordion" id="accordion2">
-        <div class="accordion-group">
-                <div class="accordion-heading">
-                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
-                        <label>Advanced Options:</label>
-                        </a>
-                </div>
-
-                <div id="collapseOne" style="display:none" class="accordion-body collapse in">
-                        <div class="accordion-inner">
-              <div class="form-group">
-                <div class="col-xs-12">
-                  <div class="col-xs-3">
-                    <label class="">VO Groupings: </label></div>
-                  <div class="col-xs-9">
-               <label class="radio-inline"><input class="" type="radio" value="lhc" checked="checked" name="VOGroup">LHC</label>
-<label class="radio-inline"><input type="radio" class="" value="top10" name="VOGroup">TOP 10</label>
-<label class="radio-inline"><input type="radio" class="" value="all" name="VOGroup">ALL</label>
-                 <!--<label class="radio-inline"><input class="" type="radio" value="custom" name="VOGroup">Custom</label>--></div>
-          </div>
-          </div>
-          <div class="form-group">
-            <div class="col-xs-12">
-                <div class="col-xs-2">
-          <label class="">Local Jobs: </label>
-              </div>
-                <div class="col-xs-10">
-               <label class="radio-inline"><input class="" value="onlygridjobs" type="radio" checked="checked" name="localjobGroup">Grid Jobs Only</label>
-<label class="radio-inline"><input type="radio" class="" value="localgridjobs" name="localjobGroup">Grid and Local Jobs</label>
-                 <label class="radio-inline"><input class="" value="onlylocaljobs" type="radio" name="localjobGroup">Local Jobs Only</label></div>
-                </div>
-          </div>
-                        </div>
-      </div>
-                </div>
-       
-        </div>
-{% endif %}
-</div>        
 <br/>
               </form>
               </div>
+{%block description%}{%endblock%}
+{%block disclaimer%}{%endblock%}
 <div id="loadingOverlay" style="height:200px;">
 <div class="sage">
 <div id="user_dn"></div>
 <div id="granted_vos"></div>
 <div id="granted_sites"></div>
 <br></br>
+<div id="subtitle"><h3 style="text-align:center;"></h3></div>
+<div id="table-title"><h4 style="text-align:center;"></h4></div>
 <div id="acct_store"></div>
-<div><h4 style="text-align:center;"><a id="json_data">Download JSON Data</a></h4></div>
+<div><h4 style="text-align:center;"><a id="json_data">Download JSON Data</a> / <a id="csv_data">Download CSV Data</a></h4></div>
 </div>
     
 <span id="info"></span>
+
 <div class="claro">
-   <div id="simplechart" class="claro" style="height:500px;"></div>
+   <div id="simplechart" class="claro" style="width: 95%; height: 30vw"></div>
    <br/>
-   <div id="legend" class="claro" style="height:500px;"></div>
+   <div id="legend" class="claro" style="width: 95%; height: 20vw"></div>
    <br/>
-   <div id="chart_pie1" class="claro" style="height:500px;"></div>
+   <div id="chart_pie1" class="claro" style="width: 95%; height: 40vw"></div>
    <br/>
-   <div id="chart_pie2" class="claro" style="height:500px;"></div>
-</div>
+   <div id="chart_pie2" class="claro" style=" width: 95%; height: 40vw"></div>
 </div></div>
 
 <div id='overlay' daja-doto-id="overlay" data-dojo-type="dojox.widget.Standby" data-dojo-props="target:'loadingOverlay', color:'white', image:'/static/core/images/ajax-loader.gif'">
@@ -162,38 +192,83 @@
 <script>
 define.amd.jQuery = true;
 require(["jquery"], function ($) {
-require(["jquery-ui", "bootstrap", "bootstrap-datepicker", "dojo/_base/declare", "dojox/charting/axis2d/Default", "dojox/charting/plot2d/Pie", "dgrid/OnDemandGrid" , "dgrid/ColumnSet", "dgrid/SummaryRow", "dstore/RequestMemory" , "dstore/Filter", "dojo/date/locale", "dojox/charting/Chart", "dojox/charting/themes/PlotKit/blue", "dojox/charting/themes/Claro", "dojox/charting/plot2d/Markers", "dojox/charting/widget/Legend", "dojox/charting/action2d/MouseZoomAndPan", "dojox/charting/action2d/Tooltip", "dojox/charting/action2d/Magnify", "dojox/charting/action2d/Highlight", "dojox/charting/action2d/MoveSlice" , "dojo/dom", "dojo/dom-construct", "dojo/parser", "dijit", "dijit/registry", "dojo/promise/all", "dojox/widget/Standby", "dojo/when", "dojo/on", "dojo/domReady!"],
-  function(jqueryui, bootstrap, datepicker, declare, Def, Pie, Grid, ColumnSet, SummaryRow, Store, Filter, locale, Chart, blue, claro, Markers, Legend, MouseZoomAndPan, Tooltip, Magnify, Highlight, MoveSlice, dom, domConstruct, parser, dijit, registry, all, standby, when, on, domReady){
+require(["jquery-ui", "bootstrap", "bootstrap-datepicker", "dojo/_base/declare", "dojox/charting/axis2d/Default", "dojox/charting/plot2d/Pie", "dojox/charting/plot2d/Columns", "dgrid/Grid" , "dgrid/extensions/Pagination", "dgrid/ColumnSet", "dgrid/SummaryRow", "dstore/RequestMemory" , "dstore/Filter", "dojo/date/locale", "dojox/charting/Chart", "dojox/charting/themes/PlotKit/blue", "dojox/charting/themes/Claro", "dojox/charting/plot2d/Markers", "dojox/charting/widget/Legend", "dojox/charting/action2d/MouseZoomAndPan", "dojox/charting/action2d/Tooltip", "dojox/charting/action2d/Magnify", "dojox/charting/action2d/Highlight", "dojox/charting/action2d/MoveSlice" , "dojo/dom", "dojo/dom-construct", "dojo/window", "dojo/aspect", "dojo/number", "dojo/parser", "dijit", "dijit/registry", "dojo/promise/all", "dojox/widget/Standby", "dojo/when", "dojo/on", "dojo/domReady!"],
+  function(jqueryui, bootstrap, datepicker, declare, Def, Pie, Columns, Grid, Pagination, ColumnSet, SummaryRow, Store, Filter, locale, Chart, blue, claro, Markers, Legend, MouseZoomAndPan, Tooltip, Magnify, Highlight, MoveSlice, dom, domConstruct, win, aspect, dojonumber, parser, dijit, registry, all, standby, when, on, domReady){
+
+     //Helpers
+     imtitulo =  {'njobs' : 'Total number of jobs', 'normcpu' : 'Normalized CPU time', 'normcpu-HEPSPEC06' : 'Normalized CPU time (HEPSPEC06)', 'sumcpu' : 'Total CPU time used', 'sumelap' : 'Total elapsed time', 'normelap' : 'Normalized Elapsed time', 'normelap-HEPSPEC06' : 'Normalized Elapsed time (HEPSPEC06)', 'normelap_processors' : 'Normalized Elapsed time (HEPSPEC06) * Number of Processors', 'elap_processors' : 'Elapsed time (HEPSPEC06) * Number of Processors', 'sumelcpu' : 'Total Elapsed-CPU', 'cpueff' : 'CPU Efficiency', 'vm_num' : 'Total number of VM run', 'sum_elap' : 'Sum Elapsed time', 'sum_cpu' : 'Sum CPU time', 'net_in' : 'Inbound Network Traffic', 'net_out' : 'Outbound Network Traffic', 'disk' : 'Disk Used', 'cost' : 'Monetary Cost', 'mem' : 'Memory Used'};
+     imunit =  {'njobs' : '', 'normcpu' : '(h)', 'sumcpu' : '(h)', 'sumelap' : '(h)', 'normelap' : '(h)', 'normelap_processors' : '(h)', 'elap_processors' : '(h)', 'sumelcpu' : '(h)', 'cpueff' : '(%)', 'vm_num' : '', 'sum_elap' : '(h)', 'sum_cpu' : '(h)', 'net_in' : '(b)', 'net_out' : '(b)', 'disk' : '(b)', 'cost' : '(€)', 'mem' : '(b)'};
+     imrange = {'DISCIPLINE_3' : 'Scientific Discipline Level 3', 'DISCIPLINE_2' : 'Scientific Discipline Level 2', 'DISCIPLINE': 'Scientific Discipline', 'DATE': 'Date', 'Year': 'Year', 'Country': 'Country', 'VO': 'VO', 'REGION': 'Region', 'NGI': 'NGI', 'COUNTRY': 'Country', 'SITE': 'Site','vm_id' : 'VM Identifier', 'NUMBER PROCESSORS': 'Number of processors', 'NODECOUNT': 'Nodes', 'TIER1': 'Tier 1 Node', 'FEDERATION': 'Tier 2 Federation', 'SubmitHost': 'Submit Host', 'UserDN': 'User DN', 'User Role' : 'User Role', '3M': 'Trimester', '6M': 'Semester'};
+     range_help = {'DISCIPLINE_3' : 'Scientific Discipline Level 3', 'DISCIPLINE_2' : 'Scientific Discipline Level 2', 'DISCIPLINE': 'Scientific Discipline', 'DATE': 'Aggregate data with a granularity of months', 'Year': 'Aggregate data with a granularity of years', 'Country': 'Country of the resource provider in which the job was executed.', 'VO': 'Aggregate data for virtual organisation', 'REGION': 'Region', 'NGI': 'Aggregate data for Operations Centre of the site in which the job was executed', 'COUNTRY': 'Country of the resource provider in which the job was executed', 'SITE': 'Aggregate data for Resource Centres','vm_id' : 'VM Identifier', 'NUMBER PROCESSORS': 'Number of logical processors used by the jobs', 'NODECOUNT': 'Number of processing nodes used by the jobs', 'TIER1': 'Tier 1 Node', 'FEDERATION': 'Tier 2 Federation', 'SubmitHost': 'Name of the computing element which executed the job', 'UserDN': 'User DN', 'User Role' : 'User Role', '3M': 'Aggregate data with a granularity of trimesters', '6M': 'Aggregate data with a granularity of semesters'};
+     addCommas = function(nStr) {
+                     nStr += ''; x = nStr.split('.'); 
+                     x1 = x[0]; x2 = x.length > 1 ? '.' + x[1] : ''; 
+                     var rgx = /(\d+)(\d{3})/; 
+                     while (rgx.test(x1)) x1 = x1.replace(rgx, '$1' + ',' + '$2'); 
+                     return x1 + x2; 
+                     };
+     effForm = function(nStr) { 
+      if (nStr) value=nStr; else value=0; 
+     if (value < 50) fill = "#FF0000"
+     else if (value < 60) fill = "#FF9933"
+     else if (value < 75) fill = "#FFCC66"
+     else if (value < 90) fill = "#FFFF66"
+     else if (value < 100) fill = "#00FF00"
+     else {fill = "#00FFFF"};
+     return "<div style=\"background:"+fill+"\">"+value+"%</div>";
+};
+     boldcommas = function(data) { return '<b>' + addCommas(data) + '</b>' };
+     boldEffForm = function(data) { return '<b>' + effForm(data) + '</b>' };
+     effGraph = function(item) {
+     if (item.y < 50) return {fill : "#FF0000"}
+     else if (item.y < 60) return {fill : "#FF9933"}
+     else if (item.y < 75) return {fill : "#FFCC66"}
+     else if (item.y < 90) return {fill : "#FFFF66"}
+     else if (item.y < 100) return {fill : "#00FF00"}
+     return {fill : "#00FFFF"};
+     }
+     bold = function(data) { return '<b>' + data + '</b>' };
+     fcomas = function(data) { return addCommas(Math.round(data)); };
+     todate = function(object){ return locale.format(new Date(object.id), {selector: 'date', locale: 'en', datePattern: 'MMM yyyy'}); };
+     tomdate = function(object){ dates = object.id.split('/'); return locale.format(new Date(dates[0]), {selector: 'date', locale: 'en', datePattern: 'MMM yyyy'})+' \u2014 '+locale.format(new Date(dates[1]), {selector: 'date', locale: 'en', datePattern: 'MMM yyyy'}); };
+     strtodate = function(str){ return locale.format(new Date(str), {selector: 'date', locale: 'en', datePattern: 'MMM yyyy'}); };
+     labeldate = function(str){ return locale.format(new Date(str), {selector: 'date', locale: 'en', datePattern: 'MMM yyyy'}); };
+     labelmdate = function(str){ dates = str.split('/'); return locale.format(new Date(dates[0]), {selector: 'date', locale: 'en', datePattern: 'MMM yyyy'})+' \u2014 '+locale.format(new Date(dates[1]), {selector: 'date', locale: 'en', datePattern: 'MMM yyyy'}); };
+     {% block display_funcs %}{% endblock %}
+     vmidlabel = function(str){ if (str.toString().indexOf("appdb") >= 0) 
+                                   return '<b><a style="text-decoration:none" href="' + str + '">' + str + '</a></b>'; 
+                                else return str;};
+$('[data-toggle="popover"]').popover();
+function metric_help_set() {
+   content= $( "#inputMetric option:selected" ).attr('data-content');
+   $('#metric_help').attr("data-content",content); 
+   $('#metric_help').data('bs.popover').options.content = content;
+   $('#metric_help').data('bs.popover').tip().find('.popover-content').html(content); 
+}
+function range_help_set() {
+   content_x = range_help[$("#inputX option:selected").attr('value')];
+   content_y = range_help[$("#inputY option:selected").attr('value')];
+   $('#rangex_help').attr("data-content",content_x); 
+   $('#rangex_help').data('bs.popover').options.content = content_x;
+   $('#rangex_help').data('bs.popover').tip().find('.popover-content').html(content_x); 
+   $('#rangey_help').attr("data-content",content_y); 
+   $('#rangey_help').data('bs.popover').options.content = content_y;
+   $('#rangey_help').data('bs.popover').tip().find('.popover-content').html(content_y); 
+}
+$('#inputMetric').change(metric_help_set);
+metric_help_set();
 
 option={% block option %}{% endblock %};
 tree={% block tree %}{% endblock %};
-$('#disciplines_menu').load('https://accounting-devel-support.egi.cesga.es/discipline_tree.php');
-$('#ngis_menu').load('https://accounting-devel-support.egi.cesga.es/ngi_tree.php');
+$('#disciplines_menu').load('{{SUPPORT_SERVER}}discipline_tree.php');
+$('#ngis_menu').load('{{SUPPORT_SERVER}}ngi_tree.php');
+$('#cloud_menu').load('{{SUPPORT_SERVER}}cloud_tree.php');
+$('#tiers_menu').load('{{SUPPORT_SERVER}}tiers_tree.php');
 $("#menu-toggle").click(function(e) {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
     });
-$('#collapseOne').css('display','');
-$('#collapseOne').collapse({
-active: false,
-collapsible: true
-});
-$("#inputMetric").on('mouseleave', function(e) {
-    $('#inputMetric').popover('destroy');
-});
 
-$("#inputMetric").on('mouseover', function(e) {
-    var $e = $(e.target); 
-    if ($e.is('option')) {
-        $('#inputMetric').popover('destroy');
-        $("#inputMetric").popover({
-            trigger: 'manual',
-            placement: 'down',
-            title: $e.attr("data-title"),
-            content: $e.attr("data-content")
-        }).popover('show');
-    }
-});
 var startDate = new Date('01/01/2004');
 var FromEndDate = new Date();
 var ToEndDate = new Date();
@@ -205,6 +280,7 @@ $('#from_date').datepicker({
     startView: "years",
   minViewMode: "months",
     format: 'MM yyyy',
+    orientation: 'bottom',
     startDate: startDate,
     endDate: FromEndDate, 
     autoclose: true
@@ -219,6 +295,7 @@ $('#to_date')
         viewMode: 'years',
         minViewMode: "months",
         format: 'MM yyyy',
+        orientation: 'bottom',
         startDate: startDate,
         endDate: FromEndDate,
         autoclose: true
@@ -242,45 +319,189 @@ $('#to_date').datepicker("update", new Date({{eYear}}, {{eMonth}}-1));
 $('#inputMetric').val('{{query}}');
 {% endif %}
 {% if xRange and yRange %}
-   $('#inputX').val('{{xRange}}');
-   $('#inputY').val('{{yRange}}');
+   $('#inputY').val('{{xRange}}');
+   $('#inputX').val('{{yRange}}');
 {% endif %}
 {% if VOGroup %}
-$('input:radio[name=VOGroup]').val(['{{VOGroup}}']);
+$('input:radio[name=VOGroup]').change(function() {
+        content = $(this).attr('data-content');
+        $('#vogroup_help').attr('data-content', content);
+        $('#vogroup_help').data('bs.popover').options.content = content;
+        $('#vogroup_help').data('bs.popover').tip().find('.popover-content').html(content); 
+        if ($(this).val() == "custom") { 
+           stringVOs = '{{VOGroup}}'.substring(7);
+           arrayVOs = stringVOs.split(',');
+           $.getJSON(getDataURL(option, tree)+'&checkVOs=true', function (data) {
+              $("#checkboxes").append($("<label style='margin-right:1em;'>").text('Select / Deselect All').prepend($("<input class='vos' id='selectall'>").attr('type', "checkbox").val(this).prop('checked', false)));
+              $("#checkboxes").append($("<br>"));
+              $("#checkboxes").append($("<table id='tb'>"));
+           var i = 0;
+           $.each(data, function() {
+              var state = ($.inArray(String(this), arrayVOs)!=-1)?true:false;
+                 if (i % 8 === 0) {
+                    $("#tb").append($("<tr>").append($("<td style='width: 12em;'>").append($("<label style='margin-left:1em;'>").text(this).prepend(
+                    $("<input>").attr('type', "checkbox").attr('class','vos').val(this).prop('checked', state)))));
+                 } else {
+                    $("#tb tr:last").append($("<td style='width: 12em;'>").append($("<label style='margin-left:1em;'>").text(this).prepend(
+                    $("<input>").attr('type', "checkbox").attr('class','vos').val(this).prop('checked', state))));
+                 }
+                 i++;
+              } 
+           );
+           $('#selectall').change(function(){ 
+              var state = this.checked;
+              $('.vos').prop('checked', state); 
+           });
+           })
+        }
+        else { $('#checkboxes').empty(); }
+        })
+if ('{{VOGroup}}'.substring(0,6) == 'custom') {
+   $('input:radio[name=VOGroup]').val(['custom']);
+} else {
+   $('input:radio[name=VOGroup]').val(['{{VOGroup}}']);
+}
+$('input:radio[name=VOGroup]:checked').trigger('change');
 {% endif %}
 {% if localJobGroup %}
-//$('input:radio[name=localjobGroup]').val(['{{localJobGroup}}']);
+$('input:radio[name=localJobs]').val(['{{localJobGroup}}']);
+$('input:radio[name=localJobs]').change(function() {
+        content = $(this).attr('data-content');
+        $('#localjobs_help').attr('data-content', content);
+        $('#localjobs_help').data('bs.popover').options.content = content;
+        $('#localjobs_help').data('bs.popover').tip().find('.popover-content').html(content); 
+}).trigger('change');
 {% endif %}
+
+$('#inputX').change(function() {
+   value = ($(this).val());
+   if (value == 'REGION' || value == 'COUNTRY' ) {
+      $('#inputY option[value="REGION"]').attr('disabled','disabled').siblings().removeAttr('disabled');
+      $('#inputY option[value="COUNTRY"]').attr('disabled','disabled');
+   } else {
+      $('#inputY option').removeAttr('disabled');
+      $('#inputY option[value="'+value+'"]').attr('disabled','disabled');
+   }
+   range_help_set();
+}).trigger('change');
+$('#inputY').change(function() {
+   value = ($(this).val());
+   if (value == 'REGION' || value == 'Country' ) {
+      $('#inputX option[value="REGION"]').attr('disabled','disabled').siblings().removeAttr('disabled');
+      $('#inputX option[value="COUNTRY"]').attr('disabled','disabled');
+   } else {
+      $('#inputX option').removeAttr('disabled');
+      $('#inputX option[value="'+value+'"]').attr('disabled','disabled');
+   }
+   range_help_set();
+}).trigger('change');
 claro.chart.fill = "white";
 claro.chart.stroke = {color:"transparent"};
 claro.plotarea.fill = "white";
 $('#update').on('click', function(event){update();});
 $('#interchange').on('click', function(event){
-   var xrange = $('#inputX').val();
-   var yrange = $('#inputY').val();
-   $('#inputX').val(yrange);
-   $('#inputY').val(xrange);
+   var xrange = $('#inputY').val();
+   var yrange = $('#inputX').val();
+   if (yrange!='SubmitHost' && yrange!='vm_id' && $("#inputX option[value="+xrange+"]").length>0 && $("#inputY option[value="+yrange+"]").length>0) {
+   $('#inputX').val(xrange).change();
+   $('#inputY').val(yrange).change();} 
+   else alert('Option interchange not allowed');
 });
+
+{% if cloud %}base='/disciplines/cloud/'; base_disc='/discipline/cloud/';{% else %}base='/disciplines/'; base_disc='/discipline/';{% endif %}
 {% if discipline %}
-$.getJSON("https://accounting-devel-support.egi.cesga.es/discipline_data.php?discipline={{discipline}}", function (json) {
-$("#firstlevel").replaceWith('<li><a href="/discipline/" class="">VO Discipline</a></li>');
-$("#secondlevel").replaceWith('<li><a href="/discipline/'+json.parent+'/" class="">'+json.parent+'</a></li>');
-$("#thirdlevel").replaceWith('<li><a href="/discipline/{{discipline}}/" class="">{{discipline}}</a></li>');
+$.getJSON("{{SUPPORT_SERVER}}discipline_data.php?discipline={{discipline}}", function (json) {
+$("#first_level").replaceWith('<a href="'+base+state_url()+'" class="">Scientific Discipline</a>');
+if (json.parent) {
+$("#second_level").replaceWith('/ <a href="'+base_disc+json.parent+'/'+state_url()+'" class="">'+json.parent+'</a>');
+$("#third_level").replaceWith('/ <a href="'+base_disc+'{{discipline}}/'+state_url()+'" class="">{{discipline}}</a>');
+} else {
+$("#second_level").replaceWith('/ <a href="'+base_disc+'{{discipline}}/'+state_url()+'" class="">{{discipline}}</a>');
+}
 });
+{% else %}
+$('#first_level').replaceWith('<span id="first_level">{% block first_level %}{% endblock %}</span>');
+$('#second_level').replaceWith('<span id="first_level">{% block second_level %}{% endblock %}</span>');
+$('#third_level').replaceWith('<span id="first_level">{% block thrid_level %}{% endblock %}</span>');
 {% endif %}
 parser.parse();
+{% if user_view %}
+vo = '';
+{% endif %}
+{% if vo_admin or site_admin %}
+$.ajax({ url: getDataURL(option, tree)+'&checkPerms=true', dataType: 'json', type: 'GET', xhrFields: { 'withCredentials': true }, crossDomain: true }).success(function(data) {
+         $.each(data, function (key, value) { 
+            $('#permsinput').append('<option value=' + value + '>' + value + '</option>');
+         });
+         {% if vo_admin and vo %}
+         $('#permsinput').val('{{vo}}');
+         {% elif site_admin and site %}
+         $('#permsinput').val('{{site}}');
+         {% endif %}
+  
+       }).error(function(xhr, status, error) {
+                alert("error");
+                console.log(xhr);
+       });
+{% endif %}
 overlay = registry.byId("overlay"); 
 overlay.show();
 render(getDataURL(option, tree));
 dgrid_table = dom.byId("acct_store"); 
 on(dgrid_table,'dgrid-refresh-complete', function(update) {overlay.hide();});
 on(dgrid_table,'dgrid-error', function(update) {overlay.hide();});
-   
+function resizeGrid() {
+   grid.resize();
+   grid.refresh();
+   chart1.resize();
+   chart_pie1.resize();
+   chart_pie2.resize();
+}
+
+dojo.addOnLoad(function() {
+   dojo.connect(window, "onresize", resizeGrid);
+});
+  
+function state_url(yrange) {
+   var query = $('#inputMetric').val();
+   {% if vo_admin %}
+   if ($('#permsinput').has('option').length > 0) var vo = $('#permsinput').val(); else var vo = "{{vo}}";
+   {% elif site_admin %}
+   if ($('#permsinput').has('option').length > 0) var site = $('#permsinput').val(); else var site = "{{site}}";
+   {% endif %}
+   var from_date = $('#from_date').datepicker("getDate");
+   var to_date = $('#to_date').datepicker("getDate");
+   var xrange = $('#inputY').val();
+   if (!yrange || xrange == yrange) var yrange = $('#inputX').val();
+   var sYear = from_date.getFullYear();
+   var sMonth = from_date.getMonth()+1;
+   var eYear = to_date.getFullYear();
+   var eMonth = to_date.getMonth()+1;
+   var VOGroup = $('input:radio[name=VOGroup]:checked').val();
+   if (VOGroup == 'custom') VOGroup = 'custom-' + $('.vos:checked').map(function(){return this.value}).get().join()
+   var localJobs = $('input:radio[name=localJobs]:checked').val();
+   if (yrange == "COUNTRY" || xrange == "COUNTRY") option="COUNTRY";
+   if (yrange == "REGION" || xrange == "REGION") option="REGION";
+   {% if vo_admin %}
+   var st = vo + '/' + query + '/' + yrange + '/' + xrange + '/' + sYear + '/' + sMonth + '/' + eYear + '/' + eMonth;
+   {% elif site_admin %}
+   var st = site + '/' + query + '/' + yrange + '/' + xrange + '/' + sYear + '/' + sMonth + '/' + eYear + '/' + eMonth;
+   {% else %}
+   var st = query + '/' + yrange + '/' + xrange + '/' + sYear + '/' + sMonth + '/' + eYear + '/' + eMonth;
+   {% endif %}
+   if (localJobs) 
+      var st = st + '/' + VOGroup + '/' + localJobs + '/';
+   return st;
+}  
+
+ 
   function update() { 
      overlay.show(); 
      destroyComponents();
      data_url = getDataURL(option, tree);
      render(data_url);
+     var new_url = '/{{url}}' + state_url(); 
+     history.pushState(new_url, "", new_url);
   }
 
 function error_handler (message) {
@@ -291,17 +512,36 @@ function error_handler (message) {
 
   function getDataURL(option, tree) {
         var query = $('#inputMetric').val();
+        {% if vo_admin %}
+        if ($('#permsinput').has('option').length > 0) var vo = $('#permsinput').val(); else var vo = "{{vo}}";
+        {% elif site_admin %}
+        if ($('#permsinput').has('option').length > 0) var site = $('#permsinput').val(); else var site = "{{site}}";
+        {% endif %}
         var from_date = $('#from_date').datepicker("getDate");
         var to_date = $('#to_date').datepicker("getDate");
         var yrange = $('#inputX').val();
         var xrange = $('#inputY').val();
         var sYear = from_date.getFullYear();
-        var sMonth = from_date.getMonth();
+        var sMonth = from_date.getMonth()+1;
         var eYear = to_date.getFullYear();
-        var eMonth = to_date.getMonth();
+        var eMonth = to_date.getMonth()+1;
         var VOGroup = $('input:radio[name=VOGroup]:checked').val();
-        var localjobGroup = $('input:radio[name=localjobGroup]:checked').val();
-        if (yrange == "COUNTRY" || xrange == "COUNTRY") option="COUNTRY"; 
+        if (VOGroup == "custom") {  
+           controls = $('.vos:checked').map(function(){return this.value}).get().join();
+           if (controls) {
+              VOGroup = 'custom-'+controls;
+           } else { 
+              VOGroup = "{{VOGroup}}";
+           }
+        }
+        var localJobs = $('input:radio[name=localJobs]:checked').val();
+        if (yrange == "REGION" || xrange == "REGION") option="REGION";
+        if (tree == 'cloud' && (yrange == "COUNTRY" || xrange == "COUNTRY") ) {
+        {option="COUNTRY"; tree="cloud";} 
+        }
+        if (tree != 'cloud' && (yrange == "COUNTRY" || xrange == "COUNTRY") ) {
+         if (tree != 'VO_DISCIPLINE' && tree != 'TIER2' && tree != 'ALLCOUNTRY') {option="COUNTRY"; tree="COUNTRY";} 
+           else option="COUNTRY";};
         return {% block remote_url %}{% endblock %};
   }
 
@@ -317,29 +557,10 @@ function error_handler (message) {
      domConstruct.empty("chart_pie1");
      domConstruct.empty("chart_pie2");
   }
-     //Helpers
-     imtitulo =  {'njobs' : 'Total number of jobs', 'normcpu' : 'Normalised CPU time (kSI2K)', 'normcpu-HEPSPEC06' : 'Normalised CPU time (HEPSPEC06)', 'sumcpu' : 'Total CPU time used', 'sumelap' : 'Total elapsed time', 'normelap' : 'Normalised Elapsed time (kSI2K)', 'normelap-HEPSPEC06' : 'Normalised Elapsed time (HEPSPEC06)', 'sumelcpu' : 'Total Elapsed-CPU', 'cpueff' : 'CPU Efficiency (%)', 'vm_num' : 'Total number of VM run', 'sum_elap' : 'Sum Elapsed time (hours)', 'sum_cpu' : 'Sum CPU time (hours)', 'net_in' : 'Inbound Network Traffic', 'net_out' : 'Outbound Network Traffic', 'disk' : 'Disk Used', 'cost' : 'Monetary Cost', 'mem' : 'Memory Used'};
-     imrange = {'DISCIPLINE_3' : 'VO Discipline Level 3', 'DISCIPLINE_2' : 'VO Discipline Level 2', 'DISCIPLINE': 'VO Discipline', 'DATE': 'Date', 'Country': 'Country', 'VO': 'VO', 'REGION': 'Region', 'NGI': 'NGI', 'Country': 'Country', 'SITE': 'Site','vm_id' : 'VM Identifier'};
-     addCommas = function(nStr) { 
-                     nStr += ''; x = nStr.split('.'); 
-                     x1 = x[0]; x2 = x.length > 1 ? '.' + x[1] : ''; 
-                     var rgx = /(\d+)(\d{3})/; 
-                     while (rgx.test(x1)) x1 = x1.replace(rgx, '$1' + ',' + '$2'); 
-                     return x1 + x2; 
-                     };
-     boldcommas = function(data) { return '<b>' + addCommas(data) + '</b>' };
-     bold = function(data) { return '<b>' + data + '</b>' };
-     fcomas = function(data) { return addCommas(data); };
-     todate = function(object){ return locale.format(new Date(object.id), {selector: 'date', locale: 'en', datePattern: 'MMM yyyy'}); };
-     strtodate = function(str){ return locale.format(new Date(str), {selector: 'date', locale: 'en', datePattern: 'MMM yyyy'}); };
-     labeldate = function(str){ return locale.format(new Date(str), {selector: 'date', locale: 'en', datePattern: 'MMMM yyyy'}); };
-     {% block display_funcs %}{% endblock %}
-     vmidlabel = function(str){ if (str.toString().indexOf("appdb") >= 0) 
-                                   return '<b><a style="text-decoration:none" href="' + str + '">' + str + '</a></b>'; 
-                                else return str;};
 
   function render(data_url) { 
      $('#json_data').attr("href",data_url);
+     $('#json_data').attr("type","application/json");
      //Store
      var store = new Store({target: data_url});
 
@@ -362,8 +583,13 @@ function error_handler (message) {
         xlength = Object.keys(xlegend).length-2;
 
         if (yrange == 'DATE') {field_id = '{field:"id",label:"Date", get: todate, formatter: bold}';}
+        else if (yrange == '3M' || yrange == '6M') {field_id = '{field:"id",label:"Date", get: tomdate, formatter: bold}';}
+        else if (yrange == 'UserDN') { field_id = '{field:"id",label:"'+imrange[yrange]+'", formatter: userdnlabel}';
+        $(".dgrid-column-set-0").css("width","400px"); }
         else if (yrange == 'DISCIPLINE' || yrange == 'DISCIPLINE_2' || yrange == 'DISCIPLINE_3') { field_id = '{field:"id",label:"'+imrange[yrange]+'", formatter: vodislabel}';}
         else if (yrange == 'SITE') { field_id = '{field:"id",label:"'+imrange[yrange]+'", formatter: sitelabel}';}
+        else if (yrange == 'FEDERATION') { field_id = '{field:"id",label:"'+imrange[yrange]+'", formatter: federationlabel}';}
+        else if (yrange == 'TIER1') { field_id = '{field:"id",label:"'+imrange[yrange]+'", formatter: nodelabel}';}
         else if (yrange == 'REGION') { field_id = '{field:"id",label:"'+imrange[yrange]+'", formatter: ngilabel}';}
         else if (yrange == 'COUNTRY') { field_id = '{field:"id",label:"'+imrange[yrange]+'", formatter: countrylabel}';}
         else if (yrange == 'vm_id') { field_id = '{field:"id",label:"'+imrange[yrange]+'", formatter: vmidlabel}';}
@@ -372,11 +598,20 @@ function error_handler (message) {
         for (index = 0; index < ylength; index++) {
            y = ylegend[index];
            if (xrange == 'DATE') { label = labeldate(y); } 
+           else if (xrange == '3M' || xrange == '6M') { label= labelmdate(y);}
            else { label = y; };
-           field_list += '{field:"' + y + '", label:"' + label + '", formatter: addCommas}'; 
+           if (query_name == 'cpueff') { 
+              field_list += '{field:"' + y + '", label:"' + label + '", formatter: effForm}'; 
+           } else {
+              field_list += '{field:"' + y + '", label:"' + label + '", formatter: fcomas}'; 
+           }
            if (index + 1 < ylength) field_list += ', ';
         } 
-        var layout = eval ('[[['+field_id+']],[['+field_list+']],[[ {field:"Total",label:"Total", formatter: boldcommas}, {field:"Percent",label:"Percent", formatter: bold} ]]]');
+        if (query_name != 'cpueff') {
+            var layout = eval ('[[['+field_id+']],[['+field_list+',{field:"Total",label:"Total", formatter: boldcommas}, {field:"Percent",label:"Percent", formatter: bold} ]]]');
+        } else {
+            var layout = eval ('[[['+field_id+']],[['+field_list+',{field:"Total",label:"Total", formatter: boldEffForm} ]]]');
+        }
         var filter = new store.Filter();
         var wo_totals = filter.ne('id','Total');
         var wo_percent = filter.ne('id','Percent');
@@ -386,43 +621,115 @@ function error_handler (message) {
         var w_totals = filter.eq('id','Total');
         var store_wo_totals = store.filter(wo_totals).filter(wo_percent).filter(wo_xlegend).filter(wo_ylegend).filter(wo_var);
         var store_totals = store.filter(w_totals);
-        var ComplexGrid = declare(([Grid, ColumnSet, SummaryRow]));
-        grid = new ComplexGrid({collection: store_wo_totals, className: "dgrid-autoheight", columnSets: layout}, 'acct_store');
+        var ComplexGrid = declare(([Grid, ColumnSet, SummaryRow, Pagination]));
+        grid = new ComplexGrid({collection: store_wo_totals, columnSets: layout, rowsPerPage:30, pageSizeOptions:[30,50,100]}, 'acct_store');
         all({total: store.get('Total'), percent: store.get('Percent')}).then (function (response){
-           grid.set('summary', response['total'], response['percent']);
-           grid.startup();
-        })
+        if (query_name != 'cpueff') grid.set('summary', response['total'], response['percent']);
+        else grid.set('summary', response['total'], []);
+        grid.startup();
+        if (yrange == 'UserDN' || yrange == 'SubmitHost' || yrange == 'vm_id') { 
+           if (yrange=='vm_id') width = '50em'; else width = (yrange=='UserDN')?'40em':'30em';
+           $(".dgrid-column-set-0").css("width",width); 
+           grid.resize();
+           //Change it with resizes
+           $( window ).bind("resize", function(){
+              $(".dgrid-column-set-0").css("width",width); 
+              $("#legend").resize(); 
+           });
+           //Also on pagination
+           aspect.after(grid, 'gotoPage', function (promise, args) {
+              // promise is the promise returned from the original gotoPage
+              // args are the original arguments passed, so args[0] is the requested page #
+              promise.then(function () {
+                 $(".dgrid-column-set-0").css("width",width); 
+                 win.scrollIntoView('update');
+              });
+           });
+        }
+        //$('#table-title').replaceWith("<div id='table-title'><h4 style='text-align:center'>" + imtitulo[query_name] + ' ' + imunit[query_name] + ' by ' + imrange[yrange] + ' and ' + imrange[xrange]);
+        var subtitle = {% if ngi %}'{{ngi}}'{% elif country or allcountry%}'{{country}}'{% elif site %}'Site {{site}}'{% elif federation %}'Federation {{federation}}'{% elif node %}'Node {{node}}'{% elif vo%}'VO {{vo}}'{%elif discipline%}'{{discipline}}'{%else%}''{%endif%};
+        var vo_selection = '';
+        var vo_description = 'all VOs';
+        {% if VOGroup %}
+        var VOGroup = $('input:radio[name=VOGroup]:checked').val();
+        if (VOGroup == 'all') {
+           vo_selection = ' (All VOs) ';
+        } else if (VOGroup == 'lhc') {
+           vo_selection = ' (LHC VOs) ';
+           vo_description = 'LHC VOs '
+        } else if (VOGroup == 'top10') {
+           vo_selection = ' (TOP 10 VOs) ';
+           vo_description = 'the top 10 VOs '
+        } else if (VOGroup.indexOf('custom') >= 0) {
+           vo_selection = ' (Custom VOs) ';
+           vo_description = 'a custom selection of VOs '
+        } else if (VOGroup == 'official' ||  VOGroup == 'egi') {
+           vo_selection = ' (Official VOs) ';
+           vo_description = 'the official EGI VOs '
+        }
+        {% endif %}
+        var subtitle_begin = '';
+        if (!subtitle.length) {subtitle_begin = $('#first_level').text();}
+        subtitle_begin = subtitle_begin + ' ' + subtitle;
+        var localJobs = $('input:radio[name=localJobs]:checked').val();
+        localJobs_description = '';
+        if (localJobs == 'onlyinfrajobs') localJobs_description = 'No local jobs are shown';
+        if (localJobs == 'onlylocaljobs') localJobs_description = 'Only local jobs are shown';
+        $('#subtitle').replaceWith("<div id='subtitle'><h3 style='text-align:center'>" + subtitle_begin + ' &mdash; ' + imtitulo[query_name] + ' ' + imunit[query_name] + ' by ' + imrange[yrange] + ' and ' + imrange[xrange] + vo_selection);
+        $("#metric_description").replaceWith('<span id="metric_description">' + imtitulo[query_name] + '</span>');
+        $("#inputX_description").replaceWith('<span id="inputX_description">' + imrange[xrange] + '</span>');
+        $("#inputY_description").replaceWith('<span id="inputY_description">' + imrange[yrange] + '</span>');
+        $("#vo_description").replaceWith('<span id="vo_description">' + vo_description + '</span>');
+        $("#LocalJobs_description").replaceWith('<span id="LocalJobs_description">' + localJobs_description + '</span>');
 
+        $('#csv_data').attr("href",data_url+"&csv=true");
+        $('#csv_data').attr("type","data:application/csv");
+        $('#csv_data').attr("download",(' ', '-', subtitle_begin + ' - ' + imtitulo[query_name] + ' ' + imunit[query_name] + ' by ' + imrange[yrange] + ' and ' + imrange[xrange] + vo_selection + '.csv').replace(/\s/g, "-"));
+        })
         // Line chart
         $('#info').append("<p>The information in the previous table is also shown in the following graph.</p>");
-        chart1 = new Chart("simplechart", {width:800, height:400, enableCache: true, titleFont: "normal normal normal 15pt Oswald", title: imtitulo[query_name] + ' by ' + imrange[yrange] + ' and ' + imrange[xrange], titlepos: "top"});
+        chart1 = new Chart("simplechart", {enableCache: true, titleFont: "normal normal normal 15pt Oswald", title: imtitulo[query_name] + ' ' + imunit[query_name] + ' by ' + imrange[yrange] + ' and ' + imrange[xrange], titlepos: "top"});
         chart1.addPlot("default", {type: Markers}); 
         var labels = [];
         for (index = 0; index < ylength; index++) 
            if (xrange == 'DATE') labels.push({value: (index+1), text: labeldate(ylegend[index])});
+           else if (xrange == '3M' || xrange == '6M') labels.push({value: (index+1), text: labelmdate(ylegend[index])});
            else labels.push({value: (index+1), text: ylegend[index]});
-        chart1.addAxis("x", {titleFont: "normal normal bold 30pt Oswald", font: "normal normal normal 10pt Oswald", vertical:false, minorTicks: false, majorTickStep:1, includeZero:false, rotation: 40, labels: labels});
-        chart1.addAxis("y", {min:0, vertical: true,titleFont: "normal normal normal 15pt Oswald", font: "normal normal normal 10pt Oswald",  title: imtitulo[query_name]});
+        chart1.addAxis("x", {titleFont: "normal normal bold 30pt Oswald", font: "normal normal normal 12pt Oswald", vertical:false, minorTicks: false, majorTickStep:1, includeZero:false, rotation: 40, labels: labels});
+        chart1.addAxis("y", {min:0, vertical: true,titleFont: "normal normal normal 17pt Oswald", font: "normal normal normal 12pt Oswald",  title: imtitulo[query_name] + ' ' + imunit[query_name]});
         store_wo_totals.forEach(function(entry) {
            values = [];
 
            for (var key in entry)
               if (key != 'Percent' && key != 'Total' && key != 'id') {
                  value = entry[key];
-                 values.push({y: value, tooltip: '<p><b>'+ entry.id + '</b> &mdash; <b>' + key + '</b><br/> '+ addCommas(value) +'</p>'});
+                 //Removes '%' and transforms back to int
+                 if (query_name == 'cpueff') value = value?parseInt(value):0;
+                 values.push({y: value, tooltip: '<p><b>'+ entry.id + '</b> &mdash; <b>' + key + '</b><br/> '+ addCommas(value) + ' ' + imunit[query_name] +'</p>'});
               }
-           chart1.addSeries(entry.id, values, {stroke: {width: "2.0"}} );
+           chart1.addSeries(entry.id, values, {stroke: {width: "4.0"}} );
         }).then(function(){
-           new MouseZoomAndPan(chart1, "default", {axis: "x"});
+           $( "#simplechart" ).bind( "click", function() {
+           if (mzap_connected) {
+              mzap.disconnect();
+              mzap_connected = false;
+           } else {
+              mzap.connect();
+              mzap_connected = true;
+           }
+           });
            chart1.setTheme(claro);
            new Tooltip(chart1, "default");
            new Magnify(chart1, "default", {duration: 60, scale: 3});
+           var mzap = new MouseZoomAndPan(chart1, "default", {axis: "x"});
+           mzap.disconnect();
+           var mzap_connected = false;
            chart1.render();
+        
            if (xlength < 50) {
-           var legend = new Legend({chart: chart1, outline: false, horizontal: 12}, "legend");
+           var legend = new Legend({chart: chart1, outline: false, horizontal: 8}, "legend");
            }
-        })
-
+        });
         // Pie charts 
         blue.chart.fill = "white";
         blue.chart.stroke = {color:"transparent"};
@@ -434,78 +741,111 @@ function error_handler (message) {
            for (var key in entry) {
               if (key != 'Percent' && key != 'Total' && key != 'id') {
                  value = entry[key];
+                 //Removes '%' and transforms back to int
+                 if (query_name == 'cpueff') value = value?parseInt(value):0;
                  if (value * 50 < grand_total) 
                     other += value; 
                   else {
-                    if (xrange == 'DATE') key_text = labeldate(key); else key_text = key;
+                    if (xrange == 'DATE') key_text = labeldate(key); 
+                    else if (xrange == '3M' || xrange == '6M') key_text = labelmdate(key); else key_text = key;
                     len = key_text.length;
                     max_width = 25;
                     if (len > max_width) {
                        var i = 0; 
                        var new_key_text = "";
                        while (i*max_width < len) {
-                          new_key_text += key_text.substring(max_width*i,Math.min(max_width*(i+1), len))+'<br/>'
+                          new_key_text += key_text.substr(max_width*i,Math.min(max_width*(i+1), len))+'<br/>'
                           i++;
                        }
                        key_text = new_key_text; 
                     }
                     pie1_values.push({y: value, width: "1.0", 
                                      text: key_text + ' (' + (value * 100/grand_total).toFixed(2) + '%)', 
-                                     tooltip: '<b>' + key_text + '</b><br/> '+ addCommas(value)});
+                                     tooltip: '<b>' + key_text + '</b><br/> '+ addCommas(value) + ' ' + imunit[query_name]});
                      }
                  } 
            }
            if (other) pie1_values.push({y: other, 
                                         width: "1.0", text: 'Other (' + (other*100/grand_total).toFixed(2) + '%)', 
                                         tooltip: '<b>Other</b><br/> '+ addCommas(other)});
-           chart_pie1 = new Chart("chart_pie1", {width:800, height:400, enableCache: true,titleFont: "normal normal normal 15pt Oswald", title: imtitulo[query_name] + ' by ' + imrange[xrange], titlepos: "top"});
+           chart_pie1 = new Chart("chart_pie1", {enableCache: true,titleFont: "normal normal normal 15pt Oswald", title: imtitulo[query_name] + ' ' + imunit[query_name] + ' by ' + imrange[xrange], titlepos: "top"});
            chart_pie1.setTheme(blue);
            var labels = [];
            chart_pie1.addSeries(entry.id, pie1_values);
-           chart_pie1.addPlot("default", {type: Pie, font: "normal normal 9pt Oswald", radius: 160, labelWiring: "cccc", labelOffset:30, labelStyle: "columns", omitLabels: true}); 
-           var anim_a = new MoveSlice(chart_pie1, "default");
-           var anim_b = new Highlight(chart_pie1, "default");
-           var anim_c = new Tooltip(chart_pie1, "default");
+           if (query_name != 'cpueff') {
+                   chart_pie1.addPlot("default", {type: Pie, font: "normal normal 9pt Oswald", labelWiring: "cccc", labelOffset:30, labelStyle: "columns", omitLabels: true}); 
+                   var anim_a = new MoveSlice(chart_pie1, "default");
+                   var anim_b = new Highlight(chart_pie1, "default");
+                   var anim_c = new Tooltip(chart_pie1, "default");
+           } else {
+                   chart_pie1.addPlot("default", {type: Columns, font: "normal normal 9pt Oswald", markers: true, styleFunc: effGraph}); 
+                   var labels = [];
+                   for (index = 0; index <= ylength; index++) 
+                   if (xrange == 'DATE') labels.push({value: (index+1), text: labeldate(ylegend[index])});
+                   if (xrange == '3M' || xrange == '6M') labels.push({value: (index+1), text: labelmdate(ylegend[index])});
+                   else labels.push({value: (index+1), text: ylegend[index]});
+                   chart_pie1.addAxis("x", {titleFont: "normal normal bold 30pt Oswald", font: "normal normal normal 10pt Oswald", vertical:false, minorTicks: false, majorTickStep:1, includeZero:false, rotation: 40, labels: labels});
+                   chart_pie1.addAxis("y", {min:0, vertical: true,titleFont: "normal normal normal 15pt Oswald", font: "normal normal normal 10pt Oswald",  title: imtitulo[query_name] + ' ' + imunit[query_name]});
+                   new Tooltip(chart_pie1, "default");
+           }
            chart_pie1.render();
         });
         var pie2_values = [];
         other = 0;
         store_wo_totals.forEach(function(entry) { 
                  value = entry['Total'];
+                 //Removes '%' and transforms back to int
+                 if (query_name == 'cpueff') value = value?parseInt(value):0;
                  if (value * 50 < grand_total) 
                     other += value; 
                   else {
-                    if (yrange == 'DATE') key_text = labeldate(entry.id); else key_text = entry.id;
+                    if (yrange == 'DATE') key_text = labeldate(entry.id); else if (yrange == '3M' || yrange == '6M') key_text = labelmdate(entry.id); else key_text = entry.id;
                     len = key_text.length;
                     max_width = 25;
                     if (len > max_width) {
                        var i = 0; 
                        var new_key_text = "";
                        while (i*max_width < len) {
-                          new_key_text += key_text.substring(max_width*i,Math.min(max_width*(i+1), len))+'<br/>'
+                          new_key_text += key_text.substr(max_width*i,Math.min(max_width*(i+1), len))+'<br/>'
                           i++;
                        }
                        key_text = new_key_text; 
                     }
                     pie2_values.push({y: value, width: "1.0", 
                                      text: key_text + ' (' + (value * 100/grand_total).toFixed(2) + '%)', 
-                                     tooltip: '<b>' + key_text + '</b><br/> '+ addCommas(value)});
+                                     tooltip: '<b>' + key_text + '</b><br/> '+ addCommas(value) + imunit[query_name]});
                      }
         }).then(function(){
            if (other) pie2_values.push({y: other, 
                                         width: "1.0", text: 'Other (' + (other*100/grand_total).toFixed(2) + '%)', 
                                         tooltip: '<b>Other</b><br/> '+ addCommas(other)});
-           chart_pie2 = new Chart("chart_pie2", {width:800, height:400, enableCache: true,titleFont: "normal normal normal 15pt Oswald", title: imtitulo[query_name] + ' by ' + imrange[yrange], titlepos: "top"});
+           chart_pie2 = new Chart("chart_pie2", {enableCache: true,titleFont: "normal normal normal 15pt Oswald", title: imtitulo[query_name] + ' ' + imunit[query_name] + ' by ' + imrange[yrange], titlepos: "top"});
            chart_pie2.setTheme(blue);
            var labels = [];
            chart_pie2.addSeries('y', pie2_values);
-           chart_pie2.addPlot("default", {type: Pie, font: "normal normal 9pt Oswald", radius: 160, labelWiring: "cccc", labelOffset:30, labelStyle: "columns", omitLabels: true}); 
-           var anim_a2 = new MoveSlice(chart_pie2, "default");
-           var anim_b2 = new Highlight(chart_pie2, "default");
-           var anim_c2 = new Tooltip(chart_pie2, "default");
+           if (query_name != 'cpueff') {
+                   chart_pie2.addPlot("default", {type: Pie, font: "normal normal 9pt Oswald", labelWiring: "cccc", labelOffset:30, labelStyle: "columns", omitLabels: true}); 
+                   var anim_a2 = new MoveSlice(chart_pie2, "default");
+                   var anim_b2 = new Highlight(chart_pie2, "default");
+                   var anim_c2 = new Tooltip(chart_pie2, "default"); 
+           } else {
+                   chart_pie2.addPlot("default", {type: Columns, font: "normal normal 9pt Oswald", markers: true, styleFunc: effGraph}); 
+                   var labels = [];
+                   for (index = 0; index <= xlength; index++) 
+                   if (yrange == 'DATE') labels.push({value: (index+1), text: labeldate(xlegend[index])});
+                   else if (yrange == '3M' || yrange == '6M') labels.push({value: (index+1), text: labelmdate(xlegend[index])});
+                   else labels.push({value: (index+1), text: xlegend[index]});
+                   chart_pie2.addAxis("x", {titleFont: "normal normal bold 30pt Oswald", font: "normal normal normal 10pt Oswald", vertical:false, minorTicks: false, majorTickStep:1, includeZero:false, rotation: 40, labels: labels});
+                   chart_pie2.addAxis("y", {min:0, vertical: true,titleFont: "normal normal normal 15pt Oswald", font: "normal normal normal 10pt Oswald",  title: imtitulo[query_name] + ' ' + imunit[query_name]});
+                   new Tooltip(chart_pie2, "default");
+           }
            chart_pie2.render();
         });
-     }})
+     }}, function(err) {
+      console.log(err);
+      alert(err)
+      overlay.hide();
+      });
   }})});
 </script>
 </body>

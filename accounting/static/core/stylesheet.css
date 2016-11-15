@@ -6,6 +6,15 @@ body {
 	margin: 0;
 	padding: 0;
 }
+
+.form-horizontal .form-group
+{
+margin:0;
+}
+
+#acct_store {
+margin-right:15px;
+}
 hr {
 	color: #666666;
 	background-color: #FFFFFF;
@@ -18,7 +27,7 @@ hr {
 }
 .navbar-nav { /*margin-left: 120px;*/ }
 /*.navbar-title {
-	font-size: 0.8em;
+	font-size: 0.9em;
 	color: #FFFFFF;
 	font-weight: bold;
 }
@@ -64,42 +73,48 @@ hr {
 	padding: 5px;
 }
 .tabletext {
-	font-size: 0.8em;
+	font-size: 0.9em;
 	color: #000000;
 	background-color: #DDDDDD;
+        min-width: 8em;
 }
 .tabletext0 {
-	font-size: 0.8em;
+	font-size: 0.9em;
 	color: #000000;
 	background-color: #FF0000;
 }
 .tabletext1 {
-	font-size: 0.8em;
+	font-size: 0.9em;
 	color: #000000;
 	background-color: #FF9933;
+        padding: 0.6em;
 }
 .tabletext2 {
-	font-size: 0.8em;
+	font-size: 0.9em;
 	color: #000000;
 	background-color: #FFCC66;
+        padding: 0em;
 }
 .tabletext3 {
-	font-size: 0.8em;
+	font-size: 0.9em;
 	color: #000000;
 	background-color: #FFFF66;
+        padding: 0.6em;
 }
 .tabletext4 {
-	font-size: 0.8em;
+	font-size: 0.9em;
 	color: #000000;
 	background-color: #00FF00;
+        padding: 0.6em;
 }
 .tabletext5 {
-	font-size: 0.8em;
+	font-size: 0.9em;
 	color: #000000;
 	background-color: #00FFFF;
+        padding: 0.6em;
 }
 .tabletextor {
-	font-size: 0.8em;
+	font-size: 0.9em;
 	color: #000000;
 	background-color: #C0C0C0;
 	font-weight: bold;
@@ -107,14 +122,14 @@ hr {
 }
 
 .tableheader {
-	font-size: 0.8em;
+	font-size: 0.9em;
 	color: #FFFFFF;
 	background-color: #000000;
 	font-weight: bold;
 	text-align: center;
 }
 .tableheaderor {
-	font-size: 0.8em;
+	font-size: 0.9em;
 	color: #FFFFFF;
 	background-color: #505050;
 	font-weight: bold;
@@ -123,7 +138,7 @@ hr {
 }
 
 .navbar-heading {
-	font-size: 0.8em;
+	font-size: 0.9em;
 	background-color: #FFFFFF;
 	font-weight: bold;
 	color: #000000;
@@ -335,7 +350,7 @@ width: 15%;
 min-width:100px;
 /*position: fixed;*/
 left:0;
-margin-top: 120px;
+/*margin-top: 120px;*/
 }
 .central{
 /*padding-left: 200px;*/
@@ -348,7 +363,7 @@ width: 95%;
 left:2%;
 /*padding-left: 200px;*/
 position: relative;
-padding-top: 120px;
+/*margin-top: 120px;*/
 }
 .header {
 position:fixed;

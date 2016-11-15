@@ -1,5 +1,3 @@
-<)!DOCTYPE html>
-
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html" />
@@ -21,16 +19,15 @@
   <title>EGI Production Accounting</title>
 </head>
 
-<body>
-  --&gt; <script src="/static/dojo/dojo.js" data-dojo-config=
-  "async: true, isDebug: true, parseOnLoad: false, packages: [ { name: 'egi', location: '../', main: 'egi' }, { name: 'jquery', location: '../jquery/dist', main: 'jquery' }, { name: 'jquery-ui', location: '../jquery-ui', main: 'jquery-ui' }, { name: 'bootstrap', location: '../bootstrap/dist/js', main: 'bootstrap' }, { name: 'bootstrap-datepicker', location: '../bootstrap-datepicker/dist/js', main: 'bootstrap-datepicker' }]"
+<body class="claro">
+  <script src="/static/dojo/dojo.js" data-dojo-config="async: true, isDebug: true, parseOnLoad: false, packages: [ { name: 'egi', location: '../', main: 'egi' }, { name: 'jquery', location: '../jquery/dist', main: 'jquery' }, { name: 'jquery-ui', location: '../jquery-ui', main: 'jquery-ui' }, { name: 'bootstrap', location: '../bootstrap/dist/js', main: 'bootstrap' }, { name: 'bootstrap-datepicker', location: '../bootstrap-datepicker/dist/js', main: 'bootstrap-datepicker' }]"
   type="text/javascript">
 </script>
 
   <div class='wrap'>
     <div class='sidebar'></div>
 
-    <div class='central'>
+ <!--   <div class='central'>-->
       <!-- Wrap all page content here -->
 
       <div id="wrapper" class="">
@@ -38,67 +35,79 @@
         <!-- /#sidebar-wrapper -->
         <!-- Fixed navbar -->
 
-        <div id="page-content-wrapper" class="">
         {% include "navbar.html" %}
+        <div id="page-content-wrapper" class="container">
 
+<div style="float: right; margin-top: -20px;">
+<img src="/static/AcctPortal_egi_ack.png" style="" width="600" height="64" border="0" usemap="#map" />
+<map name="map">
+<area shape="rect" coords="309,32,432,49" href="http://go.egi.eu/eng" />
+</map>
+</div>
 <!--          <div class="container">
             <div class="page-header">
               <h4 class="" contenteditable="false" style="">{% block title %}{% endblock %}</h4>
             </div>
 
           </div>-->
-
-          <div id="loadingOverlay" style="height:600px;">
             <div>
-              <div id="simplechart" style="position:relative;width:80%;float:left;height:600px"></div>
-              <div id="metrics" class="text-center" style="font:normal normal normal 14pt Oswald;position:relative;float:right;width:20%;height:600px">
-                 <div class="panel panel-default" style="height:110px;">
-                    <div id="njobs-header" class="panel-heading">Number of jobs</div>
-                    <div id="njobs-panel" style="margin-top: -10px" class="panel-body">-----</div>
-                 </div>
-                 <div class="panel panel-default" style="">
-                    <div id="ncpu-header" class="panel-heading">Normalised CPU Hours (HEPSPEC06)</div>
-                    <div id="ncpu-panel" style="margin-top: -10px" class="panel-body">-----</div>
-                 </div>
-                 <div class="panel panel-default" style="">
-                    <div id="nwall-header" class="panel-heading">Normalised Wall Hours (HEPSPEC06)</div>
-                    <div id="nwall-panel" style="margin-top: -10px" class="panel-body">-----</div>
-                 </div>
-                 <div class="panel panel-default" style="">
-                    <div id="ucpu-header" class="panel-heading">Unnormalised CPU Hours</div>
-                    <div id="ucpu-panel" style="margin-top: -10px" class="panel-body">-----</div>
-                 </div>
-                 <div class="panel panel-default" style="">
-                    <div id="uwall-header" class="panel-heading">Unnormalised Wall Hours</div>
-                    <div id="uwall-panel" style="margin-top: -10px" class="panel-body">-----</div>
-                 </div>
-              </div>
-            <form id='figure_form' style="float:left;position:absolute">
+          <div id="loadingOverlay" style="width:100%;height:600px;">
+            <form id='figure_form' class="pull-left">
                 <div class="form-group">
-                  <div class="col-xs-10" style="margin-top:10px;">
-                  <div class="col-xs-6" style="margin-right:-30px;">
                     <select id="metric" data-toggle="tooltip" title="Metric used for the accounting" data-dojo-props="position:['above']" placeholder="Select Metric" class="form-control col-xs-2">
                        <option class='' data-toggle='tooltip' data-title='Number of jobs'  data-dojo-props='position:['above']' data-content='Total number of jobs' value='njobs'>Number of jobs</option>
-                       <option class='' data-title='Normalized CPU Hours (HEPSPEC06)'  data-dojo-props='position:['above']' data-content='Raw CPU hours normalized with the HEPSpec2006 benchmark' value='normcpu_HEPSPEC06'>Normalized Sum CPU (HEPSPEC06-hours)</option> 
-                       <option data-toggle='tooltip' data-title='Unnormalized CPU Hours' data-dojo-props='position:['above']' data-content='Raw CPU hours that are not normalized to a common benchmark' class='' value='sumcpu'>Sum CPU</option> 
-                       <option data-toggle='tooltip' data-title='Normalized Wall Hours (HEPSPEC06)' data-dojo-props='position:['above']' data-content='Wall Clock CPU hours normalized with the HEPSPEC06 benchmark' class='' value='normelap_HEPSPEC06'>Normalized Sum Elapsed (HEPSPEC06-hours)</option> 
-                       <option data-toggle='tooltip' data-title='Unnormalized Wall CPU Hours' data-dojo-props='position:['above']' data-content='Wall clock CPU hours that are not normalized to a common benchmark' class='' value='sum_elap'>Sum Elapsed</option>
+                       <option class='' data-title='Normalized CPU Time ()'  data-dojo-props='position:['above']' data-content='Raw CPU hours normalized with the HEPSpec2006 benchmark' value='normcpu_HEPSPEC06'>Normalized CPU Time (HEPSPEC06 hours)</option> 
+                       <option data-toggle='tooltip' data-title='CPU Time (Raw hours)' data-dojo-props='position:['above']' data-content='Raw CPU hours that are not normalized to a common benchmark' class='' value='sumcpu'>CPU Time (Raw hours)</option> 
+                       <option data-toggle='tooltip' data-title='Normalized Wall Time (HEPSPEC06 hours)' data-dojo-props='position:['above']' data-content='Wall Clock CPU hours normalized with the HEPSPEC06 benchmark' class='' value='normelap_HEPSPEC06'>Normalized Wall Time (HEPSPEC06 hours)</option> 
+                       <option data-toggle='tooltip' data-title='Wall Time (Raw hours)' data-dojo-props='position:['above']' data-content='Wall clock CPU hours that are not normalized to a common benchmark' class='' value='sum_elap'>Wall Time (Raw hours)</option>
                     </select>
-                    </div>
-                  <div class="col-xs-6" style="margin-left:10px;">
                   <div class="btn-group" data-toggle="buttons">
                      <label class="btn btn-primary">
-                        <input type="radio" name="period" id="1w" value="7d" autocomplete="off"> Weeks</input>
+                        <input type="radio" name="period" id="1m" value="1m" autocomplete="off"> 1 Month</input>
+                     </label>
+                     <label class="btn btn-primary">
+                        <input type="radio" name="period" id="3m" value="3m" autocomplete="off"> 3 Months</input>
                      </label>
                      <label class="btn btn-primary active">
-                        <input type="radio" name="period" id="1m" value="30d" autocomplete="off" checked> Months</input>
+                        <input type="radio" name="period" id="6m" value="6m" autocomplete="off" checked> 6 Months</input>
                      </label> 
                      <label class="btn btn-primary">
                         <input type="radio" name="period" id="1y" value="1y" autocomplete="off"> Years</input>
                      </label>
-                 </div>
-                 </div>
+                  </div>
               </form>
+            </div>
+            <div>
+           <div id="page_text" style="clear:both">
+<a href="http://www.egi.eu">EGI</a> is the European infrastructure for advanced computing offering distributed Compute, Storage and Data for researchers and international research collaborations. The EGI Federation comprises hundreds of data centres in Europe and other regions of the world. 
+
+The EGI Accounting Portal provides the accounting data for Compute, Storage and Data services gathered from the data centres of the EGI Federation. Users can create custom reports organising this information in several ways, selecting services, resource centers, user groups and defining a time period. Accounting data gathered by peer infrastructures, such as Open Science Grid (OSG), can be included in such reports.
+
+This graph shows the <span id="metric_description"></span> in the whole EGI infrastructure. Each point represents a period of <span id="month_period"></span> counting backwards from the last complete period. 
+           </div>
+              <div id="simplechart" class="pull-left" style="width:80%; height:600px;"></div>
+              <div id="metrics" class="text-center pull-left" style=" height:600px;font-size:1em;font:Oswald;width:20%">
+                 <div class="panel panel-default" style="">
+                    <div id="njobs-header" class="panel-heading">Number of jobs</div>
+                    <div id="njobs-panel" style="margin-top: -10px" class="panel-body">-----</div>
+                 </div>
+                 <div class="panel panel-default" style="">
+                    <div id="ncpu-header" class="panel-heading">Normalized CPU (HEPSPEC06 hours)</div>
+                    <div id="ncpu-panel" style="margin-top: -10px" class="panel-body">-----</div>
+                 </div>
+                 <div class="panel panel-default" style="">
+                    <div id="nwall-header" class="panel-heading">Normalized Wall (HEPSPEC06 hours)</div>
+                    <div id="nwall-panel" style="margin-top: -10px" class="panel-body">-----</div>
+                 </div>
+                 <div class="panel panel-default" style="">
+                    <div id="ucpu-header" class="panel-heading">Unnormalized CPU (Raw hours)</div>
+                    <div id="ucpu-panel" style="margin-top: -10px" class="panel-body">-----</div>
+                 </div>
+                 <div class="panel panel-default" style="">
+                    <div id="uwall-header" class="panel-heading">Unnormalized Wall (Raw hours)</div>
+                    <div id="uwall-panel" style="margin-top: -10px" class="panel-body">-----</div>
+                 </div>
+              </div>
               </div>
             </div>
           </div>
@@ -112,9 +121,10 @@
         function(jqueryui, bootstrap, datepicker, declare, claro, Def, Store, locale, Chart, blue, Markers, MouseZoomAndPan, Tooltip, Magnify, Highlight, MoveSlice, dom, domConstruct, parser, dijit, registry, standby, on, domReady){
 
         store = null;
-        var imtitulo =  {'njobs' : 'Total number of jobs', 'normcpu' : 'Normalised CPU time (kSI2K)', 'normcpu_HEPSPEC06' : 'Normalised CPU time (HEPSPEC06)', 'sumcpu' : 'Total CPU time used', 'sumelap' : 'Total elapsed time', 'normelap' : 'Normalised Elapsed time (kSI2K)', 'normelap_HEPSPEC06' : 'Normalised Elapsed time (HEPSPEC06)', 'sumelcpu' : 'Total Elapsed-CPU', 'cpueff' : 'CPU Efficiency (%)', 'vm_num' : 'Total number of VM run', 'sum_elap' : 'Sum Elapsed time (hours)', 'sum_cpu' : 'Sum CPU time (hours)', 'net_in' : 'Inbound Network Traffic', 'net_out' : 'Outbound Network Traffic', 'disk' : 'Disk Used'};
-        $('#disciplines_menu').load('https://accounting-devel-support.egi.cesga.es/discipline_tree.php');
-        $('#ngis_menu').load('https://accounting-devel-support.egi.cesga.es/ngi_tree.php');
+        var imtitulo =  {'njobs' : 'Total number of jobs', 'normcpu' : 'Normalized CPU time (Raw hours)', 'normcpu_Raw' : 'Normalized CPU time (Raw hours)', 'sumcpu' : 'CPU Time (Raw hours)', 'sumelap' : 'Wall Time (Raw hours)', 'normelap' : 'Normalized Wall Time(Raw hours)', 'normelap_Raw' : 'Normalized Wall Time (Raw hours)', 'sumelcpu' : 'Wall Time (Raw hours)', 'cpueff' : 'CPU Efficiency (%)', 'vm_num' : 'Total number of VM run', 'sum_elap' : 'Sum Elapsed time (hours)', 'sum_cpu' : 'CPU Time (hours)', 'net_in' : 'Inbound Network Traffic (b)', 'net_out' : 'Outbound Network Traffic (b)', 'disk' : 'Disk Used (b)','normcpu_HEPSPEC06': 'Normalized CPU Time (HEPSPEC06 hours)','normelap_HEPSPEC06': 'Normalized Wall Time (HEPSPEC06 hours)'};
+        $('#disciplines_menu').load('{{SUPPORT_SERVER}}discipline_tree.php');
+        $('#ngis_menu').load('{{SUPPORT_SERVER}}ngi_tree.php');
+        $('#cloud_menu').load('{{SUPPORT_SERVER}}cloud_tree.php');
         addCommas = function(nStr) { 
                      nStr += ''; x = nStr.split('.'); 
                      x1 = x[0]; x2 = x.length > 1 ? '.' + x[1] : ''; 
@@ -128,6 +138,7 @@
         todate = function(object){ return locale.format(new Date(object.date), {selector: 'date', locale: 'en', datePattern: 'yyyy-MMM-dd'}); };
         strtodate = function(str){ return locale.format(new Date(str), {selector: 'date', locale: 'en', datePattern: 'MMM-yyyy'}); };
         labeldate = function(str){ return locale.format(new Date(str), {selector: 'date', locale: 'en', datePattern: 'MMMM yyyy'}); };
+        lfunc = function(text,value,precision){ return addCommas(value); };
 
         var last_period = "-1";
         $('#collapseOne').css('display','');
@@ -157,6 +168,13 @@
         parser.parse();
         update()
 
+function resizeChart() {
+   chart1.resize();
+}
+
+dojo.addOnLoad(function() {
+   dojo.connect(window, "onresize", resizeChart);
+});
         function update() { 
            overlay = registry.byId("overlay"); 
            overlay.show(); 
@@ -173,33 +191,44 @@
         domConstruct.empty("simplechart");
         }
 
+        function update_desc(query, period) { 
+          $("#metric_description").replaceWith('<span id="metric_description">' + imtitulo[query] + '</span>');
+          $("#month_period").replaceWith('<span id="month_period">' + period_to_period_string(period) + '</span>');
+        }
         function render(query, period) { 
         //Store
            if (last_period != period) {
-              data_url = "https://accounting-devel-support.egi.cesga.es/mview.php?period=" + period;
+              data_url = "{{SUPPORT_SERVER}}mview.php?period=" + period;
               update_store(data_url);
            }
            update_panel(period);
+           update_desc(query, period);
            update_chart(query, period);
         }
 
         function update_store(data_url) {
            store = new Store({target: data_url});
         }
-         
+        
+        function period_to_period_string (period) {
+           period_string = '';
+           if (period=='1y') {period_string = '12 months';}
+           else if  (period=='3m') {period_string = '3 months';}
+           else if (period=='6m') {period_string = '6 months';}
+           else if (period=='1m') {period_string = '1 month';}
+           return period_string;
+        }
+ 
         function update_panel(period) {
            store.forEach(function(entry) { 
                last_values = entry;
             }).then( function(){ 
-               period_string = '';
-               if (period=='1y') {period_string = ' in last year';}
-               else if  (period=='30d') {period_string = ' in last month';}
-               else if (period=='7d') {period_string = ' in last week';}
-               $('#njobs-header').html('Number of jobs ' + period_string);
-               $('#ncpu-header').html('Normalised CPU Hours (HEPSPEC06) ' + period_string);
-               $('#ucpu-header').html('Unnormalised CPU Hours ' + period_string);
-               $('#nwall-header').html('Normalised Wall Hours (HEPSPEC06) ' + period_string);
-               $('#uwall-header').html('Unnormalised Wall Hours ' + period_string);
+               period_string = period_to_period_string(period);
+               $('#njobs-header').html('Number of jobs in last ' + period_string + ' period');
+               $('#ncpu-header').html('Normalized CPU (HEPSPEC06 hours) in last ' + period_string + ' period');
+               $('#ucpu-header').html('CPU Time (Raw hours) in last ' + period_string + ' period');
+               $('#nwall-header').html('Normalized Wall (HEPSPEC06 hours) in last ' + period_string + ' period');
+               $('#uwall-header').html('Wall Time (Raw hours) in last ' + period_string + ' period');
                $('#njobs-panel').html(addCommas(last_values['njobs']));
                $('#ncpu-panel').html(addCommas(last_values['normcpu_HEPSPEC06']));
                $('#ucpu-panel').html(addCommas(last_values['sumcpu']));
@@ -210,10 +239,12 @@
         function update_chart(query, period) {
            // Line chart
            last_period = period;
+           period_string = period_to_period_string(period);
            claro.chart.fill = "white";
            claro.chart.stroke = {color:"transparent"};
            claro.plotarea.fill = "white";
-           chart1 = new Chart("simplechart", {width:"90%", height:"90%", enableCache: true, title: 'EGI '+imtitulo[query]+' Accounting '+period+' period', titlepos: "top", border: false, titleFont: "normal normal normal 15pt Oswald"});
+           domConstruct.empty("simplechart");
+           chart1 = new Chart("simplechart", {width:"90%", height:"90%", enableCache: true, title: 'EGI '+imtitulo[query]+' in '+period_string+' periods', titlepos: "top", border: false, titleFont: "normal normal normal 15pt Oswald"});
            chart1.addPlot("default", {type: Markers}); 
            labels = [];
            values = [];
@@ -223,11 +254,22 @@
               values.push({y: entry[query], text: addCommas(entry[query]), titleFont: "normal normal normal 8pt Oswald", tooltip: '<p><b>'+ labeldate(entry.date) + '<\/b> <b>' + '<\/b><br/> '+ addCommas(entry[query]) + ' \n' + imtitulo[query] + '<\/p>'});
               index++;
            }).then(function(){
-           chart1.addAxis("x", {vertical:false, titleFont: "normal normal bold 30pt Oswald", font: "normal normal normal 10pt Oswald", minorTicks: false, majorTickStep:1, includeZero:false, rotation: 40, labels: labels});
-           chart1.addAxis("y", {min:0, titleFont: "normal normal normal 15pt Oswald", font: "normal normal normal 10pt Oswald", vertical: true, title: imtitulo[query]});
+           chart1.addAxis("x", {vertical:false, titleFont: "normal normal bold 30pt Oswald", font: "normal normal normal 12pt Oswald", minorTicks: false, majorTickStep:1, includeZero:false, rotation: 40, labels: labels});
+           chart1.addAxis("y", {min:0, titleFont: "normal normal normal 17pt Oswald", font: "normal normal normal 12pt Oswald", vertical: true, title: imtitulo[query], labelFunc: lfunc});
 
-           chart1.addSeries("1", values, {stroke: {width: "2.0"}} );
-           new MouseZoomAndPan(chart1, "default", {axis: "x"});
+           chart1.addSeries("1", values, {stroke: {width: "4.0"}} );
+           var mzap = new MouseZoomAndPan(chart1, "default", {axis: "x"});
+           mzap.disconnect();
+           var mzap_connected = false;
+           $( "#simplechart" ).bind( "click", function() {
+           if (mzap_connected) {
+              mzap.disconnect();
+              mzap_connected = false;
+           } else {
+              mzap.connect();
+              mzap_connected = true;
+           }
+           });
            chart1.setTheme(claro);
            new Tooltip(chart1, "default");
            new Magnify(chart1, "default", {duration: 60, scale: 3});
@@ -238,7 +280,6 @@
         });
         //]]>
         </script>
-      </div>
     </div>
   </div>
 </body>

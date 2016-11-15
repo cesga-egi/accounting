@@ -1,0 +1,46 @@
+{%  extends "rebus-base.html" %}
+
+{% comment %}
+ == Multiple dataTables with different and custom table options using JQuery-UI Tabs ==
+    * Each tab shows a single dataTable.
+    * Each dataTable in different tab can have its own table header and column definition.
+    * Variables: multi_table = [[id, alias], ...]
+{% endcomment %}
+
+{% block css-add %}
+<style title="currentStyle" type="text/css">       
+    @import "/static/dataTables.css";                                        
+    @import "/static/dataTables_JUI.css";    
+    @import "/static/jquery-ui-1.7.2.custom.css";
+    @import "/static/jquery.tools.tooltip.css";
+    .ui-tabs .ui-tabs-panel { padding: 10px }
+</style>
+{% endblock %}
+
+{% block scripts-add %}
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.js"></script>
+<!-- <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script> -->
+ <script src="/static/jquery-ui.js"></script> 
+
+<script type="text/javascript" src="/static/table_reload.js"></script>
+<!-- <script type="text/javascript" src="/static/jquery.tools.tooltip.js"></script> -->
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script type="text/javascript" charset="utf-8">
+{% block more-script %} {% endblock more-script %}
+$(document).ready(function() {
+    {% block more-doc-ready %} {% endblock more-doc-ready %}
+    $("#tabs").tabs( {
+        "show": function(event, ui) {
+            var oTable = $('div.dataTables_scrollBody>table.display', ui.panel).dataTable();
+            if ( oTable.length > 0 ) {
+                oTable.fnAdjustColumnSizing();
+            }
+        }
+    } );
+   
+    {% block table-init %} {% endblock table-init %}
+})
+</script>
+{% endblock scripts-add%}
+

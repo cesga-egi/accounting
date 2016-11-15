@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block description %}
+<div id="page_text" style="clear:both">
+This view shows the accounting data {% if not site %} from all Cloud Sites that are classified as WLCG Tier2 {% endif %}{%if country %} in {{country}}{% elif ngi %} in {{ngi}}{% elif site %} in WLCG Tier2 Site {{site}}{%elif federation %} in Federation {{federation}}{% else %}{%endif%}. {%if not site%}Only production certified Sites are included.{% endif %}
+
+The metric shown is <span id="metric_description">Total number of jobs</span>, grouped by <span id="inputY_description">Region</span> and <span id="inputX_description">Date</span>, <span id="vo_description">the official EGI VOs </span> are shown. <span id="LocalJobs_description"></span>
+</div>
+{% endblock %}
+{% block option %}{% if site %}"SITE"{% elif country %}"COUNTRY"{% elif federation %}"FEDERATION"{% else %}"COUNTRY_T2"{% endif %}{% endblock %}
+{% block tree %}"TIER2"{% endblock %}
+{% block inputMetric %} 
+<option class='' data-toggle='tooltip' data-title='Number of VMs'  data-dojo-props='position:['above']' data-content='Total number of Virtual Machines' value='vm_num'>Number of Virtual Machines</option>
+<option data-toggle='tooltip' data-title='Wall Hours' data-dojo-props='position:['above']' data-content='Wall Clock CPU hours' class='' value='sum_cpu'>Sum Wall hours (Elapsed time)</option> 
+<option data-toggle='tooltip' data-title='Monetary cost estimate' data-dojo-props='position:['above']' data-content='Monetary estimate in € of the cost incurred in the computation by the VMs ran in the period' class='' value='cost'>Monetary Cost</option>
+<option data-toggle='tooltip' data-title='Inbound Network Traffic' data-dojo-props='position:['above']' data-content='Aggregate number of bytes of all the packets received by the VMs executed in the period' class='' value='net_in'>Inbound Network Traffic</option>
+<option data-toggle='tooltip' data-title='Outbound Network Traffic' data-dojo-props='position:['above']' data-content='Aggregate number of bytes of all the packets sent by the VMs executed in the period' class='' value='net_out'>Outbound Network Traffic</option>
+<option data-toggle='tooltip' data-title='Memory Used' data-dojo-props='position:['above']' data-content='Aggregate in bytes of the physical RAM memory used by the VMs ran in the period' class='' value='mem'>Memory Used</option>
+<option data-toggle='tooltip' data-title='Disk Used' data-dojo-props='position:['above']' data-content='Aggregate in bytes of the accumulative physical disk space used by the VMs ran in the period' class='' value='disk'>Disk Used</option>
+{% endblock %}
+{% block display_funcs %}
+sitelabel = function(str){ return '<b><a style="text-decoration:none" href="/tier2/cloud/site/' + str + '/' + state_url('VO') + '">' + str + '</a></b>';};
+federationlabel = function(str){ return '<b><a style="text-decoration:none" href="/tier2/cloud/federation/' + str + '/' + state_url('SITE') + '">' + str + '</a></b>';};
+countrylabel = function(str){ return '<b><a style="text-decoration:none" href="/tier2/cloud/country/' + str + '/' +  state_url('FEDERATION') + '">' + str + '</a></b>';};
+{% endblock %}
+{% block XOptions %} 
+<option data-title="Date" value="DATE" class="">Date</option>
+<option data-title="Year" value="Year" class="">Year</option>
+<option data-title="3M" value="3M" class="">Trimester</option>
+<option data-title="6M" value="6M" class="">Semester</option>
+{% if site %}
+<option value="COUNTRY" class="">Country</option>
+<option value="FEDERATION" class="">Federation</option>
+<option data-title="Site" value="SITE"  selected="selected" class="">Site</option>
+<option class="" selected="selected" value="VO">VO</option>
+{% elif country %}
+<option value="COUNTRY" class="" selected="selected" >Country</option>
+<option value="FEDERATION" class="">Federation</option>
+<option data-title="Site" value="SITE" class="">Site</option>
+<option class="" selected="selected" value="VO">VO</option>
+{% elif country %}
+<option value="COUNTRY" class="">Country</option>
+<option value="FEDERATION" selected="selected" class="">Federation</option>
+<option data-title="Site" value="SITE" class="">Site</option>
+<option class="" selected="selected" value="VO">VO</option>
+{% else %}
+<option value="COUNTRY" class="" selected="selected" >Country</option>
+<option value="FEDERATION" class="">Federation</option>
+<option data-title="Site" value="SITE" class="">Site</option>
+<option class="" value="VO">VO</option>
+{% endif %}
+<option class="" value="vm_id">VM Id</option>
+{% endblock %} 
+{% block YOptions %} 
+<option data-title="Date" value="DATE" selected="selected" class="">Date</option>
+<option data-title="Year" value="Year" class="">Year</option>
+<option data-title="3M" value="3M" class="">Trimester</option>
+<option data-title="6M" value="6M" class="">Semester</option>
+<option value="TIER2" class="">TIER2</option>
+<option data-title="Site" value="SITE" class="">Site</option>
+<option class="" value="VO">VO</option>
+<option class="" value="vm_id">VM Id</option>
+{% endblock %} 
+{% block title %}Tier 2 Cloud Accounting{% endblock %}
+{% block first_level %}<a href="/tier2/cloud/" class="">Tier2 Cloud</a>{% endblock %}
+{% block second_level %}{% if site %}/ <a href="/tier2/cloud/{{site}}" class="">{{site}}</a>{% elif federation %}/ <a href="/tier2/cloud/federation/{{federation}}" class="">{{federation}}</a>{% elif country %}/ <a href="/tier2/cloud/country/{{country}}" class="">{{country}}</a>{% endif %} {% endblock %}
+{% block third_level %}{% endblock %}
+{% block remote_url %}{% if site %}"{{SUPPORT_SERVER}}custom_cloud.php?&query="+query+"&option=SITE&optval={{site}}&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&groupVO="+VOGroup+"&localJobs="+localJobs+"&groupVO="+VOGroup+"&localJobs="+localJobs+"&tree="+tree{% elif country %}"{{SUPPORT_SERVER}}custom_cloud.php?query="+query+"&option=COUNTRY&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&groupVO="+VOGroup+"&localJobs="+localJobs+"&tree="+tree+"&optval={{country}}"{% elif federation %}"{{SUPPORT_SERVER}}custom_cloud.php?query="+query+"&option=FEDERATION&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&groupVO="+VOGroup+"&localJobs="+localJobs+"&tree="+tree+"&optval={{federation}}"{% else %}"{{SUPPORT_SERVER}}custom_cloud.php?query="+query+"&option="+option+"&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&groupVO="+VOGroup+"&localJobs="+localJobs+"&tree="+tree+"&optval="{% endif %}{% endblock %}

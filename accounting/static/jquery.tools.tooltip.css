@@ -1,0 +1,46 @@
+.tooltip {
+  display:none;
+  background:transparent url(../images/black_arrow.png);
+  font-size:12px;
+  height:70px;
+  width:160px;
+  padding:25px;
+  color:#fff;
+  line-height: 1.5em;
+} 
+
+.tooltip.bottom {
+  background:transparent url(../images/black_arrow_bottom.png);
+  padding-top:40px;
+  height:55px;
+  border: 0px;
+ }
+ 
+.tooltip_big {
+  display:none;
+  background:transparent url(../images/black_arrow_big.png);
+  font-size:12px;
+  height:155px;
+  width:300px;
+  padding:25px;
+  color:#fff;
+  line-height: 1.5em;
+} 
+
+.tooltip_big.bottom {
+  background:transparent url(../images/black_arrow_big_bottom.png);
+  padding-top:50px;
+  height:140px;
+  border: 0px;
+  line-height: 1.5em;
+ }
+ 
+.tooltip_small {
+  display:none;
+  background:transparent url(../images/black_small.png);
+  font-size:12px;
+  height:42px;
+  width:80px;
+  border: 0px;
+  color:#fff;
+} 

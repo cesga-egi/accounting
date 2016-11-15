@@ -1,0 +1,59 @@
+
+
+
+
+<table style="page-break-after:always;-pdf-keep-with-next:false;" >
+ <tr><td width="120" ><img  height="60" width="60"  alt="3d-WLCG-white.emf" src="/static/wlcg_logo.jpg"></td>
+ <td><h1>WLCG Accounting Summary</h1>
+     <h2>{{ my_page.month }}<br/>
+     Centre   &nbsp  Summary of {{ my_page.centre }} <br/></h2>     
+ </td>
+ <td rowspan="2"><table id="table_pledges"><tr><td><table><tr><th>MoU pledged</th><th>apr-13-mar-14</th><th>apr14-mar-15</th></tr>
+   {% for row in my_page.pledges_table %}
+      <tr><th> {{row.title}} </th><td>{{row.value1}}</td><td>{{row.value2}}</td></tr>
+   {% endfor %} 
+ 	</table></td></tr></table>
+ </td>
+ <td rowspan="2" width="20">&nbsp</td>
+ <td rowspan="2"><table id="table_efficiency"><tr><td><table><tr><th colspan="2" style="text-align:center">Standard efficiency factors</th></tr>
+			<tr><th>Scheduled cpu used (Tier-0, -1)</th><td>85%</td></tr>
+			<tr><th>Chaotic cpu used (Tier-2</th><td>70%</td></tr>
+			<tr><th>Disk utilisation</th><td>100%</td></tr>
+			<tr><th>Mass store utilisation</th><td>100%</td></tr>
+     </table></td></tr></table></td>
+ </tr>
+ <tr><td colspan="2">Please, report accounting data in the shaded cells and return the report to lcg.office@cern.ch</td></tr>
+ 
+ 
+ <tr><td colspan="5">
+ 
+ {% for my_table in my_page.tables %}
+		<table id="table_usage">
+		<tr>
+		 <th  rowspan="2" colspan="3" style="border-top:None;border-left:None">  {{ my_page.page_title }} </th>
+		  {% for my_date in my_page.dates %} 
+		    <th rowspan="2"> {{ my_date }} </th>
+		  {% endfor %}
+		     
+		 <th  colspan="4">aggregate year to date***</th>
+		</tr>
+		<tr> 
+		 <th >MoU pledge</th>
+		 <th>total usage</th>
+		 <th >% MoU</th>
+		 
+		</tr>
+		
+		
+		{% for b in my_table.table_blocks %}
+		       
+		   {% include "Accounting_Table_Block.html" with my_block=b %} 
+		{% endfor %}
+		
+		</table>
+ {%endfor %}
+  </td></tr>
+ 
+
+ 
+ </table>

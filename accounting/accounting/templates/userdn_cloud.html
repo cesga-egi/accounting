@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block description %}
+<div id="page_text" style="clear:both">
+This Restricted View allows {% if vo_admin %}VO Administrators{% elif site_admin %}Resource Center Administrators{% elif user_view %}Users{% endif %} to retrieve accounting data of their {%if vo_admin%}VO{% elif site_admin %}Resource Center{% elif user_view %}Jobs{% endif %}.
+
+The metric shown is <span id="metric_description">Total number of jobs</span>, grouped by <span id="inputY_description">Region</span> and <span id="inputX_description">Date</span>, <span id="vo_description">the official EGI VOs </span> are shown. <span id="LocalJobs_description"></span>
+</div>
+{% endblock %}
+{% block option %}{% if site %}"SITE"{% else %}"REGION"{% endif %}{% endblock %}
+{% block tree %}"cloud"{% endblock %}
+{% block inputMetric %} 
+<option class='' data-toggle='tooltip' data-title='Number of VMs'  data-dojo-props='position:['above']' data-content='Total number of Virtual Machines' value='vm_num'>Number of Virtual Machines</option>
+<option data-toggle='tooltip' data-title='Wall Hours' data-dojo-props='position:['above']' data-content='Wall Clock CPU hours' class='' value='sumelap'>Sum Wall hours (Elapsed time)</option> 
+<option data-toggle='tooltip' data-title='Monetary cost estimate' data-dojo-props='position:['above']' data-content='Monetary estimate in € of the cost incurred in the computation by the VMs ran in the period' class='' value='cost'>Monetary Cost</option>
+<option data-toggle='tooltip' data-title='Inbound Network Traffic' data-dojo-props='position:['above']' data-content='Aggregate number of bytes of all the packets received by the VMs executed in the period' class='' value='net_in'>Inbound Network Traffic</option>
+<option data-toggle='tooltip' data-title='Outbound Network Traffic' data-dojo-props='position:['above']' data-content='Aggregate number of bytes of all the packets sent by the VMs executed in the period' class='' value='net_out'>Outbound Network Traffic</option>
+<option data-toggle='tooltip' data-title='Memory Used' data-dojo-props='position:['above']' data-content='Aggregate in bytes of the physical RAM memory used by the VMs ran in the period' class='' value='mem'>Memory Used</option>
+<option data-toggle='tooltip' data-title='Disk Used' data-dojo-props='position:['above']' data-content='Aggregate in bytes of the accumulative physical disk space used by the VMs ran in the period' class='' value='disk'>Disk Used</option>
+{% endblock %}
+{% block display_funcs %}
+userdnlabel = function(str){ return '<div><span class="UserDN" style="font-size:smaller;text-decoration:none">' + str + '</span></div>';};
+{% if vo_admin %}
+sitelabel = function(str){ return '<b><a style="text-decoration:none" href="/{{role}}/cloud/site/' + str + '/' + state_url('VO') + '">' + str + '</a></b>';};
+ngilabel = function(str){ return '<b><a style="text-decoration:none" href="/{{role}}/cloud/ngi/' + str + '/' + state_url('SITE') + '">' + str + '</a></b>';};
+countrylabel = function(str){ return '<b><a style="text-decoration:none" href="/{{role}}/cloud/country/' + str + '/' + state_url('SITE') + '">' + str + '</a></b>';};
+{% endif %}
+{% endblock %}
+{% block XOptions %} 
+{% if vo_admin or site_admin %}
+<option data-title="User DN" value="UserDN" class="">User DN</option>
+{% endif %}
+<option data-title="User Role" value="UserRole" class="">User Role</option>
+<option data-title="Date" value="DATE" class="">Date</option>
+<option data-title="Year" value="Year" class="">Year</option>
+<option data-title="3M" value="3M" class="">Trimester</option>
+<option data-title="6M" value="6M" class="">Semester</option>
+{% if vo_admin or user_view %}
+<option value="COUNTRY" class="">Country</option>
+{% if site %}
+<option value="REGION" class="">NGI</option>
+<option data-title="Site" value="SITE" class="">Site</option>
+<option class="" selected="selected" value="VO">VO</option>
+{% elif ngi %}
+<option value="REGION" class="">NGI</option>
+<option data-title="Site" selected="selected" value="SITE" class="">Site</option>
+<option class="" value="VO">VO</option>
+{% else %}
+<option selected="selected" value="REGION" class="">NGI</option>
+<option data-title="Site" value="SITE" class="">Site</option>
+{% endif %}
+{% else %}
+<option class="" value="VO">VO</option>
+{% endif %}
+{% endblock %} 
+{% block YOptions %} 
+{% if vo_admin or site_admin %}
+<option data-title="User DN" value="UserDN" class="">User DN</option>
+{% endif %}
+<option data-title="User Role" value="UserRole" class="">User Role</option>
+<option data-title="Date" value="DATE" selected="selected" class="">Date</option>
+<option data-title="Year" value="Year" class="">Year</option>
+<option data-title="3M" value="3M" class="">Trimester</option>
+<option data-title="6M" value="6M" class="">Semester</option>
+{% if vo_admin or user_view %}
+<option value="REGION" class="">NGI</option>
+<option value="COUNTRY" class="">Country</option>
+<option data-title="Site" value="SITE" class="">Site</option>
+{% else %}
+<option class="" value="VO">VO</option>
+{% endif %}
+{% endblock %} 
+{% block title %}{% if vo_admin %}VO Admin Cloud Accounting{% elif site_admin %}Site Admin Cloud Accounting{% else %}Cloud User View{% endif %}{% endblock %}
+{% block first_level %}<a href="/{{role}}/cloud/" class="">{% if vo_admin%}Cloud VO Admin{% elif site_admin %}Cloud Site Admin{%else%}Cloud User View{%endif%}</a>{% endblock %}
+{% block second_level %}{% if site %}/ <a href="/{{role}}/cloud/site/{{site}}" class="">{{site}}</a>{% elif ngi %}/ <a href="/{{role}}/cloud/ngi/{{ngi}}" class="">{{ngi}}</a>{% elif country %}/ <a href="/{{role}}/cloud/country/{{country}}" class="">{{country}}</a>{% endif %}{% endblock %}
+{% block third_level %}{% endblock %}
+{% block remote_url %}{% if site_admin %}"{{SUPPORT_SERVER}}user/dn_data.php?&query="+query+"&option=SITE&optval="+site+"&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&role={{role}}&groupVO="+VOGroup+"&localJobs="+localJobs+"&tree="+tree{% elif site %}"{{SUPPORT_SERVER}}user/dn_data.php?&query="+query+"&option=SITE&optval={{site}}&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&role={{role}}&vo="+vo+"&groupVO="+VOGroup+"&localJobs="+localJobs+"&tree="+tree{% elif ngi %}"{{SUPPORT_SERVER}}user/dn_data.php?query="+query+"&option=ROC&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&role={{role}}&vo="+vo+"&groupVO="+VOGroup+"&localJobs="+localJobs+"&tree="+tree+"&optval={{ngi}}"{% elif country %}"{{SUPPORT_SERVER}}user/dn_data.php?query="+query+"&option=COUNTRY&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&vo="+vo+"&role={{role}}&groupVO="+VOGroup+"&localJobs="+localJobs+"&tree="+tree+"&optval={{country}}"{% else %}"{{SUPPORT_SERVER}}user/dn_data.php?query="+query+"&option="+option+"&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&vo="+vo+"&role={{role}}&groupVO="+VOGroup+"&localJobs="+localJobs+"&tree="+tree+"&optval="{% endif %}{% endblock %}

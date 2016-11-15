@@ -1,0 +1,7 @@
+{% extends "wlcg_reports.html" %}
+{% block description %}
+<div id="page_text" style="clear:both">The Discipline Accounting Report shows the accounting data of High Throughput Compute/Cloud Compute resource centers in the EGI infrastructure, aggregated by a user selection of scientific disciplines. The metrics included in the report are number of jobs, nomalised CPU and normalised elapsed time by VO in HTC and number of VMs and normalised elapsed CPU in Cloud.</div>
+{% endblock %}
+{% block title %}EGI Discipline Report{% endblock %}
+{% block report-url %}'{{SUPPORT_SERVER}}repdis.php?sYear='+sYear+'&sMonth='+sMonth+'&eYear='+eYear+'&eMonth='+eMonth+'&infra='+infra+'&Disciplines='+disciplines{% endblock %}
+{% block json-url %}'{{SUPPORT_SERVER}}repdis.php?sYear='+sYear+'&sMonth='+sMonth+'&eYear='+eYear+'&eMonth='+eMonth+'&infra='+infra+'&Disciplines='+disciplines+'&json=true{% endblock %}

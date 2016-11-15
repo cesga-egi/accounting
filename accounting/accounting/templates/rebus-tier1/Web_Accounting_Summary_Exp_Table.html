@@ -1,0 +1,20 @@
+ {% load humanize %}
+
+<div><h2> {{my_exp.name}} </h2></div>
+<table class="datatableH display">
+  <thead>
+    <tr>
+      <th id="mygrey"><div style="visibility:hidden">{{ my_exp.name }}</div></th><th id="mygrey">Elapsed HS06-hours * #cores</th><th id="mygrey">% of total</th><th id="mygrey">Disk TBytes</th><th id="mygrey">% of total </th><th id="mygrey">Tape TBytes</th><th id="mygrey">% of total  </th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for site in my_exp.sites %}
+        <tr><td align="center"   {% if site.name = 'Total' %} id="mygrey"  {% endif %} > {{site.name}}</td>
+        {% for v in site.values %}
+          <td align="center"  {% if site.name = 'Total' %} id="mygrey" {% endif %}  >{{ v|intcomma }}</td>
+        {%endfor%}
+        </tr>
+    {%endfor%}
+  </tbody>
+</table>
+

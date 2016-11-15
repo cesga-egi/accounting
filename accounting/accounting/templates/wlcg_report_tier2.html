@@ -1,0 +1,6 @@
+{% extends "wlcg_reports.html" %}
+{% block description %}
+<div id="page_text" style="clear:both">The WLCG Tier2 report covers the accounting activity of WLCG Tier2 sites on a given period.</div>
+{% endblock %}
+{% block title %}WLCG Tier 2 Report{% endblock %}
+{% block report-url %}'{{SUPPORT_SERVER}}reptier2.php?sYear='+sYear+'&sMonth='+sMonth+'&eYear='+eYear+'&eMonth='+eMonth{% endblock %}

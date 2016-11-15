@@ -1,0 +1,64 @@
+     <div style="float:left">
+       <h2>  
+         {{ v.0.centre }}  
+         <br>
+         {{ v.0.month }} 
+       </h2>
+     </div>
+     {% load humanize %}
+     <div style="float:right">
+       {%comment%} <a href="/wlcg/report/tier1/efficiency/" target="_blank">Show Standard Efficiency Factors</a>{%endcomment%}
+       <table  style="display:inline-table;"><tr><td><table class="pledge_table">
+          <!--   <tr><th colspan="2">MoU pledged</th></tr><tr><th></th><th>Apr 13 - Mar 14</th><th>Apr 14 - Mar 15</th></tr>-->
+         {% for row in v.0.pledges_table %}
+           <tr><th> {{row.title}} </th>
+            {% for cell in row.values %}
+               <td align="center">{{cell|intcomma}}</td>
+             {%endfor%}
+           </tr>
+         {% endfor %}
+       </table></td></tr></table>
+     </div>
+        <br> <br>  <br><br>
+
+   {% for cadaDic in v %}
+       {% for my_table in cadaDic.tables %}
+         <br> <div><h3>    {{ cadaDic.page_title }}</h3></div>
+         <table cellpadding="0" cellspacing="1" border="0" class="datatableH display">
+                <thead style="width: 100%;">
+                <tr>
+                  <th style="border-top:None;border-left:None" id="mygrey"> <div style="visibility:hidden">{{ cadaDic.page_title }}</div> </th>
+                  <!--  <th id="mygrey"> - </th>
+                  <th id="mygrey"> - </th> -->
+                  {% for my_date in cadaDic.dates %}
+                    <th id="mygrey"> {{ my_date }} </th>
+                  {% endfor %}
+                  <th id="mygrey">Total</th>
+                  <th id="mygrey">% MoU</th>
+                </tr>
+                </thead>
+                
+                <tbody>
+                  {% for my_block in my_table.table_blocks %}
+                    {% for row in my_block.rows %}
+                      {% for row_content in row.row_content %}
+                        <tr>
+                        {% if my_block.block_title = 'Total' or row.row_title = 'TOTAL' %}
+                          <td align="center" id="mygrey">{{my_block.block_title}} {{row.row_title}} {{row_content.row_title}}</td>
+                          {% for cell in row_content.row_content %}
+                            <td align="center" id="mygrey"> {{cell|intcomma}} </td>
+                          {% endfor %}
+                        {% else %}
+                          <td align="center">{{my_block.block_title}} {{row.row_title}} {{row_content.row_title}}</td>
+                          {% for cell in row_content.row_content %}
+                            <td align="center"> {{cell|intcomma}} </td>
+                          {% endfor %}
+                        {% endif %}
+                        </tr>
+                      {% endfor %}
+                    {% endfor %}
+                  {% endfor %}
+                </tbody>
+         </table>
+       {% endfor %}
+   {% endfor %}

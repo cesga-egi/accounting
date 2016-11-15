@@ -1,0 +1,89 @@
+
+/*table#table_usage tr td {
+	
+#	border-style: none solid solid;
+	border-collapse: collapse;
+}
+
+table#table_usage tr th {
+	
+	border-style: none solid solid;
+	border-collapse: collapse;
+}
+
+
+table#table_efficiency {
+	border: 0.5px solid black
+}
+table#table_efficiency th {
+	text-align: left;
+	border: None;
+}
+table#table_efficiency td {
+	text-align: right;
+	border: None;
+}
+
+table#table_pledges {
+	border: 0.5px solid black;
+}
+
+table#table_usage tr:nth-child(even) {background:  none repeat scroll 0 0 #ccffcc;}
+table#table_usage tr:nth-child(odd) {background: #FFF}
+*/
+
+.board {
+     border:1px solid #AAAAAA;
+     padding:0.2em;
+      -moz-border-radius:4px 4px 4px 4px;
+    }
+    .clear {
+      clear:both;
+      font-size:1px;
+      line-height:1px;
+      padding-top:10px;
+    }
+    .ui-tabs .ui-tabs-hide {  }
+    
+    
+    .filterTable { 
+/*	    background: none repeat scroll 0 0 #f7f7f7;
+    	border: 1px solid #666;    	
+    	font-size: small;
+    	overflow: auto;
+    	width: 940pt;*/
+    }
+    .filterTablePannel {
+    	
+    	border-right: 1px dashed #ddd;
+        margin-right: 15px;
+    	padding-left: 20px;
+    	padding-right: 25px;
+    	display: table-cell;
+    }
+    
+    .filterTable label {
+    display: inline-block;
+    vertical-align: top;
+    width: 90px;
+    }
+
+    .filterTable select  {
+
+    width: 200px;
+    }
+.selectMultiple {
+	height: 80px;
+ 	width: 100px;
+}
+.fieldwrapper {
+   display: inline-block;
+   vertical-align: top;
+   width: 400pt;
+}
+#SubmitButton {
+ width:940px;
+ height: 50px;
+}
+
+

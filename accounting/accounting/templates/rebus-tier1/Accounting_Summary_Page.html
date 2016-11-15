@@ -1,0 +1,53 @@
+
+
+
+
+<table style="-pdf-keep-with-next:false;page-break-after:always;"  >
+ <tr><td width="150px"><img alt="3d-WLCG-white.emf" src="/static/wlcg_logo.jpg" height="100"></td>
+ <td><h1>Accounting Summary</h1> 
+    <h2>{{ my_page.centre }} </h2>
+      </td>
+      <td><h2>January - December 2014</h2> </td> 
+  
+ <tr><td colspan="3">
+ 
+ <table id="table_usage">
+  <tr ><th rowspan="2">Site Summary</th><th colspan="2">HS06 Elapsed hours * #cores used in year to date </th><td rowspan="18" style="border:0.5px none black"/>
+  <th colspan="3">disk used in year to date</th><th colspan="4"> disk at end of period</th><td rowspan="18" style="border:0.5px none black"/>
+  <th colspan="3"> tape used in year to date</th><th colspan="4">tape at end of period</th></tr>
+  
+  
+ <tr><th>January-August</th><th> % of pledge</th>
+ <th>TByte-months</th><th> % of installed </th> <th> % of pledge </th><th>TBytes occupied</th><th>occupied as % of installed</th><th>occupied as % of pledge</th><th>installed as % of pledge </th>
+ <th>TByte-months</th><th> % of installed </th> <th> % of pledge </th><th>TBytes occupied</th><th>occupied as % of installed</th><th>occupied as % of pledge</th><th>installed as % of pledge </th>
+
+</tr> 
+ {% for site in my_page.sites %}
+  <tr><td> {{site.name}}</td>
+   {% for v in site.values %}
+    <td>{% autoescape off %}{{ v }}{% endautoescape %}</td>
+   {%endfor%}  
+  </tr>
+ {%endfor%}
+ </table>
+ <tr><td/><td style="border:0.5px single black">Colour coding of % columns: <font color="green">>90%</font> <font color="red">50%</font></td></tr>
+  </td></tr>
+ 
+ <tr>
+ <td>
+ <table>
+  <tr><th rowspan="2">VO Summary</th><th colspan="2">cpu</th><td rowspan="7"/><th colspan="2">disk occupancy</th><td rowspan="7"/><th colspan="2">tape occupancy</th></tr>
+<tr><th>Elapsed HS06-hours * #cores</th><th>% of total</th><th>TBytes at end of period </th><th>% of total</th><th>TBytes at end of period </th><th>% of total</th></tr>
+   {% for exp in my_page.experiments %}
+  <tr><td> {{exp.name}}</td>
+   {% for v in exp.values %}
+    <td>{{ v }}</td>
+   {%endfor%}  
+  </tr>
+ {%endfor%}
+ </table>
+ </td>
+ 
+ </tr>
+
+ </table>

@@ -1,0 +1,24 @@
+/* global css */
+/* Author: Lukasz Kokoszkiewicz [lukasz@kokoszkiewicz.com] */
+
+/* defines generic content elements */
+
+.spacer { height: 20px; clear: both; }
+
+/* BLOCK/content-main[text]=BEGIN */
+p { margin:0px 0px 10px 0px; text-align:justify; }     /* default paragraph style */
+.hl { font-weight:bold; color:#0C6DFF; }               /* highlight style */
+ul { color:#4C7898; }
+a { color:#0C6DFF; text-decoration:none; target:_self;}        /* default hyperlink style */
+a:hover { color:#66A3FF; text-decoration:underline; }          /* default hyperlink style */
+h2 { margin:0px; margin-bottom:10px; }
+/* BLOCK/content-main[text]=END */
+
+/* BLOCK/side-menu=BEGIN */
+.side-menu { float:right; width:150px; background-color:#DDDDDD; margin-left:10px; padding:1px; border:1px #83ABC8 solid; }
+.side-menu ul { list-style-type:none; margin:0px; padding:0px; }
+.side-menu li { background-color:#EEEEEE; border-bottom:1px #DDDDDD solid; padding-left:3px; line-height:1.2em; }
+.side-menu h2 { margin:0px; width:100%; background-color:#4C7898; font-size:14pt; color:white; text-align:center; }
+.side-menu a { text-decoration:none; font-weight:bold; color:#184262; font-size:9pt; }
+.side-menu a:hover { text-decoration:underline; }
+/* BLOCK/side-menu=END */

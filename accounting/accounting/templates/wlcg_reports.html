@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html"/>
+<link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'/>  
+<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'/>  
+<link rel="styleSheet" href="/static/dtree/dtree.css" type="text/css"/>
+<link rel="stylesheet" href="/static/dijit/themes/claro/claro.css" type="text/css"/>
+<link rel="stylesheet" href="/static/dojo/resources/dojo.css" type="text/css"/>
+<link rel="stylesheet" href="/static/dgrid/css/dgrid.css" type="text/css"/>
+<link rel="stylesheet" href="/static/dgrid/css/skins/sage.css" type="text/css"/>
+<link rel="stylesheet" href="/static/localgrid.css"/>
+<link rel="stylesheet" href="/static/bootstrap/dist/css/bootstrap.css"/>
+<link rel="stylesheet" href="/static/bootstrap-datepicker/dist/css/bootstrap-datepicker.css"/>
+<link rel="stylesheet" href="/static/dojox/charting/resources/Legend.css"/>
+<link href="/static/cbtree/themes/claro/claro.css" rel="stylesheet" type="text/css" />
+<link href="/static/cbtree/icons/cbtreeIcons.css" rel="stylesheet" type="text/css" />
+<link href="/static/cbtree/icons/fileIconsMS.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="/static/bstrap.css"/>
+<link href="/static/core/stylesheet.css" rel="stylesheet" type="text/css"/>
+<script src="/static/jspdf.debug.js"></script>
+<script src="/static/jspdf.plugin.autotable.js"></script>
+<script src="/static/dojo/dojo.js" data-dojo-config="async: true, isDebug: true, parseOnLoad: false, packages: [
+{ name: 'egi', location: '../', main: 'egi' },
+{ name: 'jquery', location: '../jquery/dist', main: 'jquery' },
+{ name: 'jquery-ui', location: '/static/jquery-ui', main: 'jquery-ui' },
+{ name: 'bootstrap', location: '../bootstrap/dist/js', main: 'bootstrap' },
+{ name: 'cbtree', location: '../cbtree'},
+{ name: 'bootstrap-datepicker', location: '../bootstrap-datepicker/dist/js', main: 'bootstrap-datepicker' }]"></script>
+<title></title>
+</head>
+<body class="claro" style="">
+<script>
+define.amd.jQuery = true;
+require(["jquery"], function ($) {
+require(["jquery-ui", "bootstrap", "bootstrap-datepicker", "cbtree/Tree", "cbtree/extensions/TreeStyling", "cbtree/store/ObjectStore", "cbtree/model/ForestStoreModel", "cbtree/model/TreeStoreModel", "cbtree/model/StoreModel-EXT", "dijit/Tooltip", "dijit/layout/ContentPane", "dojo/parser", "dojo/domReady!"],
+  function(jqueryui, bootstrap, datepicker, Tree, TreeStyling, ObjectStore, ForestStoreModel, TreeStoreModel, modelext, tooltip, contentpane, parser, domReady) {
+title='{% block title %}{% endblock %}';
+$('title').val(title);
+$('#page_title').replaceWith('<h4 class="" id="page_title" contenteditable="false" style="">'+title+'</h4>');
+var treeConfig = { model: null, id: "MenuTree", checkBoxes: true, branchCheckBox: true, branchReadOnly: false, 
+                   branchIcons: true, leafCheckBox: true, leafReadOnly: false, leafIcons: true, icon: null, showRoot: true};
+
+$('[data-toggle="popover"]').popover();
+function saveToPDF() {
+   var pdf = new jsPDF('l', 'pt', 'a4');
+   var res = pdf.autoTableHtmlToJson($('#reportTable')[0]);
+   pdf.text($('#report_title').text() + '             ' + $('#report_title_2').text(),20,20);
+   pdf.autoTable(res.columns, res.data, {tableWidth: 'wrap', styles: {font: "helvetica", overflow: 'linebreak', columnwidth: 'wrap'}, headerStyles: {rowHeight: 15, fontSize: 8}, bodyStyles: {fontSize: 8}});
+   pdf.save('sample-file.pdf');
+}
+
+
+{% if disciplines %}
+disciplines = '{{disciplines}}'
+disciplines_list = disciplines.split(';');
+{% endif %}
+
+function setup_controls() {
+var startDate = new Date('01/01/2004');
+var FromEndDate = new Date();
+var ToEndDate = new Date();
+ToEndDate.setDate(ToEndDate.getDate()+365);
+
+$('#from_date').datepicker({
+    
+    startView: "years",
+  minViewMode: "months",
+    format: 'MM yyyy',
+    orientation: 'bottom',
+    startDate: startDate,
+    endDate: FromEndDate, 
+    autoclose: true
+})
+    .on('changeDate', function(selected){
+        startDate = new Date(selected.date.valueOf());
+        startDate.setDate(startDate.getDate(new Date(selected.date.valueOf())));
+        $('.to_date').datepicker('setStartDate', startDate);
+    }); 
+$('#to_date').datepicker({
+        viewMode: 'years',
+        minViewMode: "months",
+        format: 'MM yyyy',
+        orientation: 'bottom',
+        startDate: startDate,
+        endDate: FromEndDate,
+        autoclose: true
+    })
+    .on('changeDate', function(selected){
+        FromEndDate = new Date(selected.date.valueOf());
+        FromEndDate.setDate(FromEndDate.getDate(new Date(selected.date.valueOf())));
+        $('.from_date').datepicker('setEndDate', FromEndDate);
+    });
+
+$('#from_date').datepicker("update", new Date(new Date().getFullYear(), 0));
+$('#to_date').datepicker("update", new Date(new Date().getFullYear(), new Date().getMonth()));
+{% if sMonth and sYear %}
+$('#from_date').datepicker("update", new Date({{sYear}}, {{sMonth}}-1));
+{% endif %}
+{% if eMonth and eYear %}
+$('#to_date').datepicker("update", new Date({{eYear}}, {{eMonth}}-1));
+{% endif %}
+{% if query %}
+$('#inputMetric').val('{{query}}');
+function metric_help_set() {
+   content= $( "#inputMetric option:selected" ).attr('data-content');
+   $('#metric_help').attr("data-content",content); 
+   $('#metric_help').data('bs.popover').options.content = content;
+   $('#metric_help').data('bs.popover').tip().find('.popover-content').html(content); 
+}
+$('#inputMetric').change(metric_help_set);
+metric_help_set();
+{% endif %}
+{% if report %}
+$('#report').val('{{report}}');
+function report_help_set() {
+   content= $( "#report option:selected" ).attr('data-content');
+   $('#report_help').attr("data-content",content); 
+   $('#report_help').data('bs.popover').options.content = content;
+   $('#report_help').data('bs.popover').tip().find('.popover-content').html(content); 
+}
+$('#report').change(report_help_set);
+report_help_set();
+{% endif %}
+{% if infra %}
+$('#infra').val('{{infra}}');
+function infra_help_set() {
+   content= $( "#infra option:selected" ).attr('data-content');
+   $('#infra_help').attr("data-content",content); 
+   $('#infra_help').data('bs.popover').options.content = content;
+   $('#infra_help').data('bs.popover').tip().find('.popover-content').html(content); 
+}
+$('#infra').change(infra_help_set);
+infra_help_set();
+{% endif %}
+$('#update').on('click', function(event){load_report();});
+$('#PDF').on('click', function(event){saveToPDF();});
+parser.parse();
+}
+$('#disciplines_menu').load('{{SUPPORT_SERVER}}discipline_tree.php');
+$('#ngis_menu').load('{{SUPPORT_SERVER}}ngi_tree.php');
+$('#cloud_menu').load('{{SUPPORT_SERVER}}cloud_tree.php');
+$('#tiers_menu').load('{{SUPPORT_SERVER}}tiers_tree.php');
+$("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+
+setup_controls();
+load_report();
+
+function load_report() {
+var from_date = $('#from_date').datepicker("getDate");
+var to_date = $('#to_date').datepicker("getDate");
+var sYear = from_date.getFullYear();
+var sMonth = from_date.getMonth()+1;
+var eYear = to_date.getFullYear();
+var eMonth = to_date.getMonth()+1;
+{% if disciplines %}
+disciplines_checked_list = [];
+$.each($('#checkBoxTree input[type="checkbox"][aria-checked="true"]'), function() {
+   disciplines_checked_list.push(this.value);
+  }
+);
+if (disciplines_checked_list.length) {disciplines_list = disciplines_checked_list;}
+disciplines = encodeURIComponent(disciplines_list.join(';'));
+var infra = $('#infra').val();
+var st = sYear + '/' + sMonth + '/' + eYear + '/' + eMonth + '/' + infra + '/' + disciplines + '/';
+{% elif query %}
+var query = $('#inputMetric').val();
+var st = query + '/' + sYear + '/' + sMonth + '/' + eYear + '/' + eMonth;
+{% elif report %}
+var report = $('#report').val();
+var infra = $('#infra').val();
+var st = sYear + '/' + sMonth + '/' + eYear + '/' + eMonth + '/' + report + '/' + infra;
+{% else %}
+var st = sYear + '/' + sMonth + '/' + eYear + '/' + eMonth;
+{% endif %}
+$("#report-wrapper").load({%block report-url %}{% endblock %});
+var new_url = '/{{url}}' + st; 
+history.pushState(new_url, "", new_url);
+}
+
+function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
+    var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
+    
+    var CSV = '';    
+    var from_date = $('#from_date').datepicker("getDate");
+    var to_date = $('#to_date').datepicker("getDate");
+    CSV += $('#subtitle').text().replace(/&mdash;/g,"--") + '\r\n' + 'From ' + $.datepicker.formatDate('MM yy', from_date) + ' to ' + $.datepicker.formatDate('MM yy', to_date) + '\r\n\n';
+    if (ShowLabel) {
+        var row = "";
+        row += $('#inputX').val() + ',';
+        for (var index in arrData[0]) {
+         if (index != 'id') row += index + ',' 
+        }
+        row = row.slice(0, -1);
+        CSV += row + '\r\n';
+    }
+    
+    for (var i = 0; i < arrData.length; i++) {
+        var row = "";
+        if (arrData[i]['id'] != 'xlegend' && arrData[i]['id'] != 'ylegend' && arrData[i]['id'] != 'var') {
+        row += '"' + arrData[i]['id'] + '",';
+        for (var index in arrData[i]) 
+           if (index != 'id') 
+              row += '"' + arrData[i][index] + '",';
+        row.slice(0, row.length - 1);
+        CSV += row + '\r\n';
+        }
+    }
+
+    if (CSV == '') {        
+        alert("No accounting");
+        return;
+    }   
+    
+    var fileName = $('#subtitle').text().replace(/ /g,"_").replace(/&mdash;/g,"--");   
+    
+    var link = document.createElement("a");    
+    var uri = 'data:text/csv;charset=utf-8,' + escape(CSV);
+    link.href = uri;
+    
+    link.style = "visibility:hidden";
+    link.download = fileName + ".csv";
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+};
+
+      });
+  });
+</script>
+<div class='wrap'>
+
+<!-- Wrap all page content here -->
+<div id="wrapper" class="">
+    <!-- Sidebar -->
+    <!-- /#sidebar-wrapper -->
+    <!-- Fixed navbar -->
+    <div id="page-content-wrapper" style="width=100%;margin-left:0; margin-right:0;" class="">
+        {% include "navbar.html" %}
+        <div class="c" style="width=100%;margin:0;padding-left:1em; padding-right:1em;">
+<div style="float: right; margin-top: -20px;">
+        <img src="/static/AcctPortal_egi_ack.png" width="600" height="64" border="0" usemap="#map" />
+<map name="map">
+<area shape="rect" coords="309,32,432,49" href="http://go.egi.eu/eng"></area>
+</map>
+</div>
+            <div class="page-header" style="width: 100%">
+             <div>
+                 <h4 id="page_title" contenteditable="false" style="display:block; "></h4>
+            </div>
+            </div>
+            <div id="form">
+            <form id='main_form' class="form form-horizontal center-block" style="margin:auto">
+      <div class="form-group">
+             {% if query %}
+                  <div class="col-xs-4">
+                    <label for="inputMetric" class="control-label">Metric: </label>
+                  <div class="input-group">
+                    <select id="inputMetric" data-toggle="tooltip" title="Metric used for the accounting" data-dojo-props="position:['above']" placeholder="Select Metric" class="form-control col-xs-2">
+                        <option class='' data-toggle='tooltip' data-title='Number of jobs'  data-dojo-props='position:['above']' data-content='Total number of jobs' selected="selected" value='njobs'>Number of jobs</option>
+                        <option class='' data-toggle='tooltip' data-title='Normalized CPU Hours'  data-dojo-props='position:['above']' data-content='Raw CPU hours normalized with the HEPSPEC06 benchmark' value='normcpu'>Normalized Sum CPU</option> 
+                        <option data-toggle='tooltip' data-title='Unnormalized CPU Hours' data-dojo-props='position:['above']' data-content='Raw CPU hours that are not normalized to a common benchmark' class='' value='sumcpu'>Sum CPU</option> 
+                        <option data-toggle='tooltip' data-title='Normalized Wall Hours' data-dojo-props='position:['above']' data-content='Wall Clock CPU hours normalized with the HEPSPEC06 benchmark' class='' value='normelap'>Normalized Sum Elapsed</option> 
+                        <option data-toggle='tooltip' data-title='Normalized Wall Hours * Number of Processors' data-dojo-props='position:['above']' data-content='Wall Clock CPU hours normalized with the HEPSPEC06 benchmark * Number of Processors' class='' value='normelap_processors'>Normalized Sum Elapsed * Number of Processors</option> 
+                        <option data-toggle='tooltip' data-title='Wall Hours * Number of Processors' data-dojo-props='position:['above']' data-content='Wall Clock CPU hours * Number of Processors' class='' value='elap_processors'>Sum Elapsed * Number of Processors</option> 
+                        <option data-toggle='tooltip' data-title='Unnormalized Wall CPU Hours' data-dojo-props='position:['above']' data-content='Wall clock CPU hours that are not normalized to a common benchmark' class='' value='sumelap'>Sum Elapsed</option>
+                    </select>
+                    <span class="input-group-btn"><a id="metric_help" class="btn btn-default" data-toggle="popover" title="Metric Description"><i class="glyphicon glyphicon-question-sign"></i></a></span>
+                  </div>
+                  </div>
+                  {% endif %}
+             {% if report %}
+                  <div class="col-xs-2">
+                    <label for="report" class="control-label">Report type: </label>
+                    <div class="input-group">
+                    <select id="report" data-toggle="tooltip" title="Type of report" data-dojo-props="position:['above']" placeholder="Select Type of Report" class="form-control col-xs-2">
+                        <option class='' data-toggle='tooltip' data-title='By Country' data-dojo-props='position:['above']' data-content='Shows each country and the sites inside it alphabetically.' selected="selected" value='byCountry'>By Country</option>
+                        <option class='' data-toggle='tooltip' data-title='By Site' data-dojo-props='position:['above']' data-content='Shows sites alphabetically with the country they belong to.' selected="selected" value='bySite'>By Site</option>
+                        <option class='' data-toggle='tooltip' data-title='Top 100' data-dojo-props='position:['above']' data-content='Shows Top 100 sites by Normalised CPU Duration comsumption.' selected="selected" value='top100'>Top 100</option>
+                        <option class='' data-toggle='tooltip' data-title='Top 10' data-dojo-props='position:['above']' data-content='Shows Top 10 sites by Normalised CPU Duration comsumption.' selected="selected" value='top10'>Top 10</option>
+                    </select>
+                    <span class="input-group-btn"><a id="report_help" class="btn btn-default" data-toggle="popover" title="Report Type Description"><i class="glyphicon glyphicon-question-sign"></i></a></span>
+                  </div>
+                  </div>
+                  {% endif %}
+             {% if infra %}
+                  <div class="col-xs-2">
+                    <label for="infra" class="control-label">Infrastructure: </label>
+                    <div class="input-group">
+                    <select id="infra" data-toggle="tooltip" title="Type of infra" data-dojo-props="position:['above']" placeholder="Select Type of Infrastructure" class="form-control col-xs-2">
+                        <option class='' data-toggle='tooltip' data-title='HTC' data-dojo-props='position:['above']' data-content='High Throughput Computing Infrastructure' selected="selected" value='htc'>HTC</option>
+                        <option class='' data-toggle='tooltip' data-title='Cloud' data-dojo-props='position:['above']' data-content='Federated Cloud Infrastructure' selected="selected" value='cloud'>Cloud</option>
+                    </select>
+                    <span class="input-group-btn"><a id="infra_help" class="btn btn-default" data-toggle="popover" title="Infrastructure Description"><i class="glyphicon glyphicon-question-sign"></i></a></span>
+                  </div>
+                  </div>
+                  {% endif %}
+                  <div class="col-xs-2">
+                    <label for="from_date" class="control-label">Start Time:</label>
+                    <div class="input-group">
+                    <input type="text" class="form-control col-xs-2" id="from_date" placeholder="Select start date" contenteditable="false">
+                    <span class="input-group-btn"><a class="btn btn-default" data-toggle="popover" title="Description" data-content="Define the start of the time period of your query."><i class="glyphicon glyphicon-question-sign"></i></a></span>
+                  </div>
+                  </div>
+             
+                  <div class="col-xs-2">
+                    <label for="to_date" class="control-label">End Time:</label>
+                    <div class="input-group">
+                    <input type="text" class="form-control col-xs-2" id="to_date" placeholder="Select end date" contenteditable="false">
+                       <span class="input-group-btn"><a class="btn btn-default" data-toggle="popover" title="Description" data-content="Define the end of the time period of your query."><i class="glyphicon glyphicon-question-sign"></i></a></span>
+                  </div>
+                  </div>
+                  <div class="col-xs-2">
+                     <button id="update" data-toggle="tooltip" title="Update" type="button" class="btn btn-default" style = "margin-top: 26px" aria-label="Left Align">
+                        <span class="">Update</span> 
+<!--<h1>{{site}}</h1>-->
+                     </button>
+                     {% if tier2 %}
+                     <button id="PDF" data-toggle="tooltip" title="Update" type="button" class="btn btn-default" style = "margin-top: 26px" aria-label="Left Align">
+                        <span class="">Save to PDF</span> 
+<!--<h1>{{site}}</h1>-->
+                     </button>
+                     {% endif %}
+                  </div>
+       </div>
+      {% if disciplines %}
+      <div class="form-group">
+      <div class="col-xs-12">
+      <div data-dojo-id="commonStore" data-dojo-type="cbtree/store/ObjectStore" data-dojo-props="idProperty: 'name', url: '{{SUPPORT_SERVER}}discipline_tree_json.php?seldisc={{disciplines}}'"></div>
+      <div data-dojo-id="commonModel" data-dojo-type="cbtree/model/ForestStoreModel" data-dojo-props='store:commonStore, checkedAll: true, checkedAttr: "checked", query: {type: "discipline_1"}, rootLabel: "Disciplines", checkedRoot: true'></div>
+      <div data-dojo-type="dijit/layout/ContentPane" style="height:80%; overflow: auto;" data-dojo-props="title:'CheckBox Tree (default style)'">
+            <div data-dojo-type="cbtree/Tree" style="width:300px; height: 300px;" data-dojo-props="id:'checkBoxTree', model: commonModel, autoExpand:false"></div>
+      </div>
+      </div>
+      </div>
+      {% endif %}
+<br/>
+              </form>
+    
+{%block description%}{%endblock%}
+{%block disclaimer%}{%endblock%}
+<span id="info"></span>
+<div class="claro">
+<div id="report-wrapper"></div>
+</div>
+
+</body>
