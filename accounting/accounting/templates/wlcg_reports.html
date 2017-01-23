@@ -41,12 +41,55 @@ $('#page_title').replaceWith('<h4 class="" id="page_title" contenteditable="fals
 var treeConfig = { model: null, id: "MenuTree", checkBoxes: true, branchCheckBox: true, branchReadOnly: false, 
                    branchIcons: true, leafCheckBox: true, leafReadOnly: false, leafIcons: true, icon: null, showRoot: true};
 
+var pdf = new jsPDF('l', 'pt', 'a4');
+totalRows=[];
 $('[data-toggle="popover"]').popover();
+$('body').on('click', function (e) {
+    $('[data-toggle=popover]').each(function () {
+        // hide any open popovers when the anywhere else in the body is clicked
+        if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+            $(this).popover('hide');
+        }
+    });
+});
+//Destroy popovers when another one is shown
+$('body').popover({
+                selector: '[rel=popover]',
+                trigger: "click"
+            }).on("show.bs.popover", function(e){
+                // hide all other popovers
+                $("[rel=popover]").not(e.target).popover("destroy");
+                $(".popover").remove();                    
+            });
+
+var cellFunction = function (my_cell, my_info) {
+        var totaloffset = 0;
+	if (my_cell.raw.indexOf('Total Wallclock')>-1 || my_cell.raw.indexOf('TOTAL')>-1){
+	   totalRows.push(my_info.row.index);
+	} 	    	
+           if (totalRows.indexOf(my_info.row.index)>-1){
+	           totaloffset=80;
+	  } 
+	pdf.setFillColor(my_info.row.index % 2 === 0 ? 245-totaloffset : 255-totaloffset);
+};	    
 function saveToPDF() {
-   var pdf = new jsPDF('l', 'pt', 'a4');
    var res = pdf.autoTableHtmlToJson($('#reportTable')[0]);
    pdf.text($('#report_title').text() + '             ' + $('#report_title_2').text(),20,20);
-   pdf.autoTable(res.columns, res.data, {tableWidth: 'wrap', styles: {font: "helvetica", overflow: 'linebreak', columnwidth: 'wrap'}, headerStyles: {rowHeight: 15, fontSize: 8}, bodyStyles: {fontSize: 8}});
+   pdf.autoTable(res.columns, res.data, {tableWidth: 'auto', styles: {font: "helvetica", overflow: 'linebreak'}, headerStyles: {rowHeight: 14, fontSize: 6}, columnStyles: {0: {columnWidth:70}, 1: {columnWidth:90}, 4: {columnWidth:110}}, bodyStyles: {fontSize: 6}, drawCell: cellFunction});
+   var notesText={'cpu':[
+	                      {'Notes':'* Wallclock work in HEPSPEC06 Hours/Days', ' ':'Sum of wallclock time used by jobs submitted locally as reported by the batch system during the referenced month multiplied by benchmarked HEPSPEC06 of the CPU resource and by number of processors.'},
+	                      {'Notes':'** Pledged Power (HEPSPEC06)', ' ':'MoU CPU power pledge for a given federation expressed in HEPSPEC06 and averaged over a reference period'},
+	                      {'Notes':'*** Pledged Wallclock Work in HEPSPEC06 hours/days', ' ':'Average MoU CPU power pledge for a given federation multiplied by reference period duration expressed in the selected time units (hours or days).'},
+                              {'Notes':'**** Delivered Power (HEPSPEC06)', ' ':'Total Wallclock Work divided by reference period duration expressed in the selected time units (hours or days)'},
+	                      ]};
+
+   pdf.autoTable([{'title':'Notes', 'key':'Notes'}, {'title':' ', 'key':' ' }], 
+    		  notesText['cpu'],
+    		  { margin: {right: 170, left: 5, top: 477, bottom: 0},
+        	 styles: { startY: true, cellPadding:1 ,fontSize: 6, rowHeight: 10,  //renderHeaderCell: headerFunction, 
+        	overflow: 'visible', columnWidth: 'wrap'},
+                 columnStyles: {1: {columnWidth:30}, 2: {columnWidth: 'auto'}}
+        });    	
    pdf.save('sample-file.pdf');
 }
 
@@ -92,8 +135,21 @@ $('#to_date').datepicker({
         $('.from_date').datepicker('setEndDate', FromEndDate);
     });
 
+{% if infra %}
+var end_month = new Date().getMonth();
+var end_year = new Date().getFullYear();
+$('#from_date').datepicker("update", new Date(end_year - 1, end_month));
+if (end_month) {
+        end_month--;
+} else {
+        end_month = 11;
+        end_year--;
+}
+$('#to_date').datepicker("update", new Date(end_year, end_month));
+{% else %}
 $('#from_date').datepicker("update", new Date(new Date().getFullYear(), 0));
 $('#to_date').datepicker("update", new Date(new Date().getFullYear(), new Date().getMonth()));
+{% endif %}
 {% if sMonth and sYear %}
 $('#from_date').datepicker("update", new Date({{sYear}}, {{sMonth}}-1));
 {% endif %}
@@ -110,6 +166,13 @@ function metric_help_set() {
 }
 $('#inputMetric').change(metric_help_set);
 metric_help_set();
+{% endif %}
+{% if day_used %}
+if ('{{days}}' == 'days') {
+   $('#day').prop('checked', true);
+} else {
+   $('#day').prop('checked', false);
+}
 {% endif %}
 {% if report %}
 $('#report').val('{{report}}');
@@ -156,7 +219,11 @@ var sYear = from_date.getFullYear();
 var sMonth = from_date.getMonth()+1;
 var eYear = to_date.getFullYear();
 var eMonth = to_date.getMonth()+1;
-{% if disciplines %}
+{% if day_used %}
+var days = $('#day').is(':checked');
+var days_str = (days)?'days':'hours';
+var st = sYear + '/' + sMonth + '/' + eYear + '/' + eMonth + '/' + days_str + '/';
+{% elif disciplines %}
 disciplines_checked_list = [];
 $.each($('#checkBoxTree input[type="checkbox"][aria-checked="true"]'), function() {
    disciplines_checked_list.push(this.value);
@@ -240,7 +307,11 @@ function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
     <!-- /#sidebar-wrapper -->
     <!-- Fixed navbar -->
     <div id="page-content-wrapper" style="width=100%;margin-left:0; margin-right:0;" class="">
+        {% if wlcg %}
+        {% include "navbar_wlcg.html" %}
+        {% else %}
         {% include "navbar.html" %}
+        {% endif %}
         <div class="c" style="width=100%;margin:0;padding-left:1em; padding-right:1em;">
 <div style="float: right; margin-top: -20px;">
         <img src="/static/AcctPortal_egi_ack.png" width="600" height="64" border="0" usemap="#map" />
@@ -278,10 +349,11 @@ function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
                     <label for="report" class="control-label">Report type: </label>
                     <div class="input-group">
                     <select id="report" data-toggle="tooltip" title="Type of report" data-dojo-props="position:['above']" placeholder="Select Type of Report" class="form-control col-xs-2">
-                        <option class='' data-toggle='tooltip' data-title='By Country' data-dojo-props='position:['above']' data-content='Shows each country and the sites inside it alphabetically.' selected="selected" value='byCountry'>By Country</option>
-                        <option class='' data-toggle='tooltip' data-title='By Site' data-dojo-props='position:['above']' data-content='Shows sites alphabetically with the country they belong to.' selected="selected" value='bySite'>By Site</option>
-                        <option class='' data-toggle='tooltip' data-title='Top 100' data-dojo-props='position:['above']' data-content='Shows Top 100 sites by Normalised CPU Duration comsumption.' selected="selected" value='top100'>Top 100</option>
-                        <option class='' data-toggle='tooltip' data-title='Top 10' data-dojo-props='position:['above']' data-content='Shows Top 10 sites by Normalised CPU Duration comsumption.' selected="selected" value='top10'>Top 10</option>
+                        <option class='' data-toggle='tooltip' data-title='By Country' data-dojo-props='position:['above']' data-content='Shows each country and the Resource Centres inside it alphabetically.' selected="selected" value='byCountry'>By Country</option>
+                       <!-- <option class='' data-toggle='tooltip' data-title='By Operations Centre' data-dojo-props='position:['above']' data-content='Shows Resource Centres alphabetically with the Operations Centre they belong to.' selected="selected" value='byOC'>By Operations Centre</option>-->
+                        <option class='' data-toggle='tooltip' data-title='All RCs' data-dojo-props='position:['above']' data-content='Shows All Resource Centres ordered Alphabetically.' selected="selected" value='allRC'>All RCs</option>
+                        <option class='' data-toggle='tooltip' data-title='Top 100' data-dojo-props='position:['above']' data-content='Shows Top 100 Resource Centres by Normalised CPU Duration comsumption.' selected="selected" value='top100'>Top 100</option>
+                        <option class='' data-toggle='tooltip' data-title='Top 10' data-dojo-props='position:['above']' data-content='Shows Top 10 Resource Centres by Normalised CPU Duration comsumption.' selected="selected" value='top10'>Top 10</option>
                     </select>
                     <span class="input-group-btn"><a id="report_help" class="btn btn-default" data-toggle="popover" title="Report Type Description"><i class="glyphicon glyphicon-question-sign"></i></a></span>
                   </div>
@@ -314,7 +386,16 @@ function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
                        <span class="input-group-btn"><a class="btn btn-default" data-toggle="popover" title="Description" data-content="Define the end of the time period of your query."><i class="glyphicon glyphicon-question-sign"></i></a></span>
                   </div>
                   </div>
+      {% if day_used %}
                   <div class="col-xs-2">
+         <label for="day" class="control-label"></label>
+	<div class="input-group" style="margin-top: 1em"><font type="bold">Metric in HS06 days instead of hours </font>
+	      {%if days %}<input type="checkbox"  id='day' checked="true" />
+	      {%else%}<input type="checkbox"  id='day' />
+	      {%endif%}
+	</div>
+      </div>
+      {% endif %}
                      <button id="update" data-toggle="tooltip" title="Update" type="button" class="btn btn-default" style = "margin-top: 26px" aria-label="Left Align">
                         <span class="">Update</span> 
 <!--<h1>{{site}}</h1>-->
@@ -325,7 +406,6 @@ function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
 <!--<h1>{{site}}</h1>-->
                      </button>
                      {% endif %}
-                  </div>
        </div>
       {% if disciplines %}
       <div class="form-group">

@@ -34,7 +34,7 @@
                     <th id="mygrey"> {{ my_date }} </th>
                   {% endfor %}
                   <th id="mygrey">Total</th>
-                  <th id="mygrey">% MoU</th>
+                  <th id="mygrey">% MoU ****</th>
                 </tr>
                 </thead>
                 
@@ -43,7 +43,7 @@
                     {% for row in my_block.rows %}
                       {% for row_content in row.row_content %}
                         <tr>
-                        {% if my_block.block_title = 'Total' or row.row_title = 'TOTAL' %}
+                        {% if my_block.block_title = 'Total' or my_block.block_title = 'TOTAL' or 'TOTAL' in row.row_title %}
                           <td align="center" id="mygrey">{{my_block.block_title}} {{row.row_title}} {{row_content.row_title}}</td>
                           {% for cell in row_content.row_content %}
                             <td align="center" id="mygrey"> {{cell|intcomma}} </td>

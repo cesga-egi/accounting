@@ -10,18 +10,22 @@
 }
 
 .dgrid-cell {
-        width: 100px;
+        min-width: 2em;
         text-align: right;
+//        padding-right: 1em;
+//        padding-left: 1em;
 }
 
 
 .field-id, .dgrid-column-set-0 {
-        width: 160px;
+        min-width: 2em;
         text-align: left;
 }
 .sage .dgrid-header th {
         text-transform: none;
-        text-align: center;
+        text-align: right;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
 }
 .dgrid-header {
         right: 0px;
@@ -36,14 +40,14 @@
         width: 74%;
 }*/
 .dgrid-column-set-2 {
-        width: 210px;
+        min-width: 21px;
 }
 
 .field-Total {
-        width: 150px;
+        min-width: 15px;
 }
 .field-Percent {
-        width: 150px;
+        min-width: 15px;
 }
 .dgrid-column-set-1 .field-name {
         /* When rendered within the column set, simply fit the column set */

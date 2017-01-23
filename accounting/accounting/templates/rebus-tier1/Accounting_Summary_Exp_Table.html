@@ -3,7 +3,7 @@
  <table id="table_usage">
   <tr><th rowspan="2"> {{ my_exp.name }}</th><th colspan="2">cpu</th><td rowspan="17"/>
       <th colspan="2">disk occupancy</th><td rowspan="17"/><th colspan="2">tape occupancy</th></tr>
-<tr><th>Elapsed HS06-hours * #cores</th><th>% of total</th><th>Disk TBytes</th><th>% of total</th><th>Tape TBytes</th><th>% of total </th></tr>
+<tr><th data-placement="right" data-toggle="tooltip" title="Same as 'Normalized sum elapsed * Number of Processors'. Defined as wallclock time as reported by the batch system, normalized by benchmarked HEPSPEC06 power of a given CPU resource and multiplied by number of processors.">Wallclock Work</th><th>% of total</th><th>Disk TBytes</th><th>% of total</th><th>Tape TBytes</th><th>% of total </th></tr>
    {% for site in my_exp.sites %}
   <tr><td> {{site.name}}</td>
    {% for v in site.values %}

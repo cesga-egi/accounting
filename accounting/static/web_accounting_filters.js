@@ -18,14 +18,14 @@ function getSelectValues(select) {
 //
 function setDefaultValues(){
 	if (document.getElementById('monthsSelect').value=="")
-		document.getElementById('monthsSelect').value=12;
+		document.getElementById('monthsSelect').value=11;
 	if (document.getElementById('fromSelect').value=="") {
 		var monthNames = ["January", "February", "March", "April", "May", "June",
 		                  "July", "August", "September", "October", "November", "December"
 		                ];
 		var d = new Date();
 		//Set the default date to one year ago
-		document.getElementById('fromSelect').value=monthNames[d.getMonth()] + " " + (d.getYear()+1899).toString();
+		document.getElementById('fromSelect').value="January" + " " + (d.getYear()+1900).toString();
 		$('.selectMultiple option').each(function (index2){
 			this.selected='selected';
 		});
@@ -50,9 +50,32 @@ function getUrlParameter(sParam)
     }
 } 
 
+function addMonths(dateObj, num) {
+
+    var currentMonth = dateObj.getMonth() + dateObj.getFullYear() * 12;
+    dateObj.setMonth(dateObj.getMonth() + num);
+    var diff = dateObj.getMonth() + dateObj.getFullYear() * 12 - currentMonth;
+
+    // If don't get the right number, set date to 
+    //     // last day of previous month
+             if (diff != num) {
+                dateObj.setDate(0);
+             } 
+            return dateObj;
+    }
+
+
 function checkData(){    
-    var from = document.getElementById('fromSelect').value;
+    var from = $('#fromSelect').val();
     var months = parseInt(document.getElementById('monthsSelect').value);
+    var fromDate = new Date(from)
+    var toDate = addMonths(fromDate, months)
+    var lastMonth = new Date()
+    lastMonth.setMonth(lastMonth.getMonth());
+    if (toDate > lastMonth) {
+    	alert("End Date of the report is invalid");
+    	return false;
+    }
     if (isNaN(months)){
     	alert("The number of months is not a number!");
     	return false;
@@ -69,6 +92,8 @@ function checkData(){
     	url +='&accsum=1';
     if (document.getElementById('expCheck').checked)
     	url +='&expsum=1';
+    if (document.getElementById('daysCheck').checked)
+    	url +='&metricdays=1';
     
     window.location.href = url;
   }; 
@@ -159,6 +184,24 @@ function getReportDates(){
 
 function createTemplatePage(doc, siteName,  headerFunction, tabName, notes, pageNumber, summary){
 	
+	       var totalRows=[];
+
+	    var cellFunction = function (my_cell, my_info) {
+	    	if (my_cell.raw.indexOf('Total')>-1 || my_cell.raw.indexOf('TOTAL')>-1){
+	    		//alert("DOING A TOTAL ROW" + value);
+    		     totalRows.push(my_info.row.index);
+	    	}
+	    	var totaloffset=0;
+	    	
+	    	if (totalRows.indexOf(my_info.row.index)>-1){
+	    	  //alert("PUTTING A SPECIAL COLOR");
+	    	   totaloffset=30;
+	    	} 
+	    	if (my_info.column.dataKey.indexOf('MoU')>-1 || my_info.column.dataKey.indexOf('Total')>-1)
+	    		totaloffset+=30;
+
+	    	doc.setFillColor(my_info.row.index % 2 === 0 ? 245-totaloffset : 255-totaloffset);
+	    };	    
     doc.addPage();
     doc.addImage('wlcg_logo', 5, 5, 30, 30); // use the cached image
 
@@ -188,39 +231,39 @@ function createTemplatePage(doc, siteName,  headerFunction, tabName, notes, page
 	doc.setTextColor(100);
 	//doc.text(45, 30, 'Please report accounting data in the shaded cells and return the report to lcg.office@cern.ch');
 	var notesText={'cpu':[
-	                      {'Notes':'* MoU pledge', ' ':'pledge in MoU for HEPSEPC06-days of cpu time for month (includes efficiency factor)'},
-	                      {'Notes':'** installed capacity', ' ':'capacity installed (HEPSPEC06)'},
-	                      {'Notes':'*** cpu usage as % installed', ' ':'includes efficiency factor'},
-                              {'Notes':'**** Total', ' ':'HEPSEPC06-days delivered'},
-
+	                      {'Notes':'* Local Wallclock Work', ' ':'Sum of wallclock time used by jobs submitted locally as reported by the batch system during the referenced month multiplied by benchmarked HEPSPEC06 of the CPU resource and by number of processors.'},
+	                      {'Notes':'** Global Wallclock Work', ' ':'Sum of wallclock time used by jobs submitted to the distributed infrastructure as reported by the batch system during the referenced month multiplied by benchmarked HEPSPEC06 of the CPU resource and by number of processors.'},
+	                      {'Notes':'*** MoU pledge', ' ':'MoU CPU Pledge for a given month in HEPSEPC06 hours or days depending on the selected unit'},
+                              {'Notes':'**** MoU%', ' ':'Total Wallclock work during referenced period as % of MoU CPU pledge for the same period'},
 	                      ],
 			   'disk':[   {'Notes':' ', ' ':'Space used/allocated at end of the calendar month'},
-	                      {'Notes':'* MoU pledge', ' ':'pledge in MoU for data storage (includes efficiency factors for space used)'},
-	                      {'Notes':'** installed capacity', ' ':'capacity installed (TB)'},
-	                      {'Notes':'*** disk usage as % installed', ' ':'includes efficiency factor',},
-                              {'Notes':'**** Total', ' ':'in TB per month'},
+	                      {'Notes':'* MoU pledge', ' ':'pledge in MoU for data storage'},
+                              {'Notes':'** installed capacity', ' ':'capacity installed (TB)'},
+                              {'Notes':'*** Total', ' ':'in TB per month'},
 			           ],
-                        'summary':[ {'Notes':'*', ' ': ' % of installed'},
-                                    {'Notes':'**', ' ': ' % of pledge'} 
+                           'graph': [ {'Notes':'* Wallclock Work', ' ':'Sum of wallclock time used by jobs as reported by the batch system during the referenced month multiplied by benchmarked HEPSPEC06 of the CPU resource and by number of processors.'},],
+                        'summary':[ {'Notes':'* Wallclock Work', ' ':'Sum of wallclock time used by jobs as reported by the batch system during the referenced month multiplied by benchmarked HEPSPEC06 of the CPU resource and by number of processors.'},
+{'Notes':'** disk/tape used in year to date', ' ':'Sum of TBytes occupied by the end of every month of the referenced period.'}
 ]  
 			}
 	if (tabName){
 	    createStandardTables(tabName, doc, headerFunction);
         }
         if (notes) {
-	      var tableType='disk';
-	      if (notes.indexOf('CPU')>-1)
+	      var tableType='graph';
+	      if ((notes.indexOf('Disk')>-1) || (notes.indexOf('Tape')>-1))
+	          tableType='disk';
+	      if (notes.indexOf('Wall')>-1)
 	    	  tableType='cpu';
               if (notes.indexOf('summary')>-1)
                   tableType='summary';
 	      doc.autoTable([{'title':'Notes', 'key':'Notes'}, {'title':' ', 'key':' ' }], 
 	    		  notesText[tableType],
-	    		  { margin: {right: 170, left: 5, top: 177, bottom: 0},
-	        	 styles: { startY: false, cellPadding:1 ,fontSize: 6, rowHeight: 4,  //renderHeaderCell: headerFunction, 
-	        	overflow: 'visible', },
-                         columnStyles: {'Notes': {columnWidth:30}}
-	        });    	
-	    
+	    		  { margin: {right: 170, left: 5, top: 180, bottom: 0},
+	        	 styles: { startY: false, cellPadding:1 ,fontSize: 6, rowHeight: 3,  //renderHeaderCell: headerFunction, 
+	        	overflow: 'linebreak', columnWidth: 'wrap'},
+                                        drawCell: cellFunction,
+});
 	}
 	var dt1 = new Date();
 	var utcDate = dt1.toUTCString();
@@ -233,50 +276,86 @@ function createTemplatePage(doc, siteName,  headerFunction, tabName, notes, page
 
 }
 function 	createExperimentSummaryPage(doc,  headerFunction, pageNumber){
+	       var totalRows=[];
+
+	    var cellFunction = function (my_cell, my_info) {
+	    	if (my_cell.raw.indexOf('Total')>-1 || my_cell.raw.indexOf('TOTAL')>-1){
+	    		//alert("DOING A TOTAL ROW" + value);
+    		     totalRows.push(my_info.row.index);
+	    	}
+	    	var totaloffset=0;
+	    	
+	    	if (totalRows.indexOf(my_info.row.index)>-1){
+	    	  //alert("PUTTING A SPECIAL COLOR");
+	    	   totaloffset=30;
+	    	} 
+	    	if (my_info.column.dataKey.indexOf('MoU')>-1 || my_info.column.dataKey.indexOf('Total')>-1)
+	    		totaloffset+=30;
+
+	    	doc.setFillColor(my_info.row.index % 2 === 0 ? 245-totaloffset : 255-totaloffset);
+	    };	    
 	createTemplatePage(doc, 'All Tier-1s + CERN', headerFunction, false, false, pageNumber, true);
 
 	
 	var margin={'0': {right: 180, left: 5, top: 35, bottom: 0},
 			'1': {right: 5, left: 150, top: 35, bottom: 0},
-			'2': {right: 180, left: 5, top: 120, bottom: 0},
-			'3': {right: 5, left: 150, top: 120, bottom: 0},
+			'2': {right: 180, left: 5, top: 110, bottom: 0},
+			'3': {right: 5, left: 150, top: 110, bottom: 0},
 			}
 	$('#tabs__Experiment_Summary_Page .datatableH').each(function (index2) {
         var res = doc.autoTableHtmlToJson(this, true);
         res=prepareTable(res);
         doc.autoTable(res.columns, res.data, { margin: margin[index2],
-        	styles: {startY: false, cellPadding:1 ,fontSize: 6, rowHeight: 4, //renderHeaderCell: headerFunction, 
-        	overflow: 'visible', }
+        	styles: {startY: false, cellPadding:1 ,fontSize: 5, rowHeight: 3, columnWidth:'auto', renderHeaderCell: headerFunction, 
+        	overflow: 'linebreak'}, drawCell: cellFunction
         });    	
     });
 }
 function 	createAccountingSummaryPage(doc,  headerFunction, pageNumber){
 	createTemplatePage(doc, 'All Tier-1s + CERN', headerFunction, false, 'summary', pageNumber, true);
 
+	       var totalRows=[];
+
+	    var cellFunction = function (my_cell, my_info) {
+	    	if (my_cell.raw.indexOf('Total')>-1 || my_cell.raw.indexOf('TOTAL')>-1){
+	    		//alert("DOING A TOTAL ROW" + value);
+    		     totalRows.push(my_info.row.index);
+	    	}
+	    	var totaloffset=0;
+	    	
+	    	if (totalRows.indexOf(my_info.row.index)>-1){
+	    	  //alert("PUTTING A SPECIAL COLOR");
+	    	   totaloffset=30;
+	    	} 
+	    	if (my_info.column.dataKey.indexOf('MoU')>-1 || my_info.column.dataKey.indexOf('Total')>-1)
+	    		totaloffset+=30;
+
+	    	doc.setFillColor(my_info.row.index % 2 === 0 ? 245-totaloffset : 255-totaloffset);
+	    };	    
 	
     doc.setFillColor(41, 128, 185);
-    doc.rect(22, 40, 55, 5, 'F');
-    doc.rect(77, 40, 17, 5, 'F');
-    doc.rect(94, 40, 40, 5, 'F');
-    doc.rect(134, 40, 60, 5, 'F');
-    doc.rect(194, 40, 41, 5, 'F');
-    doc.rect(235, 40, 60, 5, 'F');
+    doc.rect(02, 40, 77, 10, 'F');
+    doc.rect(77, 40, 17, 10, 'F');
+    doc.rect(94, 40, 40, 10, 'F');
+    doc.rect(134, 40, 60, 10, 'F');
+    doc.rect(194, 40, 41, 10, 'F');
+    doc.rect(235, 40, 60, 10, 'F');
 
-    doc.setFontSize(7);
+    doc.setFontSize(6);
     doc.setFontStyle('bold');
     doc.setTextColor(255,255,255);
 
-    doc.text(22,44, '  cpu used in year to date');
-    doc.text(77,44,' end of period');
-    doc.text(95,44, ' disk used in year to date');
-    doc.text(134,44,' disk at end of period');
-    doc.text(195,44,' tape used in year to date');
-    doc.text(235, 44, ' tape at end of period' );	
+    doc.text(18,43, 'Wallclock Work in HEPSPEC06');
+    doc.text(18,46, 'hours/days during the referenced period*');
+    doc.text(65,44, ' disk used in year to date **');
+    doc.text(124,44,' disk at end of period');
+    doc.text(185,44,' tape used in year to date **');
+    doc.text(245, 44, ' tape at end of period' );	
 
     doc.setFontSize(10);
     doc.setTextColor(100);
     
-	var margin={'0': {right: 2, left: 2, top: 45, bottom: 0},
+	var margin={'0': {right: 2, left: 2, top: 47, bottom: 0},
 			'1': {right: 80, left: 5, top: 120, bottom: 0},
 			};
     var columnStyle={'0': {'Site Summary':{columnWidth:20}, 
@@ -286,14 +365,14 @@ function 	createAccountingSummaryPage(doc,  headerFunction, pageNumber){
 'TByte-months':{columnWidth:16}, 
 '% installed ':{columnWidth:13}, 
 '% pledge ':{columnWidth:12}, 
-'TBytes occupied':{columnWidth:19}, 
+'TBytes occup.':{columnWidth:19}, 
 'occupied *':{columnWidth:12}, 
 'occupied **':{columnWidth:14}, 
 'installed **':{columnWidth:14}, 
 'TByte-months ':{columnWidth:16}, 
 '% installed  ':{columnWidth:13}, 
 '% pledge  ':{columnWidth:12}, 
-'TBytes occupied ':{columnWidth:19}, 
+'TBytes occup. ':{columnWidth:19}, 
 'occupied * ':{columnWidth:13}, 
 'occupied ** ':{columnWidth:14},    
 'installed ** ':{columnWidth:14},    
@@ -327,21 +406,39 @@ function 	createAccountingSummaryPage(doc,  headerFunction, pageNumber){
 	    }
         
         res=prepareTable(res);
-        doc.autoTable(res.columns, res.data, { margin: margin[index2], columnStyles:columnStyle[index2],
-        	 styles:  { startY: false, cellPadding:1 ,fontSize: 6, rowHeight: 4, //columnWidth: 'wrap' ,//renderHeaderCell: headerFunction, 
-        	overflow: 'visible'},         
+        doc.autoTable(res.columns, res.data, { margin: margin[index2], 
+        	 styles:  { startY: false, cellPadding:0.1 ,fontSize: 6, rowHeight: 3, columnWidth: 'auto' ,//renderHeaderCell: headerFunction, 
+        	overflow: 'linebreak'}, drawCell: cellFunction,        
         });    	
     });
 }
 
 function createStandardTables(tabName, doc, headerFunction){
 	
+	       var totalRows=[];
+
+	    var cellFunction = function (my_cell, my_info) {
+	    	if (my_cell.raw.indexOf('Total')>-1 || my_cell.raw.indexOf('TOTAL')>-1){
+	    		//alert("DOING A TOTAL ROW" + value);
+    		     totalRows.push(my_info.row.index);
+	    	}
+	    	var totaloffset=0;
+	    	
+	    	if (totalRows.indexOf(my_info.row.index)>-1){
+	    	  //alert("PUTTING A SPECIAL COLOR");
+	    	   totaloffset=30;
+	    	} 
+	    	if (my_info.column.dataKey.indexOf('MoU')>-1 || my_info.column.dataKey.indexOf('Total')>-1)
+	    		totaloffset+=30;
+
+	    	doc.setFillColor(my_info.row.index % 2 === 0 ? 245-totaloffset : 255-totaloffset);
+	    };	    
 	$(tabName +' .pledge_table').each(function (index2) {
         var res = doc.autoTableHtmlToJson(this, true);
         res=prepareTable(res);
         doc.autoTable(res.columns, res.data, { margin: {right: 65, left: 185, top: 7, bottom: 0} ,
-        	styles: {startY: false, cellPadding:1 ,fontSize: 6, rowHeight: 4, //renderHeaderCell: headerFunction, 
-        	overflow: 'visible'},  columnStyles:{' MoU pledges ':{columnWidth:20}} 
+        	styles: {startY: false, cellPadding:1 ,fontSize: 6, rowHeight: 3, //renderHeaderCell: headerFunction, 
+        	overflow: 'linebreak'}, drawCell: cellFunction, columnStyles:{' MoU pledges ':{columnWidth:20}} 
         });    	
     });
 }
@@ -409,27 +506,8 @@ function saveToPdf() {
 	})(jsPDF.API);
 	  var doc = new jsPDF('landscape');
 
-	  
-		doc.setFont("helvetica");	  
-	  
-	  // All units are in the set measurement for the document
-	    // This can be changed to "pt" (points), "mm" (Default), "cm", "in"
-	    var totalRows=[];
-	    var pageNumber=2;
-	    
-	    createFirstPage(doc);
-	    doc.setFontSize(6);
+	       var totalRows=[];
 
-	    var headerFunction = function (x, y, width, height, key, value, settings) {
-	        doc.setFillColor(79, 129, 189); // Turquoise
-	        doc.setTextColor(255, 255, 255);
-	        doc.setFontStyle('bold');
-	        doc.rect(x, y, width, height, 'F');
-	        y += settings.lineHeight / 2 + doc.internal.getLineHeight() / 2;
-//	        if (x<10)
-//	        	y -=3;
-	        doc.text('' + key, x + settings.padding, y);
-	    };
 	    var cellFunction = function (my_cell, my_info) {
 	    	if (my_cell.raw.indexOf('Total')>-1 || my_cell.raw.indexOf('TOTAL')>-1){
 	    		//alert("DOING A TOTAL ROW" + value);
@@ -446,6 +524,26 @@ function saveToPdf() {
 
 	    	doc.setFillColor(my_info.row.index % 2 === 0 ? 245-totaloffset : 255-totaloffset);
 	    };	    
+	  
+		doc.setFont("helvetica");	  
+	  
+	  // All units are in the set measurement for the document
+	    // This can be changed to "pt" (points), "mm" (Default), "cm", "in"
+	    var pageNumber=2;
+	    
+	    createFirstPage(doc);
+	    doc.setFontSize(6);
+
+	    var headerFunction = function (x, y, width, height, key, value, settings) {
+	        doc.setFillColor(79, 129, 189); // Turquoise
+	        doc.setTextColor(255, 255, 255);
+	        //doc.setFontStyle('bold');
+	        doc.rect(x, y, width, height, 'F');
+	        y += settings.lineHeight / 2 + doc.internal.getLineHeight() / 2;
+//	        if (x<10)
+//	        	y -=3;
+	        doc.text('' + key, x + settings.padding, y);
+	    };
 	    $('.mySites').each(function (index){
 	    	var siteName=this.text;
 	    	if (siteName== ' Experiment Summary Page'){
@@ -467,12 +565,11 @@ function saveToPdf() {
 			
 			        var res = doc.autoTableHtmlToJson(this, true);
 			        res=prepareTable(res);
-			        totalRows=[];
                                 var first_column=res.columns[0]['title'];
 			        doc.autoTable(res.columns, res.data, { margin: {right: 5, left: 5, top: 35, bottom: 0},
-			        	styles:{ startY: false, cellPadding:1 ,fontSize: 6, rowHeight: 4,
-			        	overflow: 'visible', },
-                                        columnStyles:{' CPU used - HEPSPEC06-days ':{columnWidth:35}},
+			        	styles:{ startY: false, cellPadding:1 ,fontSize: 6, rowHeight: 4, columnWidth: 'auto',
+			        	overflow: 'linebreak', },
+                                        columnStyles:{0:{columnWidth:'auto'}, 1:{columnWidth:'auto'}},
                                         drawCell: cellFunction,
 
 			        });    	
@@ -482,7 +579,7 @@ function saveToPdf() {
                               }
 			    });
 
-	    	    createTemplatePage(doc, siteName, headerFunction, false, false, pageNumber, false );
+	    	    createTemplatePage(doc, siteName, headerFunction, false, 'graph', pageNumber, false );
 	    	    pageNumber +=1;
 			    //loop through each chart
 			    $(tabName + ' .myChart').each(function (index) {
@@ -492,7 +589,7 @@ function saveToPdf() {
 			        */
 			        var y=40;
 			        if (index>2)
-			        	y=120;
+			        	y=110;
 			        var x=10 + (index % 3)*90;
 			        doc.addImage(imageData, 'JPEG', x,  y, 90, 60);
 			    });

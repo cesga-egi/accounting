@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 {% block description %}
 <div id="page_text" style="clear:both">
-The Cloud Compute EGI view shows the accounting data {% if not site %} from all Cloud Resource centers in the EGI infrastructure{% endif %}{%if country %} in {{country}}{% elif ngi %} in {{ngi}}{% elif site %} in Resource Centre {{site}}{% else %}. Data can be organized by NGI or country{%endif%}. {%if not site%}Only production certified Resource centers are included.{% endif %}
+The Cloud Compute EGI view shows the accounting data {% if not site %} from all Cloud Resource centres in the EGI infrastructure{% endif %}{%if country %} in {{country}}{% elif ngi %} in {{ngi}}{% elif site %} in Resource Centre {{site}}{% else %}. Data can be organized by Operations Centre or country{%endif%}. {%if not site%}Accounting information is only gathered from Resource Centres that are part of the EGI Federation and are certified in GOCDB.{% endif %}
 
-The metric shown is <span id="metric_description">Total number of jobs</span>, grouped by <span id="inputY_description">Region</span> and <span id="inputX_description">Date</span>, <span id="vo_description">the official EGI VOs </span> are shown. <span id="LocalJobs_description"></span>
+The metric shown is <span id="metric_description">Total number of jobs</span>, grouped by <span id="inputY_description">Region</span> and <span id="inputX_description">Month</span>, <span id="vo_description">the official EGI VOs </span> are shown. <span id="LocalJobs_description"></span>
 </div>
 {% endblock %}
 {% block option %}{% if site %}"SITE"{% elif country %}"COUNTRY"{% else %}"REGION"{% endif %}{% endblock %}
 {% block tree %}{%if country or ovw_country %}"COUNTRY"{% else %}"EGI"{% endif %}{% endblock %}
 {% block inputMetric %} 
-<option class='' data-toggle='tooltip' data-title='Number of VMs'  data-dojo-props='position:['above']' data-content='Total number of Virtual Machines' value='vm_num'>Number of Virtual Machines</option>
-<option data-toggle='tooltip' data-title='Wall Hours' data-dojo-props='position:['above']' data-content='Wall Clock CPU hours' selected='selected' class='' value='sum_cpu'>Sum Wall hours (Elapsed time)</option> 
-<option data-toggle='tooltip' data-title='Monetary cost estimate' data-dojo-props='position:['above']' data-content='Monetary estimate in € of the cost incurred in the computation by the VMs ran in the period' class='' value='cost'>Monetary Cost</option>
-<option data-toggle='tooltip' data-title='Inbound Network Traffic' data-dojo-props='position:['above']' data-content='Aggregate number of bytes of all the packets received by the VMs executed in the period' class='' value='net_in'>Inbound Network Traffic</option>
-<option data-toggle='tooltip' data-title='Outbound Network Traffic' data-dojo-props='position:['above']' data-content='Aggregate number of bytes of all the packets sent by the VMs executed in the period' class='' value='net_out'>Outbound Network Traffic</option>
-<option data-toggle='tooltip' data-title='Memory Used' data-dojo-props='position:['above']' data-content='Aggregate in bytes of the physical RAM memory used by the VMs ran in the period' class='' value='mem'>Memory Used</option>
-<option data-toggle='tooltip' data-title='Disk Used' data-dojo-props='position:['above']' data-content='Aggregate in bytes of the accumulative physical disk space used by the VMs ran in the period' class='' value='disk'>Disk Used</option>
+<option class='' data-toggle='tooltip' data-title='Number of VMs'  data-dojo-props='position:['above']' data-content='Number of VM instances running in the selected time period.' value='vm_num'>Number of Virtual Machines</option>
+<option data-toggle='tooltip' data-title='Wall Hours' data-dojo-props='position:['above']' data-content='Hours of not normalised wall-clock time consumed by jobs, including I/O, OS and other housekeeping tasks.' selected='selected' class='' value='sum_elap'>Sum Wall hours (Elapsed time)</option> 
+<option data-toggle='tooltip' data-title='Monetary cost estimate' data-dojo-props='position:['above']' data-content='Estimated cost in € of the resources allocated in the infrastructure. Currently used only for informative aims.' class='' value='cost'>Monetary Cost</option>
+<option data-toggle='tooltip' data-title='Inbound Network Traffic' data-dojo-props='position:['above']' data-content='Inbound network traffic in bytes towards running VM instances.' class='' value='net_in'>Inbound Network Traffic</option>
+<option data-toggle='tooltip' data-title='Outbound Network Traffic' data-dojo-props='position:['above']' data-content='Outcoming network traffic in bytes from running VM instances.' class='' value='net_out'>Outbound Network Traffic</option>
+<option data-toggle='tooltip' data-title='Memory Used' data-dojo-props='position:['above']' data-content='Amount of memory in  bytes allocated by running VM instances.' class='' value='mem'>Memory Used</option>
+<option data-toggle='tooltip' data-title='Disk Used' data-dojo-props='position:['above']' data-content='Amount of storage in bytes allocated by running VMs instances.' class='' value='disk'>Disk Used</option>
 {% endblock %}
 {% block display_funcs %}
 vodislabel = function(str){ return '<b><a style="text-decoration:none" href="/discipline/'+ str + '/' + state_url() +'/">'+str+'</a></b>' };
@@ -24,48 +24,50 @@ ngilabel = function(str){ return '<b><a style="text-decoration:none" href="/clou
 countrylabel = function(str){ return '<b><a style="text-decoration:none" href="/cloud/country/' + str + '/' + state_url('SITE') + '">' + str + '</a></b>';};
 {% endblock %}
 {% block XOptions %} 
-<option data-title="Date" value="DATE" class="">Date</option>
+<option data-title="Month" value="DATE" class="">Month</option>
 <option data-title="Year" value="Year" class="">Year</option>
-<option data-title="3M" value="3M" class="">Trimester</option>
-<option data-title="6M" value="6M" class="">Semester</option>
+<option data-title="3M" value="3M" class="">Quarter</option>
+<option data-title="6M" value="6M" class="">Half-year</option>
 {% if site %}
 <option value="COUNTRY" class="">Country</option>
-<option value="REGION" class="">NGI</option>
-<option data-title="Site" value="SITE" class="">Site</option>
+<option value="REGION" class="">Operations Centre</option>
+<option data-title="Resource Centre" value="SITE" class="">Resource Centre</option>
 <option class="" selected="selected" value="VO">VO</option>
 {% elif country %}
 <option value="COUNTRY" class="">Country</option>
-<option data-title="Site" selected="selected" value="SITE" class="">Site</option>
+<option data-title="Resource Centre" selected="selected" value="SITE" class="">Resource Centre</option>
 <option class="" value="VO">VO</option>
 {% elif ngi %}
-<option data-title="Site" selected="selected" value="SITE" class="">Site</option>
-<option value="REGION" class="">NGI</option>
+<option data-title="Resource Centre" selected="selected" value="SITE" class="">Resource Centre</option>
+<option value="REGION" class="">Operations Centre</option>
 <option class="" value="VO">VO</option>
 {% elif ovw_country %}
 <option value="COUNTRY" class="" selected="selected">Country</option>
-<option data-title="Site" value="SITE" class="">Site</option>
+<option data-title="Resource Centre" value="SITE" class="">Resource Centre</option>
 <option class="" value="VO">VO</option>
 {% else %}
-<option selected="selected" value="REGION" class="">NGI</option>
-<option data-title="Site" value="SITE" class="">Site</option>
+<option selected="selected" value="REGION" class="">Operations Centre</option>
+<option data-title="Resource Centre" value="SITE" class="">Resource Centre</option>
 <option class="" value="VO">VO</option>
+<option class="" value="STATUS">Status</option>
 {% endif %}
 {% if site  or ngi or country or ovw_country%}
 <option class="" value="vm_id">VM Id</option>
 {% endif %}
 {% endblock %} 
 {% block YOptions %} 
-<option data-title="Date" value="DATE" selected="selected" class="">Date</option>
+<option data-title="Month" value="DATE" selected="selected" class="">Month</option>
 <option data-title="Year" value="Year" class="">Year</option>
-<option data-title="3M" value="3M" class="">Trimester</option>
-<option data-title="6M" value="6M" class="">Semester</option>
+<option data-title="3M" value="3M" class="">Quarter</option>
+<option data-title="6M" value="6M" class="">Half-year</option>
 {% if ngi %}
-<option value="REGION" class="">NGI</option>
+<option value="REGION" class="">Operations Centre</option>
 {% elif country %}
 <option value="COUNTRY" class="">Country</option>
 {%endif%}
-<option data-title="Site" value="SITE" class="">Site</option>
+<option data-title="Resource Centre" value="SITE" class="">Resource Centre</option>
 <option class="" value="VO">VO</option>
+<option class="" value="STATUS">Status</option>
 {% endblock %} 
 {% block title %}Infrastructure Cloud Accounting{% endblock %}
 {% block first_level %}<a href="/cloud" class="">Cloud</a>{% endblock %}

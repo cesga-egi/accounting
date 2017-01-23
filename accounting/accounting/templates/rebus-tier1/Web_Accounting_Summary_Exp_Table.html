@@ -4,7 +4,7 @@
 <table class="datatableH display">
   <thead>
     <tr>
-      <th id="mygrey"><div style="visibility:hidden">{{ my_exp.name }}</div></th><th id="mygrey">Elapsed HS06-hours * #cores</th><th id="mygrey">% of total</th><th id="mygrey">Disk TBytes</th><th id="mygrey">% of total </th><th id="mygrey">Tape TBytes</th><th id="mygrey">% of total  </th>
+      <th id="mygrey"><div style="visibility:hidden">{{ my_exp.name }}</div></th><th id="mygrey" data-placement="right" data-toggle="tooltip" title="Same as 'Normalized sum elapsed * Number of Processors'. Defined as wallclock time as reported by the batch system, normalized by benchmarked HEPSPEC06 power of a given CPU resource and multiplied by number of processors.">Wallclock Work in HEPSPEC06 hours/days</th><th id="mygrey">% of total</th><th id="mygrey">Disk TBytes</th><th id="mygrey">% of total </th><th id="mygrey">Tape TBytes</th><th id="mygrey">% of total  </th>
     </tr>
   </thead>
   <tbody>

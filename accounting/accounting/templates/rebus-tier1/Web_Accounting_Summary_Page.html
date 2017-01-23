@@ -8,30 +8,34 @@
       <thead align="center">
         <tr>
           <th/>
-          <th colspan="2">Elapsed HS06 hours * #cores used in year to date</th>
-          <th colspan="3">disk used in year to date</th>
+          {% if selectedMetricDays %}
+          <th colspan="2" data-placement="right" data-toggle="tooltip" title="Same as 'Normalized sum elapsed * Number of Processors'. Defined as wallclock time as reported by the batch system, normalized by benchmarked HEPSPEC06 power of a given CPU resource and multiplied by number of processors.">Wallclock Work in HEPSPEC06 days during the reference period</th>
+          {% else %}
+          <th colspan="2" data-placement="right" data-toggle="tooltip" title="Same as 'Normalized sum elapsed * Number of Processors'. Defined as wallclock time as reported by the batch system, normalized by benchmarked HEPSPEC06 power of a given CPU resource and multiplied by number of processors.">Wallclock Work in HEPSPEC06 hours during the reference period</th>
+          {% endif %}
+          <th colspan="3">disk used in year to date (sum of TBytes occupied by the end of every month of the referenced period)</th>
           <th colspan="4">disk at end of period</th>
-          <th colspan="3">tape used in year to date</th>
+          <th colspan="3">tape used in year to date (sum of TBytes occupied by the end of every month of the referenced period)</th>
           <th colspan="4">tape at end of period</th>
         </tr>
         <tr>
           <th id="mygrey">Site Summary</th>
           <th id="mygrey">{{ report_dates }}</th>
           <th id="mygrey">% pledge</th>
-          <th id="mygrey">TByte-months</th>
+          <th id="mygrey">SUM TBytes occupied</th>
           <th id="mygrey">% installed </th> 
           <th id="mygrey">% pledge </th>
           <th id="mygrey">TBytes occupied</th>
-          <th id="mygrey">occupied *</th>
-          <th id="mygrey">occupied **</th>
-          <th id="mygrey">installed **</th>
-          <th id="mygrey">TByte-months </th>
+          <th id="mygrey">occupied vs installed</th>
+          <th id="mygrey">occupied vs pledge</th>
+          <th id="mygrey">installed vs pedge</th>
+          <th id="mygrey">SUM Tbytes occupied</th>
           <th id="mygrey">% installed  </th> 
           <th id="mygrey">% pledge  </th>
           <th id="mygrey">TBytes occupied </th>
-          <th id="mygrey">occupied * </th>
-          <th id="mygrey">occupied ** </th>
-          <th id="mygrey">installed ** </th>
+          <th id="mygrey">occupied vs installed </th>
+          <th id="mygrey">occupied vs pledge </th>
+          <th id="mygrey">installed vs pledge </th>
        </tr>
      </thead>
      <tbody>
@@ -52,7 +56,7 @@
       <thead align="center">
         <tr>
           <th id="mygrey">VO Summary</th>
-          <th id="mygrey">Elapsed HS06-hours * #cores</th> 
+          <th id="mygrey"data-placement="right" data-toggle="tooltip" title="Same as 'Normalized sum elapsed * Number of Processors'. Defined as wallclock time as reported by the batch system, normalized by benchmarked HEPSPEC06 power of a given CPU resource and multiplied by number of processors.">Wallclock Work</th> 
           <th id="mygrey">% of total</th>
           <th id="mygrey">Disk TBytes</th>
           <th id="mygrey">% of total </th>

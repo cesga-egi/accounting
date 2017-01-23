@@ -1,7 +1,7 @@
 {% extends "wlcg_reports.html" %}
 {% block description %}
-<div id="page_text" style="clear:both">The EGI Resource Center Report shows the accounting data of High Throughput Compute/Cloud Compute Resource Centers in the EGI infrastructure aggregated by first level scientific discipline.</div>
+<div id="page_text" style="clear:both">The EGI Resource Centre Report shows the accounting data of High Throughput Compute/Cloud Compute Resource Centres in the EGI infrastructure aggregated by first level scientific discipline.</div>
 {% endblock %}
-{% block title %}EGI Resource Centers Report{% endblock %}
+{% block title %}EGI Resource Centres Report{% endblock %}
 {% block report-url %}'{{SUPPORT_SERVER}}reprc.php?sYear='+sYear+'&sMonth='+sMonth+'&eYear='+eYear+'&eMonth='+eMonth+'&report='+report+'&infra='+infra{% endblock %}
 {% block json-url %}'{{SUPPORT_SERVER}}reprc.php?sYear='+sYear+'&sMonth='+sMonth+'&eYear='+eYear+'&eMonth='+eMonth+'&report='+report+'&infra=+infra&json=true'{% endblock %}

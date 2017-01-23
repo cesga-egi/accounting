@@ -9,25 +9,27 @@ The metric shown is <span id="metric_description">Total number of jobs</span>, g
 {% block option %}{% if site %}"SITE"{% elif country %}"COUNTRY"{% elif federation %}"FEDERATION"{% else %}"COUNTRY_T2"{% endif %}{% endblock %}
 {% block tree %}"TIER2"{% endblock %}
 {% block inputMetric %} 
-<option class='' data-toggle='tooltip' data-title='Number of jobs'  data-dojo-props='position:['above']' data-content='Total number of jobs' selected="selected" value='njobs'>Number of jobs</option>
-<option class='' data-toggle='tooltip' data-title='Normalized CPU Hours'  data-dojo-props='position:['above']' data-content='Raw CPU hours normalized with the HEPSPEC06 benchmark' value='normcpu'>Normalized Sum CPU</option> 
-<option data-toggle='tooltip' data-title='Unnormalized CPU Hours' data-dojo-props='position:['above']' data-content='Raw CPU hours that are not normalized to a common benchmark' class='' value='sumcpu'>Sum CPU</option> 
-<option data-toggle='tooltip' data-title='Normalized Wall Hours' data-dojo-props='position:['above']' data-content='Wall Clock CPU hours normalized with the HEPSPEC06 benchmark' class='' value='normelap'>Normalized Sum Elapsed</option> 
-<option data-toggle='tooltip' data-title='Normalized Wall Hours * Number of Processors' data-dojo-props='position:['above']' data-content='Wall Clock CPU hours normalized with the HEPSPEC06 benchmark * Number of Processors' class='' value='normelap_processors'>Normalized Sum Elapsed * Number of Processors</option> 
-<option data-toggle='tooltip' data-title='Wall Hours * Number of Processors' data-dojo-props='position:['above']' data-content='Wall Clock CPU hours * Number of Processors' class='' value='elap_processors'>Sum Elapsed * Number of Processors</option> 
-<option data-toggle='tooltip' data-title='Unnormalized Wall CPU Hours' data-dojo-props='position:['above']' data-content='Wall clock CPU hours that are not normalized to a common benchmark' class='' value='sumelap'>Sum Elapsed</option>
-<option data-toggle='tooltip' data-title='Efficiency' data-dojo-props='position:['above']' data-content='CPU Time * 100 / (Wall time * Number of Processors)' class='' value='cpueff'>CPU Efficiency</option>
+<option class='' data-title='Number of jobs'  data-dojo-props='position:['above']' data-content='Number of discrete jobs launched, independent on completion status.' selected="selected" value='njobs'>Number of jobs</option>
+<option data-title='Sum CPU Time Hours' data-dojo-props='position:['above']' data-content='Hours of CPU Time as reported to APEL by the batch system.' class='' value='sumcpu'>Sum CPU Time Hours</option> 
+<option data-title='Sum CPU Time Days' data-dojo-props='position:['above']' data-content='Days of CPU Time as reported to APEL by the batch system.' class='' value='sumcpu_days'>Sum CPU Time Days</option> 
+<option class='' data-title='Sum CPU Work HS06 Hours'  data-dojo-props='position:['above']' data-content='(Same as "Normalized Sum CPU"). Sum of CPU Time Hours as reported to APEL by the batch system and multiplied by benchmarked HEPSPEC06 power for a given resource.' value='normcpu'>Sum CPU Work HS06 Hours</option> 
+<option class='' data-title='Sum CPU Work HS06 Days'  data-dojo-props='position:['above']' data-content='(Same as "Normalized Sum CPU"). Sum of CPU Time Days as reported to APEL by the batch system and multiplied by benchmarked HEPSPEC06.' value='normcpu_days'>Sum CPU Work HS06 Days</option> 
+<option data-title='Sum Wallclock Time Hours' data-dojo-props='position:['above']' data-content='(Same as "Sum elapsed * Number of processors"). Wallclock time as reported by the batch system. For some sites represent raw wallclock time defined as end time stamp of a particular job minus start time stamp and multiplied by number of processors. There are other sites which do not report raw wallclock time, but rather report raw wallclock time scaled by a batch system to a reference node. For such sites this metric currently shows scaled wallclock multiplied by number of processors.' class='' value='elap_processors'>Sum Wallclock Time Hours</option> 
+<option data-title='Sum Wallclock Time Days' data-dojo-props='position:['above']' data-content='(Same as "Sum elapsed * Number of processors"). Wallclock time as reported by the batch system. For some sites represent raw wallclock time defined as end time stamp of a particular job minus start time stamp and multiplied by number of processors. There are other sites which do not report raw wallclock time, but rather report raw wallclock time scaled by a batch system to a reference node. For such sites this metric currently shows scaled wallclock multiplied by number of processors.' class='' value='elap_processors_days'>Sum Wallclock Time Days</option> 
+<option data-title='Sum Wallclock Work HS06 Hours' data-dojo-props='position:['above']' data-content='(Same as "Normalised Sum elapsed * Number of processors"). Wallclock time as reported by the batch system and multiplied by benchmarked HEPSPEC06 power of a given CPU resource and by number of processors. For some sites represent raw wallclock time defined as end time stamp of a particular job minus start time stamp and multiplied by number of processors.  There are other sites which do not report raw wallclock time, but rather report raw wallclock time scaled by a batch system to a reference node. For such sites this metric currently shows scaled and Normalised Wallclock multiplied by Number of Processors' class='' value='normelap_processors'>Sum Wallclock Work HS06 Hours</option> 
+<option data-title='Sum Wallclock Work HS06 Days' data-dojo-props='position:['above']' data-content='(Same as "Normalised Sum elapsed * Number of processors"). Wallclock time as reported by the batch system and multiplied by benchmarked HEPSPEC06 power of a given CPU resource and by number of processors. For some sites represent raw wallclock time defined as end time stamp of a particular job minus start time stamp and multiplied by number of processors.  There are other sites which do not report raw wallclock time, but rather report raw wallclock time scaled by a batch system to a reference node. For such sites this metric currently shows scaled and Normalised Wallclock multiplied by Number of Processors' class='' value='normelap_processors_days'>Sum Wallclock Work HS06 Days</option> 
+<option data-title='CPU Efficiency' data-dojo-props='position:['above']' data-content='100 * Sum CPU Time / Sum (Wallclock Time * Number of Processors).' class='' value='cpueff'>CPU Efficiency</option>
 {% endblock %}
 {% block display_funcs %}
-sitelabel = function(str){ return '<b><a style="text-decoration:none" href="/tier2/site/' + str + '/' + state_url('VO') + '">' + str + '</a></b>';};
-federationlabel = function(str){ return '<b><a style="text-decoration:none" href="/tier2/federation/' + str + '/' + state_url('SITE') + '">' + str + '</a></b>';};
-countrylabel = function(str){ return '<b><a style="text-decoration:none" href="/tier2/country/' + str + '/' +  state_url('FEDERATION') + '">' + str + '</a></b>';};
+sitelabel = function(str){ return '<b><a style="text-decoration:none" href="/{{wlcg}}tier2/site/' + str + '/' + state_url('VO') + '">' + str + '</a></b>';};
+federationlabel = function(str){ return '<b><a style="text-decoration:none" href="/{{wlcg}}tier2/federation/' + str + '/' + state_url('SITE') + '">' + str + '</a></b>';};
+countrylabel = function(str){ return '<b><a style="text-decoration:none" href="/{{wlcg}}tier2/country/' + str + '/' +  state_url('FEDERATION') + '">' + str + '</a></b>';};
 {% endblock %}
 {% block XOptions %} 
 <option data-title="Date" value="DATE" class="">Date</option>
 <option data-title="Year" value="Year" class="">Year</option>
-<option data-title="3M" value="3M" class="">Trimester</option>
-<option data-title="6M" value="6M" class="">Semester</option>
+<option data-title="3M" value="3M" class="">Quarter</option>
+<option data-title="6M" value="6M" class="">Half-year</option>
 {% if site %}
 <option value="COUNTRY" class="">Country</option>
 <option value="FEDERATION" class="">Federation</option>
@@ -56,8 +58,8 @@ countrylabel = function(str){ return '<b><a style="text-decoration:none" href="/
 {% block YOptions %} 
 <option data-title="Date" value="DATE" selected="selected" class="">Date</option>
 <option data-title="Year" value="Year" class="">Year</option>
-<option data-title="3M" value="3M" class="">Trimester</option>
-<option data-title="6M" value="6M" class="">Semester</option>
+<option data-title="3M" value="3M" class="">Quarter</option>
+<option data-title="6M" value="6M" class="">Half-year</option>
 <option value="TIER2" class="">TIER2</option>
 <option data-title="Site" value="SITE" class="">Site</option>
 <option class="" value="VO">VO</option>
@@ -66,7 +68,7 @@ countrylabel = function(str){ return '<b><a style="text-decoration:none" href="/
 <option value="NODECOUNT" class="">Nodes</option>
 {% endblock %} 
 {% block title %}Tier 2 Grid Accounting{% endblock %}
-{% block first_level %}<a href="/tier2/" class="">Tier2</a>{% endblock %}
-{% block second_level %}{% if site %}/ <a href="/tier2/{{site}}" class="">{{site}}</a>{% elif federation %}/ <a href="/tier2/federation/{{federation}}" class="">{{federation}}</a>{% elif country %}/ <a href="/tier2/country/{{country}}" class="">{{country}}</a>{% endif %} {% endblock %}
+{% block first_level %}<a href="/{{wlcg}}tier2/" class="">Tier2</a>{% endblock %}
+{% block second_level %}{% if site %}/ <a href="/{{wlcg}}tier2/site/{{site}}" class="">{{site}}</a>{% elif federation %}/ <a href="/{{wlcg}}tier2/federation/{{federation}}" class="">{{federation}}</a>{% elif country %}/ <a href="/{{wlcg}}tier2/country/{{country}}" class="">{{country}}</a>{% endif %} {% endblock %}
 {% block third_level %}{% endblock %}
 {% block remote_url %}{% if site %}"{{SUPPORT_SERVER}}custom_xml.php?&query="+query+"&option=SITE&optval={{site}}&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&groupVO="+VOGroup+"&localJobs="+localJobs+"&tree="+tree{% elif country %}"{{SUPPORT_SERVER}}custom_xml.php?query="+query+"&option=COUNTRY&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&groupVO="+VOGroup+"&localJobs="+localJobs+"&tree="+tree+"&optval={{country}}"{% elif federation %}"{{SUPPORT_SERVER}}custom_xml.php?query="+query+"&option=FEDERATION&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&groupVO="+VOGroup+"&localJobs="+localJobs+"&tree="+tree+"&optval={{federation}}"{% else %}"{{SUPPORT_SERVER}}custom_xml.php?query="+query+"&option="+option+"&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&groupVO="+VOGroup+"&groupVO="+VOGroup+"&localJobs="+localJobs+"&tree="+tree+"&optval="{% endif %}{% endblock %}

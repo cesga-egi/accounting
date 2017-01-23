@@ -1,4 +1,7 @@
 /* Put your CSS here */
+.ui-tooltip {
+    max-width: 40em;
+}
 .ember-application {
     margin: 20px;
 }

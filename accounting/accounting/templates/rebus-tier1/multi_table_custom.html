@@ -30,6 +30,13 @@
 {% block more-script %} {% endblock more-script %}
 $(document).ready(function() {
     {% block more-doc-ready %} {% endblock more-doc-ready %}
+$("h3:contains('Wallclock Work')").attr("data-toggle","tooltip").attr("title","Same as 'Normalized sum elapsed * Number of Processors'. Defined as wallclock time as reported by the batch system, normalized by benchmarked HEPSPEC06 power of a given CPU resource and multiplied by number of processors.");
+$("text:contains('Wallclock Work')").attr("data-toggle","tooltip").attr("title","Same as 'Normalized sum elapsed * Number of Processors'. Defined as wallclock time as reported by the batch system, normalized by benchmarked HEPSPEC06 power of a given CPU resource and multiplied by number of processors.");
+$("td:contains('Local*')").attr("data-toggle","tooltip").attr("title","Locally submitted jobs.");
+$("td:contains('Global**')").attr("data-toggle","tooltip").attr("title","Jobs submitted to the distributed infrastructure");
+$("tr:contains('TOTAL')").attr("id","mygrey");
+   // $('[data-toggle="popover"]').popover();
+    $('[data-toggle="tooltip"]').tooltip();
     $("#tabs").tabs( {
         "show": function(event, ui) {
             var oTable = $('div.dataTables_scrollBody>table.display', ui.panel).dataTable();

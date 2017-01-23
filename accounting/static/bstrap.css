@@ -15,10 +15,23 @@ text-color: white;
 background: #333;
 
 }
-
-
-#ngis_menu {max-height: 400px; overflow: hidden; overflow-y: auto;}
-#cloud_menu {max-height: 400px; overflow: hidden; overflow-y: auto;}
+.popover {width: 80em;}
+@media screen and (max-width: 692px)   {
+    #figure-form, .egi-logo{
+        width:100%;   
+        float:none;
+    }
+}
+#whatisegidiv {background-color: #0367b0; color: white;}
+#whatisegidiv .btn {background-color: #0367b0; color: white;}
+#whatisegidiv .popover {background-color: #0367b0; color: white;}
+#whatisegidiv .popover-title {background-color: #0367b0; color: white;}
+#whatisegidiv .popover a {color: #0000fe;}
+#page_text {font-size: 130%;}
+#htc_ngi {max-height: 400px; overflow: hidden; overflow-y: auto;}
+#htc_country {max-height: 400px; overflow: hidden; overflow-y: auto;}
+#cloud_ngi {max-height: 400px; overflow: hidden; overflow-y: auto;}
+#cloud_country {max-height: 400px; overflow: hidden; overflow-y: auto;}
 /* Wrapper for page content to push down footer */
 #wrap {
   min-height: 100%;
@@ -254,7 +267,8 @@ width:99%;
     overflow: visible;
 }
  .dgrid-cell {
-    width: 100px;
+    min-width: 2em;
+    width: 10em;
  }
 .dgrid-column-set-scroller-container {
     position: relative;

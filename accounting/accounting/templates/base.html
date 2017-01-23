@@ -22,7 +22,7 @@
 { name: 'jquery-ui', location: '../jquery-ui', main: 'jquery-ui' },
 { name: 'bootstrap', location: '../bootstrap/dist/js', main: 'bootstrap' },
 { name: 'bootstrap-datepicker', location: '../bootstrap-datepicker/dist/js', main: 'bootstrap-datepicker' }]"></script>
-<title>EGI Production Accounting</title>
+<title>Production Accounting</title>
 </head>
 <body class="claro" style="overflow-x: hidden; margin:0; padding:0;">
 <div class='wrap'>
@@ -35,7 +35,11 @@
     <!-- /#sidebar-wrapper -->
     <!-- Fixed navbar -->
     <div id="page-content-wrapper" style="width=100%;margin-left:0; margin-right:0;" class="">
+        {% if wlcg %}
+        {% include "navbar_wlcg.html" %}
+        {% else %}
         {% include "navbar.html" %}
+        {% endif %}
         <div class="c" style="width=100%;margin:0;padding-left:1em; padding-right:1em;">
 <div style="float: right; margin-top: -20px;">
 <img src="/static/AcctPortal_egi_ack.png" width="600" height="64" border="0" usemap="#map" />
@@ -63,11 +67,11 @@
                   {% elif site_admin %}
                 <div class="form-group">
                   <div class="col-xs-4">
-                    <label for="permsinput" class="control-label">Selected Site: </label>
+                    <label for="permsinput" class="control-label">Selected Resource Centre: </label>
                     <div class="input-group">
-                    <select id="permsinput" data-toggle="tooltip" title="Selected Site for the accounting" data-dojo-props="position:['above']" placeholder="Select Site" class="form-control col-xs-2">
+                    <select id="permsinput" data-toggle="tooltip" title="Selected Resource Centre for the accounting" data-dojo-props="position:['above']" placeholder="Select Resource Centre" class="form-control col-xs-2">
                     </select>
-                    <span class="input-group-btn"><a class="btn btn-default" data-toggle="popover" title="Description" data-content="Selects the Site for which the accounting is shown"><i class="glyphicon glyphicon-question-sign"></i></a></span>
+                    <span class="input-group-btn"><a class="btn btn-default" data-toggle="popover" title="Description" data-content="Selects the Resource Centre for which the accounting is shown"><i class="glyphicon glyphicon-question-sign"></i></a></span>
                   </div>
                  </div>
                  </div>
@@ -130,8 +134,8 @@
                 <div class="input-group">
                     <label class="radio-inline bold" style="font-weigth: bold">VO Filtering: </label>
                <label class="radio-inline"><input class="" type="radio" data-content="The four VOs used on the WLCG Large Hadron Collider (ATLAS, ALICE, LHCb, CMS)" value="lhc" name="VOGroup">LHC</label>
-<label class="radio radio-inline"><input type="radio" class="" data-content="Top 10 VOs in the range selected with the most unnormalised CPU consumed" value="top10" checked="checked" name="VOGroup">TOP 10</label>
-<label class="radio radio-inline"><input type="radio" class="" data-content="All VOs" value="all" name="VOGroup">ALL</label>
+<label class="radio radio-inline"><input type="radio" class="" data-content="Top 10 VOs that in the period and options selected have the highest unnormalised raw CPU value" value="top10" checked="checked" name="VOGroup">TOP 10</label>
+<label class="radio radio-inline"><input type="radio" class="" data-content="All VOs are included" value="all" name="VOGroup">ALL</label>
 <label class="radio radio-inline"><input type="radio" class="" data-content="VOs officially registered on the EGI Operations Portal" value="egi" name="VOGroup">EGI Official</label>
 <label class="radio radio-inline"><input type="radio" class="" data-content="Custom set of virtual organisations" value="custom" name="VOGroup">Custom VO Selection</label>
                <span class=""><a id="vogroup_help" class="btn btn-default" style="border: 0" data-toggle="popover" title="VOGroup Description"><i class="glyphicon glyphicon-question-sign"></i></a></span>
@@ -139,12 +143,21 @@
 <div id="checkboxes"></div>
 
                 <div class="input-group">
-          <label class="radio-inline bold" style="font-weigth: bold">Local Jobs: </label>
-               <label class="radio-inline"><input class="" data-content="Only show jobs managed by the e-infrastructure middleware" value="onlyinfrajobs" type="radio" checked="checked" name="localJobs">Infrastructure Jobs Only</label>
-<label class="radio-inline"><input type="radio" class="" data-content="All jobs" value="localinfrajobs" name="localJobs">Infrastructure and Local Jobs</label>
-                 <label class="radio-inline"><input class="" data-content="Jobs directly managed by the local resource management system of the Resource Centers" value="onlylocaljobs" type="radio" name="localJobs">Local Jobs Only</label>
+{% if wlcg_page %}
+          <label class="radio-inline bold" style="font-weigth: bold">Job submission type: </label>
+               <label class="radio-inline"><input class="" data-content="Selects jobs that were successfully submitted to a local cluster by means of a Compute Element interface, and successfully completed." value="onlyinfrajobs" type="radio" checked="checked" name="localJobs">Global Jobs Only</label>
+<label class="radio-inline"><input type="radio" class="" data-content="All jobs executed, regardless of the submission mode." value="localinfrajobs" name="localJobs">All Jobs</label>
+                 <label class="radio-inline"><input class="" data-content="Selects jobs that were successfully submitted and completed by a local cluster by submitting them directly to the the batch system of the computing cluster, i.e. bypassing the Compute Element interface." value="onlylocaljobs" type="radio" name="localJobs">Local Jobs Only</label>
                <span class=""><a id="localjobs_help" class="btn btn-default" style="border: 0" data-toggle="popover" title="Local Jobs Description"><i class="glyphicon glyphicon-question-sign"></i></a></span>
                 </div> 
+{% else %}
+          <label class="radio-inline bold" style="font-weigth: bold">Local Jobs: </label>
+               <label class="radio-inline"><input class="" data-content="Selects jobs that were successfully submitted to a local cluster by means of a Compute Element interface, and successfully completed." value="onlyinfrajobs" type="radio" checked="checked" name="localJobs">Infrastructure Jobs Only</label>
+<label class="radio-inline"><input type="radio" class="" data-content="All jobs executed by the EGI Federation, regardless of the submission mode." value="localinfrajobs" name="localJobs">Infrastructure and Local Jobs</label>
+                 <label class="radio-inline"><input class="" data-content="Selects jobs that were successfully submitted and completed by a local cluster by submitting them directly to the the batch system of the computing cluster, i.e. bypassing the Compute Element interface." value="onlylocaljobs" type="radio" name="localJobs">Local Jobs Only</label>
+               <span class=""><a id="localjobs_help" class="btn btn-default" style="border: 0" data-toggle="popover" title="Local Jobs Description"><i class="glyphicon glyphicon-question-sign"></i></a></span>
+                </div> 
+{% endif %}
         </div>
 {% endif %}
               <div class="form-group">
@@ -162,6 +175,7 @@
               </div>
 {%block description%}{%endblock%}
 {%block disclaimer%}{%endblock%}
+<div id="warning"></div>
 <div id="loadingOverlay" style="height:200px;">
 <div class="sage">
 <div id="user_dn"></div>
@@ -196,10 +210,17 @@ require(["jquery-ui", "bootstrap", "bootstrap-datepicker", "dojo/_base/declare",
   function(jqueryui, bootstrap, datepicker, declare, Def, Pie, Columns, Grid, Pagination, ColumnSet, SummaryRow, Store, Filter, locale, Chart, blue, claro, Markers, Legend, MouseZoomAndPan, Tooltip, Magnify, Highlight, MoveSlice, dom, domConstruct, win, aspect, dojonumber, parser, dijit, registry, all, standby, when, on, domReady){
 
      //Helpers
+{% if wlcg_page %} 
+     imtitulo =  {'njobs' : 'Total number of jobs', 'normcpu' : 'Sum CPU Work HS06 Hours', 'normcpu_days' : 'Sum CPU Work HS06 Days', 'normcpu-HEPSPEC06' : 'Normalized CPU time (HEPSPEC06)', 'sumcpu' : 'Sum CPU Time Hours used', 'sumcpu_days' : 'Sum CPU Time Days used', 'sumelap' : 'Total elapsed time', 'normelap' : 'Normalized Elapsed time', 'normelap-HEPSPEC06' : 'Normalized Elapsed time (HEPSPEC06)', 'normelap_processors' : 'SUM Wallclock Work HS06 Hours', 'normelap_processors_days' : 'SUM Wallclock Work HS06 Days', 'elap_processors' : 'Sum Wallclock Time Hours', 'elap_processors_days' : 'Sum Wallclock Time Days', 'sumelcpu' : 'Total Elapsed-CPU', 'cpueff' : 'CPU Efficiency', 'vm_num' : 'Total number of VM run', 'sum_elap' : 'Sum Elapsed time', 'sum_cpu' : 'Sum CPU time', 'net_in' : 'Inbound Network Traffic', 'net_out' : 'Outbound Network Traffic', 'disk' : 'Disk Used', 'cost' : 'Monetary Cost', 'mem' : 'Memory Used'};
+     imunit =  {'njobs' : '', 'normcpu' : '', 'normcpu_days' : '', 'sumcpu' : '', 'sumcpu_days': '',  'sumelap' : '(h)', 'normelap' : '(h)', 'normelap_processors' : '', 'normelap_processors_days' : '', 'elap_processors' : '', 'elap_processors_days' : '', 'sumelcpu' : '(h)', 'cpueff' : '(%)', 'vm_num' : '', 'sum_elap' : '(h)', 'sum_cpu' : '', 'sum_cpu_days': '',  'net_in' : '(b)', 'net_out' : '(b)', 'disk' : '(b)', 'cost' : '(€)', 'mem' : '(b)'};
+     imrange = {'DISCIPLINE_3' : 'Scientific Discipline Level 3', 'DISCIPLINE_2' : 'Scientific Discipline Level 2', 'DISCIPLINE': 'Scientific Discipline', 'DATE': 'Month', 'Year': 'Year', 'Country': 'Country', 'VO': 'VO', 'REGION': 'Operations Centre', 'NGI': 'Operations Centre', 'COUNTRY': 'Country', 'SITE': 'Site','vm_id' : 'VM Identifier', 'NUMBER PROCESSORS': 'Number of processors', 'NODECOUNT': 'Nodes', 'TIER1': 'Tier 1 Node', 'FEDERATION': 'Tier 2 Federation', 'SubmitHost': 'Submit Host', 'UserDN': 'User DN', 'User Role' : 'User Role', '3M': 'Quarter', '6M': 'Half-year', 'STATUS': 'VM Execution Status'};
+     range_help = {'DISCIPLINE_3' : 'Scientific Discipline Level 3', 'DISCIPLINE_2' : 'Scientific Discipline Level 2', 'DISCIPLINE': 'Scientific Discipline', 'DATE': 'Aggregate data with a granularity of months', 'Year': 'Aggregate data with a granularity of years', 'Country': 'Country of the resource provider in which the job was executed.', 'VO': 'Aggregate data for virtual organisation', 'REGION': 'Region', 'Operations Centre': 'Aggregate data for Operations Centre of the Resource Centre in which the job was executed', 'COUNTRY': 'Country of the resource provider in which the job was executed', 'SITE': 'Aggregate data for Sites','vm_id' : 'VM Identifier', 'NUMBER PROCESSORS': 'Number of logical processors used by the jobs', 'NODECOUNT': 'Number of processing nodes used by the jobs', 'TIER1': 'Tier 1 Node', 'FEDERATION': 'Tier 2 Federation', 'SubmitHost': 'Name of the machine where the job has been executed', 'UserDN': 'User DN', 'User Role' : 'User Role', '3M': 'Aggregate data with a granularity of quarters', '6M': 'Aggregate data with a granularity of half-years', 'STATUS': 'Status of execution of the Virtual Machine.'};
+{% else %}
      imtitulo =  {'njobs' : 'Total number of jobs', 'normcpu' : 'Normalized CPU time', 'normcpu-HEPSPEC06' : 'Normalized CPU time (HEPSPEC06)', 'sumcpu' : 'Total CPU time used', 'sumelap' : 'Total elapsed time', 'normelap' : 'Normalized Elapsed time', 'normelap-HEPSPEC06' : 'Normalized Elapsed time (HEPSPEC06)', 'normelap_processors' : 'Normalized Elapsed time (HEPSPEC06) * Number of Processors', 'elap_processors' : 'Elapsed time (HEPSPEC06) * Number of Processors', 'sumelcpu' : 'Total Elapsed-CPU', 'cpueff' : 'CPU Efficiency', 'vm_num' : 'Total number of VM run', 'sum_elap' : 'Sum Elapsed time', 'sum_cpu' : 'Sum CPU time', 'net_in' : 'Inbound Network Traffic', 'net_out' : 'Outbound Network Traffic', 'disk' : 'Disk Used', 'cost' : 'Monetary Cost', 'mem' : 'Memory Used'};
      imunit =  {'njobs' : '', 'normcpu' : '(h)', 'sumcpu' : '(h)', 'sumelap' : '(h)', 'normelap' : '(h)', 'normelap_processors' : '(h)', 'elap_processors' : '(h)', 'sumelcpu' : '(h)', 'cpueff' : '(%)', 'vm_num' : '', 'sum_elap' : '(h)', 'sum_cpu' : '(h)', 'net_in' : '(b)', 'net_out' : '(b)', 'disk' : '(b)', 'cost' : '(€)', 'mem' : '(b)'};
-     imrange = {'DISCIPLINE_3' : 'Scientific Discipline Level 3', 'DISCIPLINE_2' : 'Scientific Discipline Level 2', 'DISCIPLINE': 'Scientific Discipline', 'DATE': 'Date', 'Year': 'Year', 'Country': 'Country', 'VO': 'VO', 'REGION': 'Region', 'NGI': 'NGI', 'COUNTRY': 'Country', 'SITE': 'Site','vm_id' : 'VM Identifier', 'NUMBER PROCESSORS': 'Number of processors', 'NODECOUNT': 'Nodes', 'TIER1': 'Tier 1 Node', 'FEDERATION': 'Tier 2 Federation', 'SubmitHost': 'Submit Host', 'UserDN': 'User DN', 'User Role' : 'User Role', '3M': 'Trimester', '6M': 'Semester'};
-     range_help = {'DISCIPLINE_3' : 'Scientific Discipline Level 3', 'DISCIPLINE_2' : 'Scientific Discipline Level 2', 'DISCIPLINE': 'Scientific Discipline', 'DATE': 'Aggregate data with a granularity of months', 'Year': 'Aggregate data with a granularity of years', 'Country': 'Country of the resource provider in which the job was executed.', 'VO': 'Aggregate data for virtual organisation', 'REGION': 'Region', 'NGI': 'Aggregate data for Operations Centre of the site in which the job was executed', 'COUNTRY': 'Country of the resource provider in which the job was executed', 'SITE': 'Aggregate data for Resource Centres','vm_id' : 'VM Identifier', 'NUMBER PROCESSORS': 'Number of logical processors used by the jobs', 'NODECOUNT': 'Number of processing nodes used by the jobs', 'TIER1': 'Tier 1 Node', 'FEDERATION': 'Tier 2 Federation', 'SubmitHost': 'Name of the computing element which executed the job', 'UserDN': 'User DN', 'User Role' : 'User Role', '3M': 'Aggregate data with a granularity of trimesters', '6M': 'Aggregate data with a granularity of semesters'};
+     imrange = {'DISCIPLINE_3' : 'Scientific Discipline Level 3', 'DISCIPLINE_2' : 'Scientific Discipline Level 2', 'DISCIPLINE': 'Scientific Discipline', 'DATE': 'Month', 'Year': 'Year', 'Country': 'Country', 'VO': 'VO', 'REGION': 'Operations Centre', 'NGI': 'Operations Centre', 'COUNTRY': 'Country', 'SITE': 'Resource Centre','vm_id' : 'VM Identifier', 'NUMBER PROCESSORS': 'Number of processors', 'NODECOUNT': 'Nodes', 'TIER1': 'Tier 1 Node', 'FEDERATION': 'Tier 2 Federation', 'SubmitHost': 'Submit Host', 'UserDN': 'User DN', 'User Role' : 'User Role', '3M': 'Quarter', '6M': 'Half-year', 'STATUS': 'VM Execution Status'};
+     range_help = {'DISCIPLINE_3' : 'Scientific Discipline Level 3', 'DISCIPLINE_2' : 'Scientific Discipline Level 2', 'DISCIPLINE': 'Scientific Discipline', 'DATE': 'Aggregate data with a granularity of months', 'Year': 'Aggregate data with a granularity of years', 'Country': 'Country of the resource provider in which the job was executed.', 'VO': 'Aggregate data for virtual organisation', 'REGION': 'Region', 'Operations Centre': 'Aggregate data for Operations Centre of the Resource Centre in which the job was executed', 'COUNTRY': 'Country of the resource provider in which the job was executed', 'SITE': 'Aggregate data for Resource Centres','vm_id' : 'VM Identifier', 'NUMBER PROCESSORS': 'Number of logical processors used by the jobs', 'NODECOUNT': 'Number of processing nodes used by the jobs', 'TIER1': 'Tier 1 Node', 'FEDERATION': 'Tier 2 Federation', 'SubmitHost': 'Name of the machine where the job has been executed', 'UserDN': 'User DN', 'User Role' : 'User Role', '3M': 'Aggregate data with a granularity of quarters', '6M': 'Aggregate data with a granularity of half-years', 'STATUS': 'Status of execution of the Virtual Machine.'};
+{% endif %}
      addCommas = function(nStr) {
                      nStr += ''; x = nStr.split('.'); 
                      x1 = x[0]; x2 = x.length > 1 ? '.' + x[1] : ''; 
@@ -239,6 +260,23 @@ require(["jquery-ui", "bootstrap", "bootstrap-datepicker", "dojo/_base/declare",
                                    return '<b><a style="text-decoration:none" href="' + str + '">' + str + '</a></b>'; 
                                 else return str;};
 $('[data-toggle="popover"]').popover();
+$('body').on('click', function (e) {
+    $('[data-toggle=popover]').each(function () {
+        // hide any open popovers when the anywhere else in the body is clicked
+        if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+            $(this).popover('hide');
+        }
+    });
+});
+//Destroy popovers when another one is shown
+$('body').popover({
+                selector: '[rel=popover]',
+                trigger: "click"
+            }).on("show.bs.popover", function(e){
+                // hide all other popovers
+                $("[rel=popover]").not(e.target).popover("destroy");
+                $(".popover").remove();                    
+            });
 function metric_help_set() {
    content= $( "#inputMetric option:selected" ).attr('data-content');
    $('#metric_help').attr("data-content",content); 
@@ -482,6 +520,8 @@ function state_url(yrange) {
    var localJobs = $('input:radio[name=localJobs]:checked').val();
    if (yrange == "COUNTRY" || xrange == "COUNTRY") option="COUNTRY";
    if (yrange == "REGION" || xrange == "REGION") option="REGION";
+   if (xrange == "DISCIPLINE_2" || xrange == "DISCIPLINE_3") xrange = "DISCIPLINE";
+   if (yrange == "DISCIPLINE_2" || yrange == "DISCIPLINE_3") yrange = "DISCIPLINE";
    {% if vo_admin %}
    var st = vo + '/' + query + '/' + yrange + '/' + xrange + '/' + sYear + '/' + sMonth + '/' + eYear + '/' + eMonth;
    {% elif site_admin %}
@@ -567,6 +607,28 @@ function error_handler (message) {
      //Table
      promise = all({xlegend: store.get('xlegend'), ylegend: store.get('ylegend'), var: store.get('var')});
      promise.then(function(response){
+     var xrange = $('#inputX').val();
+     var yrange = $('#inputY').val();
+     if (typeof response['var'] == 'undefined' && ( xrange == 'DISCIPLINE' || yrange == 'DISCIPLINE')) {
+      if (xrange == 'DISCIPLINE') 
+      { 
+          if (yrange == 'VO') {
+            $('#inputY').val('DATE').change();
+            $('#inputX').val('VO').change();
+          } else {
+             $('#inputX').val('VO').change();
+          }
+       } else { 
+          if (xrange == 'VO') {
+            $('#inputX').val('DATE').change();
+            $('#inputY').val('VO').change();
+          } else {
+            $('#inputY').val('VO').change();
+          }
+      };
+      update();
+      return;  
+     }
         if (typeof response['var'] == 'undefined') error_handler("No accounting data for these options."); 
         else {
         var index;
@@ -576,7 +638,7 @@ function error_handler (message) {
         var ylegend = response['ylegend']
         var xlegend = response['xlegend']
         if (user_dn = response['var']['user_dn']) $("#user_dn").replaceWith('<div id="user_dn">Logged in as <i>'+user_dn+'</i></div>');
-        if (granted_sites = response['var']['granted_sites']) $("#granted_sites").replaceWith('<div id="granted_sites">Site Manager of <i>'+granted_sites.join(', ')+'</i></div>');
+        if (granted_sites = response['var']['granted_sites']) $("#granted_sites").replaceWith('<div id="granted_sites">Resource Centre Manager of <i>'+granted_sites.join(', ')+'</i></div>');
         if (granted_vos = response['var']['granted_vos']) $("#granted_vos").replaceWith('<div id="granted_vos">VO Manager of <i>'+granted_vos.join(', ')+'</i></div>');
         var field_list = "";
         ylength = Object.keys(ylegend).length-2;
@@ -647,7 +709,14 @@ function error_handler (message) {
            });
         }
         //$('#table-title').replaceWith("<div id='table-title'><h4 style='text-align:center'>" + imtitulo[query_name] + ' ' + imunit[query_name] + ' by ' + imrange[yrange] + ' and ' + imrange[xrange]);
-        var subtitle = {% if ngi %}'{{ngi}}'{% elif country or allcountry%}'{{country}}'{% elif site %}'Site {{site}}'{% elif federation %}'Federation {{federation}}'{% elif node %}'Node {{node}}'{% elif vo%}'VO {{vo}}'{%elif discipline%}'{{discipline}}'{%else%}''{%endif%};
+        {% if wlcg_page %}
+        if ($.inArray(query_name, ["sumcpu_days", "sumcpu", "elap_processors_days", "elap_processors"]) > -1) {
+           $('#warning').replaceWith("<div id='warning' style='font-size: larger'><b>Warning: </b> The \"" + imtitulo[query_name] + "\" metric is not normalised, which makes all plots and tables using it misleading when comparing among sites since it does not take into account the relative power of CPUs used on different sites. </div>");
+        } else {
+           $('#warning').replaceWith("<div id='warning' style='font-size: larger'></div>");
+        }
+        {% endif %}
+        var subtitle = {% if ngi %}'{{ngi}}'{% elif country or allcountry%}'{{country}}'{% elif site %}'Resource Centre {{site}}'{% elif federation %}'Federation {{federation}}'{% elif node %}'Node {{node}}'{% elif vo%}'VO {{vo}}'{%elif discipline%}'{{discipline}}'{%else%}''{%endif%};
         var vo_selection = '';
         var vo_description = 'all VOs';
         {% if VOGroup %}

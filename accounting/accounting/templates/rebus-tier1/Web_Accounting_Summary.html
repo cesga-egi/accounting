@@ -89,7 +89,7 @@ $('#tiers_menu').load('{{SUPPORT_SERVER}}tiers_tree.php');
 	<div class="fieldwrapper">
     <label> Output tables </label>
      <select class="selectMultiple" multiple name="tablesSelect" id="tablesSelect">
-          <option value=cpu {{selectedTables.cpu}} >CPU</option>
+          <option data-toggle="tooltip" title="Same as 'Normalized sum elapsed * Number of Processors'. Defined as wallclock time as reported by the batch system, normalized by benchmarked HEPSPEC06 power of a given CPU resource and multiplied by number of processors." value=cpu {{selectedTables.cpu}} >Wallclock Work</option>
           <option value=disk {{selectedTables.disk}}>Disk Space</option>
           <option value=tape {{selectedTables.tape}}>Tape Space</option>
       </select>
@@ -98,15 +98,10 @@ $('#tiers_menu').load('{{SUPPORT_SERVER}}tiers_tree.php');
     <div class="fieldwrapper" >
       <label>Output plots</label>
       <select class="selectMultiple" multiple name="graphsSelect" id="graphsSelect">
-      	{% if selectedGraphs.cputime %}
-          <option value=cputime SELECTED>CPU time</option>
-        {%else%}
-           <option value=cputime>CPU time</option>
-        {%endif%}
       	{% if selectedGraphs.walltime %}
-          <option value=walltime SELECTED>Wall time * #Cores</option>
+          <option value=walltime data-placement="right" data-toggle="tooltip" title="Same as 'Normalized sum elapsed * Number of Processors'. Defined as wallclock time as reported by the batch system, normalized by benchmarked HEPSPEC06 power of a given CPU resource and multiplied by number of processors." SELECTED>Wallclock Work</option>
         {%else%}
-           <option value=walltime>Wall time * #Cores</option>
+           <option value=walltime data-placement="right" data-toggle="tooltip" title="Same as 'Normalized sum elapsed * Number of Processors'. Defined as wallclock time as reported by the batch system, normalized by benchmarked HEPSPEC06 power of a given CPU resource and multiplied by number of processors.">Wallclock Work</option>
         {%endif%}
         {% if selectedGraphs.efficiency %}
            <option value=efficiency SELECTED>Efficiency</option>
@@ -135,6 +130,11 @@ $('#tiers_menu').load('{{SUPPORT_SERVER}}tiers_tree.php');
 	<div class="fieldwrapper"><font type="bold">Include experiment summary </font>
 	      {%if selectedExpSum %}<input type="checkbox"  id='expCheck' checked="true" />
 	      {%else%}<input type="checkbox"  id='expCheck' />
+	      {%endif%}
+	</div>
+	<div class="fieldwrapper"><font type="bold">Metric in HS06 days instead of hours </font>
+	      {%if selectedMetricDays %}<input type="checkbox"  id='daysCheck' checked="true" />
+	      {%else%}<input type="checkbox"  id='daysCheck' />
 	      {%endif%}
 	</div>
   </div>
@@ -180,7 +180,7 @@ $('#tiers_menu').load('{{SUPPORT_SERVER}}tiers_tree.php');
    <br>
    {% for my_graph in selectedGraphs %}
       {% if my_graph != 'nographs' %}
-      <div id="mychart_{{ k|formatTags }}_{{my_graph}}" class="myChart" style="width: 600px; height: 300px; margin: 0 auto; float:left;"></div>
+      <div id="mychart_{{ k|formatTags }}_{{my_graph}}" class="myChart" style="width: 600px; height: 300px; margin: 20px auto; float:left;"></div>
       {% endif %}
    {% endfor %}
     </div>  

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block description %}
 <div id="page_text" style="clear:both">
-The {%if not site and not allcountry and not allcountry_ovw %}High Throughput Compute EGI{%elif not site%}Grid WLCG{%endif%} view shows the accounting data {% if not site %}{% if allcountry or allcountry_ovw%} from all Grid Sites in the database {% else %} from all HTC Resource centers in the EGI infrastructure{% endif %}{% endif %}{%if country or allcountry %} in {{country}}{% elif ngi %} in {{ngi}}{% elif site %} in Resource Centre {{site}}{% else %}. Data can be organized by NGI or country{%endif%}. {%if not site%}Only production certified Resource centers are included.{% endif %}
+The {%if not site and not allcountry and not allcountry_ovw %}High Throughput Compute EGI{%elif not site%}Grid WLCG{%endif%} view shows the accounting data {% if not site %}{% if allcountry or allcountry_ovw%} from all Grid Resource Centres in the database {% else %} from all Hight Throughput Compute Resource Centres in the EGI infrastructure{% endif %}{% endif %}{%if country or allcountry %} in {{country}}{% elif ngi %} in {{ngi}}{% elif site %} in Resource Centre {{site}}{% else %}. Data can be organized by Operations Centre or Country{%endif%}. {%if not site%}Accounting information is only gathered from Resource Centres that are part of the EGI Federation and are certified in GOCDB.{% endif %}
 
 The metric shown is <span id="metric_description">Total number of jobs</span>, grouped by <span id="inputY_description">Region</span> and <span id="inputX_description">Month</span>, <span id="vo_description">the official EGI VOs </span> are shown. <span id="LocalJobs_description"></span>
 </div>
@@ -9,14 +9,14 @@ The metric shown is <span id="metric_description">Total number of jobs</span>, g
 {% block option %}{% if site %}"SITE"{% elif country %}"COUNTRY"{% else %}"REGION"{% endif %}{% endblock %}
 {% block tree %}{%if allcountry or allcountry_ovw %}"ALLCOUNTRY"{%elif country or ovw_country %}"COUNTRY"{% else %}"EGI"{% endif %}{% endblock %}
 {% block inputMetric %} 
-<option class='' data-title='Number of jobs'  data-dojo-props='position:['above']' data-content='Total number of jobs' selected="selected" value='njobs'>Number of jobs</option>
-<option class='' data-title='Normalized CPU Hours'  data-dojo-props='position:['above']' data-content='Raw CPU hours normalized with the HEPSPEC06 benchmark' value='normcpu'>Normalized Sum CPU</option> 
-<option data-title='Unnormalized CPU Hours' data-dojo-props='position:['above']' data-content='Raw CPU hours that are not normalized to a common benchmark' class='' value='sumcpu'>Sum CPU</option> 
-<option data-title='Normalized Wall Hours' data-dojo-props='position:['above']' data-content='Wall Clock CPU hours normalized with the HEPSPEC06 benchmark' class='' value='normelap'>Normalized Sum Elapsed</option> 
-<option data-title='Normalized Wall Hours * Number of Processors' data-dojo-props='position:['above']' data-content='Wall Clock CPU hours normalized with the HEPSPEC06 benchmark * Number of Processors' class='' value='normelap_processors'>Normalized Sum Elapsed * Number of Processors</option> 
-<option data-title='Wall Hours * Number of Processors' data-dojo-props='position:['above']' data-content='Wall Clock CPU hours * Number of Processors' class='' value='elap_processors'>Sum Elapsed * Number of Processors</option> 
-<option data-title='Unnormalized Wall CPU Hours' data-dojo-props='position:['above']' data-content='Wall clock CPU hours that are not normalized to a common benchmark' class='' value='sumelap'>Sum Elapsed</option>
-<option data-title='Efficiency' data-dojo-props='position:['above']' data-content='CPU Time * 100 / (Wall time * Number of Processors)' class='' value='cpueff'>CPU Efficiency</option>
+<option class='' data-title='Number of jobs'  data-dojo-props='position:['above']' data-content='Number of discrete jobs launched, independent on completion status.' selected="selected" value='njobs'>Number of jobs</option>
+<option class='' data-title='Normalized CPU Hours'  data-dojo-props='position:['above']' data-content='Hours of CPU time consumed in calculations by jobs, normalised using the <a href="http://w3.hepix.org/benchmarks/doku.php">HEPSPEC06 benchmark</a>.' value='normcpu'>Normalized Sum CPU</option> 
+<option data-title='Unnormalized CPU Hours' data-dojo-props='position:['above']' data-content='Hours of not normalised CPU time consumed by jobs.' class='' value='sumcpu'>Sum CPU</option> 
+<option data-title='Normalized Wall Hours' data-dojo-props='position:['above']' data-content='Hours of wall-clock time consumed by jobs, including I/O, OS and other housekeeping tasks, normalised using the <a href="http://w3.hepix.org/benchmarks/doku.php">HEPSPEC06 benchmark</a>.' class='' value='normelap'>Normalized Sum Elapsed</option> 
+<option data-title='Normalized Wall Hours * Number of Processors' data-dojo-props='position:['above']' data-content='Hours of wall-clock time consumed by jobs, including I/O, OS and other housekeeping tasks, normalised using the <a href="http://w3.hepix.org/benchmarks/doku.php">HEPSPEC06 benchmark</a> multiplied by the number of logical cores used by each job..' class='' value='normelap_processors'>Normalized Sum Elapsed * Number of Processors</option> 
+<option data-title='Wall Hours * Number of Processors' data-dojo-props='position:['above']' data-content='Hours of not normalised wall-clock time consumed by jobs, including I/O, OS and other housekeeping tasks, multiplied by the number of logical cores used by the job.' class='' value='elap_processors'>Sum Elapsed * Number of Processors</option> 
+<option data-title='Unnormalized Wall CPU Hours' data-dojo-props='position:['above']' data-content='Hours of not normalised wall-clock time consumed by jobs, including I/O, OS and other housekeeping tasks.' class='' value='sumelap'>Sum Elapsed</option>
+<option data-title='Efficiency' data-dojo-props='position:['above']' data-content='Normalised Sum CPU / (Normalised Sum Elapsed * Number of Processors). It measures the percentage of running time of the process used to do actual computations.' class='' value='cpueff'>CPU Efficiency</option>
 {% endblock %}
 {% block display_funcs %}
 vodislabel = function(str){ return '<b><a style="text-decoration:none" href="/discipline/'+ str + '/' + state_url(null) +'">'+str+'</a></b>' };
@@ -25,50 +25,50 @@ ngilabel = function(str){ return '<b><a style="text-decoration:none" href="/egi/
 countrylabel = function(str){ if (tree=='ALLCOUNTRY') { href='/wlcg/country/';} else {var href='/egi/country/';} return '<b><a style="text-decoration:none" href="'+href + str + '/' +  state_url('SITE') + '">' + str + '</a></b>';};
 {% endblock %}
 {% block XOptions %} 
-<option data-title="Date" value="DATE" class="">Month</option>
+<option data-title="Month" value="DATE" class="">Month</option>
 <option data-title="Year" value="Year" class="">Year</option>
-<option data-title="3M" value="3M" class="">Trimester</option>
-<option data-title="6M" value="6M" class="">Semester</option>
+<option data-title="3M" value="3M" class="">Quarter</option>
+<option data-title="6M" value="6M" class="">Half-year</option>
 {% if site %}
 <option value="COUNTRY" class="">Country</option>
-<option value="REGION" class="">NGI</option>
-<option data-title="Site" value="SITE" class="">Resource Centre</option>
+<option value="REGION" class="">Operations Centre</option>
+<option data-title="Resource Centre" value="SITE" class="">Resource Centre</option>
 <option class="" selected="selected" value="VO">VO</option>
 <option value="SubmitHost" class="">Submit Host</option>
 {% elif country or allcountry %}
 <option value="COUNTRY" class="">Country</option>
-<option data-title="Site" selected="selected" value="SITE" class="">Resource Centre</option>
+<option data-title="Resource Centre" selected="selected" value="SITE" class="">Resource Centre</option>
 <option class="" value="VO">VO</option>
 <option value="SubmitHost" class="">Submit Host</option>
 {% elif ngi %}
-<option data-title="Site" selected="selected" value="SITE" class="">Resource Centre</option>
-<option value="REGION" class="">NGI</option>
+<option data-title="Resource Centre" selected="selected" value="SITE" class="">Resource Centre</option>
+<option value="REGION" class="">Operations Centre</option>
 <option class="" value="VO">VO</option>
 <option value="SubmitHost" class="">Submit Host</option>
 {% elif ovw_country or allcountry_ovw%}
 <option value="COUNTRY" class="" selected="selected">Country</option>
-<option data-title="Site" value="SITE" class="">Resource Centre</option>
+<option data-title="Resource Centre" value="SITE" class="">Resource Centre</option>
 <option class="" value="VO">VO</option>
 <option value="SubmitHost" class="">Submit Host</option>
 {% else %}
-<option selected="selected" value="REGION" class="">NGI</option>
-<option data-title="Site" value="SITE" class="">Resource Centre</option>
+<option selected="selected" value="REGION" class="">Operations Centre</option>
+<option data-title="Resource Centre" value="SITE" class="">Resource Centre</option>
 <option class="" value="VO">VO</option>
 {% endif %}
 <option value="NUMBER PROCESSORS" class="">Number of processors</option>
 <option value="NODECOUNT" class="">Nodes</option>
 {% endblock %} 
 {% block YOptions %} 
-<option data-title="Date" value="DATE" selected="selected" class="">Month</option>
+<option data-title="Month" value="DATE" selected="selected" class="">Month</option>
 <option data-title="Year" value="Year" class="">Year</option>
-<option data-title="3M" value="3M" class="">Trimester</option>
-<option data-title="6M" value="6M" class="">Semester</option>
+<option data-title="3M" value="3M" class="">Quarter</option>
+<option data-title="6M" value="6M" class="">Half-year</option>
 {% if ngi %}
-<option value="REGION" class="">NGI</option>
+<option value="REGION" class="">Operations Centre</option>
 {% elif country or allcountry%}
 <option value="COUNTRY" class="">Country</option>
 {%endif%}
-<option data-title="Site" value="SITE" class="">Resource Centre</option>
+<option data-title="Resource Centre" value="SITE" class="">Resource Centre</option>
 <option class="" value="VO">VO</option>
 <option value="NUMBER PROCESSORS" class="">Number of processors</option>
 <option value="NODECOUNT" class="">Nodes</option>

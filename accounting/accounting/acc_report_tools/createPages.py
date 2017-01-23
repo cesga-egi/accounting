@@ -9,13 +9,13 @@ def createEmptyPage(allPages, siteName, from_date, number_months):
                      'dates':calculateMonthNames(from_date, number_months),
                      'tables': [] })
 # def createPages(my_data, current_month, month_name, yearHeader = '14', sitesToCreate = "", pagesToCreate = ""):
-def createPages(my_data, from_date, number_months, sitesToCreate = "", pagesToCreate = "", experimentsToCreate = "", accSum = None, expSum = None):
+def createPages(my_data, from_date, number_months, sitesToCreate = "", pagesToCreate = "", experimentsToCreate = "", accSum = None, expSum = None, metricDays = None):
 
     allPages = []
     if accSum:
-        createSummaryPage(allPages, my_data, from_date, number_months)
+        createSummaryPage(allPages, my_data, from_date, number_months, metricDays)
     if expSum:
-        createSummaryExpPage(allPages, my_data, from_date, number_months)
+        createSummaryExpPage(allPages, my_data, from_date, number_months, metricDays)
 
     federations = my_data['CPU_Pledged'].keys()
 
@@ -34,12 +34,12 @@ def createPages(my_data, from_date, number_months, sitesToCreate = "", pagesToCr
             createEmptyPage(allPages, fedName, from_date, number_months)
             continue
         if pagesToCreate and 'cpu' in pagesToCreate:
-            createCPUPage(allPages, my_data, fedName, from_date, number_months, experimentsToCreate)
+            createCPUPage(allPages, my_data, fedName, from_date, number_months, experimentsToCreate, metricDays)
         if pagesToCreate and  ('disk' in pagesToCreate or 'tape' in pagesToCreate):
-            createStoragePage(allPages, my_data, fedName, from_date, number_months, pagesToCreate, experimentsToCreate)
+            createStoragePage(allPages, my_data, fedName, from_date, number_months, pagesToCreate, experimentsToCreate, metricDays)
     return allPages
 
-def createSummaryExpPage(allPages, my_data, current_month, month_name):
+def createSummaryExpPage(allPages, my_data, current_month, month_name, metricDays):
 
     federations = my_data['CPU_Pledged'].keys()
     federations.sort()
@@ -82,7 +82,7 @@ def createSummaryExpPage(allPages, my_data, current_month, month_name):
                      'centre':' Experiment Summary Page',
                      'page_title':' Experiment summary',
                       })
-def createSummaryPage(allPages, my_data, from_date, number_months):
+def createSummaryPage(allPages, my_data, from_date, number_months, metricDays):
     federations = my_data['CPU_Pledged'].keys()
     federations.sort()
     my_sites = []
@@ -154,7 +154,7 @@ def colorCodeSummary(top, bottom):
         return '<font color="green">' + str(num) + ' %</font>';
     return str(num) + '%'
 
-def createStoragePage(allPages, my_data, pageEntry, from_date, number_months, pagesToCreate, experimentsToCreate):
+def createStoragePage(allPages, my_data, pageEntry, from_date, number_months, pagesToCreate, experimentsToCreate, metricDays):
 
     to_return = {}
     to_return['Disk Space'] = []
@@ -178,19 +178,14 @@ def createStoragePage(allPages, my_data, pageEntry, from_date, number_months, pa
 
     to_return['Disk Space'].append ({'row_title':'installed capacity **', 'row_colspan':2,
                                     'row_content':[{'row_content':my_data['installed_disk'][pageEntry] + ['']}]})
-    to_return['Disk Space'].append ({'row_title':'disk usage as % installed ***', 'row_colspan':2,
-                                    'row_content':[{'row_content':  my_data['disk_usage_percentage'][pageEntry][:-1] + ['', '' ]}]})
-    to_return['Disk Space'].append ({'row_title':'MoU pledge *', 'row_content':[{'row_title':'allocated', 'row_content':my_data['Disk_Pledged_month'][pageEntry] + [''] },
-                                                                               {'row_title':'used', 'row_content':my_data['Disk_Pledged_month'][pageEntry] + ['']},
+    to_return['Disk Space'].append ({'row_title':'MoU pledge *', 'row_content':[{'row_title':' ', 'row_content':my_data['Disk_Pledged_month'][pageEntry] + ['']},
                                                                                ]})
     tape_used = str(100 * int(my_data['tape_used' ][pageEntry][-1]) / int(my_data['Tape_Pledged_month'][pageEntry][-1])) + '%'
 
-    to_return['Tape Space'].append ({'row_title':'TOTAL', 'row_colspan':2, 'row_content':[ { 'row_content':my_data[ 'tape_used' ][pageEntry] + [tape_used]}]})
+    to_return['Tape Space'].append ({'row_title':'TOTAL ***', 'row_colspan':2, 'row_content':[ { 'row_content':my_data[ 'tape_used' ][pageEntry] + [tape_used]}]})
     to_return['Tape Space'].append ({'row_title':'installed capacity **', 'row_colspan':2,
                                     'row_content':[{'row_content':my_data['installed_x0020_tape'][pageEntry] + [''] }]})
-    to_return['Tape Space'].append ({'row_title':'tape usage as % installed ***', 'row_colspan':2,
-                                    'row_content':[{'row_content':   my_data['tape_used_percentage'][pageEntry][:-1] + ['', '', ]}]})
-    to_return['Tape Space'].append ({'row_title':'MoU pledge *', 'row_content':[{'row_title':'used', 'row_content':my_data['Tape_Pledged_month'][pageEntry] + [''] },
+    to_return['Tape Space'].append ({'row_title':'MoU pledge *', 'row_content':[{'row_title':' ', 'row_content':my_data['Tape_Pledged_month'][pageEntry] + [''] },
                                                                                ]})
     siteName = pageEntry
     if pageEntry == 'TOTAL':
@@ -237,39 +232,38 @@ def getPledgesDates(fromDate, number_months):
     return my_dates
 
 
-def createCPUPage(allPages, my_data, pageEntry, from_date, number_months, experimentsToCreate):
+def createCPUPage(allPages, my_data, pageEntry, from_date, number_months, experimentsToCreate, metricDays):
 
     to_return = {'CPU Grid':[], 'CPU Non-Grid':[], 'CPU Total':[], 'MoU':[]}
     all_blocks = {'CPU Grid': 'grid_', 'CPU Non-Grid': 'non_grid_', 'CPU Total': ''}
+    period = 'Days' if metricDays else 'Hours'
     order = 0
     for block in all_blocks.keys():
         prefix = all_blocks[block]
         for exp in VO_NAMES:
             if experimentsToCreate and exp not in experimentsToCreate:
                 continue
-            to_return[block].append ({'row_title':exp, 'row_content':[ {'row_title':'cpu', 'row_content':my_data[prefix + exp + '_cpu_usage' ][pageEntry] + ['']},
-                                                                     {'row_title':'wall * #cores', 'row_content':my_data[prefix + exp + '_wall_time' ][pageEntry] + ['']},
+            to_return[block].append ({'row_title':exp, 'row_content':[{'row_title':'', 'row_content':my_data[prefix + exp + '_wall_time' ][pageEntry] + ['']},
                                                                        ]})
         if not experimentsToCreate or 'total' in experimentsToCreate:
-            f = str(100 * int (my_data[prefix + 'cpu_usage' ][pageEntry][-1]) / (24 * int(my_data['CPU_Pledged_month'][pageEntry][-1]))) + '%'
+#            f = str(100 * int (my_data[prefix + 'cpu_usage' ][pageEntry][-1]) / (24 * int(my_data['CPU_Pledged_month'][pageEntry][-1]))) + '%'
             g = str(100 * int (my_data[prefix + 'wall_time' ][pageEntry][-1]) / (24 * int(my_data['CPU_Pledged_month'][pageEntry][-1]))) + '%'
-            to_return[block].append ({'row_title':'TOTAL', 'row_content':[ {'row_title':'cpu', 'row_content':my_data[prefix + 'cpu_usage' ][pageEntry] + [f]},
-                                                                     {'row_title':'wall * #cores', 'row_content':my_data[prefix + 'wall_time'][pageEntry] + [g]},
+            to_return[block].append ({'row_title':'TOTAL', 'row_content':[ {'row_title':'', 'row_content':my_data[prefix + 'wall_time'][pageEntry] + [g]},
                                                                        ]})
 
-    to_return['MoU'].append ({'row_title':'MoU pledge *', 'row_content':[{'row_content': map(times24, my_data['CPU_Pledged_month'][pageEntry]) + [''] }]})
+    to_return['MoU'].append ({'row_title':'MoU pledge ***', 'row_content':[{'row_content': map(times24, my_data['CPU_Pledged_month'][pageEntry]) + [''] }]})
 
 
 
     siteName = pageEntry
     if pageEntry == 'TOTAL':
         siteName = 'All Tier-1s + CERN'
-    allPages.append({'page_title':'CPU used - HEPSPEC06-hours', 'centre':siteName, 'month':from_date,
+    allPages.append({'page_title':'Wallclock Work in HEPSPEC06 '+period, 'centre':siteName, 'month':from_date,
                      'pledges_table' :getPledgeTable(from_date, number_months, siteName, my_data),
                      'dates':calculateMonthNames(from_date, number_months),
                                  'tables': [{'table_blocks':[
-                                                 {'block_title':'Grid', 'rows': to_return['CPU Grid']  },
-                                                { 'block_title':'Non-Grid', 'rows':to_return['CPU Non-Grid']},
+                                                 {'block_title':'Global**', 'rows': to_return['CPU Grid']  },
+                                                { 'block_title':'Local*', 'rows':to_return['CPU Non-Grid']},
                                                 { 'block_title':'Total', 'block_rowspan':10 , 'rows':to_return['CPU Total']},
                                                 { 'block_title':'', 'block_rowspan':3 , 'rows':to_return['MoU']},
                                                 ], }],

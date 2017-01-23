@@ -20,6 +20,10 @@
 </head>
 
 <body class="claro">
+<div id="whatisegidiv" class="text-center" style="margin:0 auto;left:45%">
+      <label style="font-size: 200%;" >What is EGI?</label>
+      <a class="whatisegi btn btn-default" style="font-size: 200%; margin-top: -0.5em; border: 0; " data-placement="bottom" data-toggle="popover" title="Description" data-content=""><i class="glyphicon glyphicon-question-sign"></i></a>
+   </div>
   <script src="/static/dojo/dojo.js" data-dojo-config="async: true, isDebug: true, parseOnLoad: false, packages: [ { name: 'egi', location: '../', main: 'egi' }, { name: 'jquery', location: '../jquery/dist', main: 'jquery' }, { name: 'jquery-ui', location: '../jquery-ui', main: 'jquery-ui' }, { name: 'bootstrap', location: '../bootstrap/dist/js', main: 'bootstrap' }, { name: 'bootstrap-datepicker', location: '../bootstrap-datepicker/dist/js', main: 'bootstrap-datepicker' }]"
   type="text/javascript">
 </script>
@@ -37,12 +41,19 @@
 
         {% include "navbar.html" %}
         <div id="page-content-wrapper" class="container">
-
-<div style="float: right; margin-top: -20px;">
+</div>
+<div class="egi-logo" style="float: right; margin-top: -20px;">
 <img src="/static/AcctPortal_egi_ack.png" style="" width="600" height="64" border="0" usemap="#map" />
 <map name="map">
 <area shape="rect" coords="309,32,432,49" href="http://go.egi.eu/eng" />
 </map>
+</div>
+ </div>
+
+<div id="whatisegicontent" style="display:none">
+<a style="color:#FFDF00" href="http://www.egi.eu"><b>EGI</b></a> is the European infrastructure for advanced computing offering distributed Compute, Storage and Data for researchers and international research collaborations. The EGI Federation comprises hundreds of data centres in Europe and other regions of the world. 
+
+The EGI Accounting Portal provides the accounting data for Compute, Storage and Data services gathered from the data centres of the EGI Federation. Users can create custom reports organising this information in several ways, selecting services, resource centres, user groups and defining a time period. Accounting data gathered by peer infrastructures, such as Open Science Grid (OSG), can be included in such reports.
 </div>
 <!--          <div class="container">
             <div class="page-header">
@@ -51,16 +62,19 @@
 
           </div>-->
             <div>
-          <div id="loadingOverlay" style="width:100%;height:600px;">
+          <div id="loadingOverlay" style="width:100%;height:600px; padding: 0em 1em;">
             <form id='figure_form' class="pull-left">
                 <div class="form-group">
+                <div style="width: 30em;" class="input-group">
                     <select id="metric" data-toggle="tooltip" title="Metric used for the accounting" data-dojo-props="position:['above']" placeholder="Select Metric" class="form-control col-xs-2">
                        <option class='' data-toggle='tooltip' data-title='Number of jobs'  data-dojo-props='position:['above']' data-content='Total number of jobs' value='njobs'>Number of jobs</option>
-                       <option class='' data-title='Normalized CPU Time ()'  data-dojo-props='position:['above']' data-content='Raw CPU hours normalized with the HEPSpec2006 benchmark' value='normcpu_HEPSPEC06'>Normalized CPU Time (HEPSPEC06 hours)</option> 
-                       <option data-toggle='tooltip' data-title='CPU Time (Raw hours)' data-dojo-props='position:['above']' data-content='Raw CPU hours that are not normalized to a common benchmark' class='' value='sumcpu'>CPU Time (Raw hours)</option> 
-                       <option data-toggle='tooltip' data-title='Normalized Wall Time (HEPSPEC06 hours)' data-dojo-props='position:['above']' data-content='Wall Clock CPU hours normalized with the HEPSPEC06 benchmark' class='' value='normelap_HEPSPEC06'>Normalized Wall Time (HEPSPEC06 hours)</option> 
-                       <option data-toggle='tooltip' data-title='Wall Time (Raw hours)' data-dojo-props='position:['above']' data-content='Wall clock CPU hours that are not normalized to a common benchmark' class='' value='sum_elap'>Wall Time (Raw hours)</option>
+                       <option class='' data-title='Normalized CPU Hours'  data-dojo-props='position:['above']' data-content='Hours of CPU time consumed in calculations by jobs, normalised using the <a href="http://w3.hepix.org/benchmarks/doku.php">HEPSPEC06 benchmark</a>.' value='normcpu_HEPSPEC06'>Normalized Sum CPU HEPSPEC06 hours</option> 
+                       <option data-toggle='tooltip' data-title='Unnormalized CPU Hours' data-dojo-props='position:['above']' data-content='Hours of not normalised CPU time consumed by jobs.' class='' value='sumcpu'>Unnormalized CPU Hours</option> 
+                       <option data-toggle='tooltip' data-title='Normalized Sum Elapsed HEPSPEC06 hours' data-dojo-props='position:['above']' data-content='Hours of wall-clock time consumed by jobs, including I/O, OS and other housekeeping tasks, normalised using the <a href="http://w3.hepix.org/benchmarks/doku.php">HEPSPEC06 benchmark</a>.' class='' value='normelap_HEPSPEC06'>Normalized Sum Elapsed HEPSPEC06 hours</option> 
+                       <option data-toggle='tooltip' data-title='Unnormalized Sum Elapsed Hours' data-dojo-props='position:['above']' data-content='Hours of not normalised wall-clock time consumed by jobs, including I/O, OS and other housekeeping tasks.' class='' value='sum_elap'>Unnormalized Sum Elapsed Hours</option>
                     </select>
+                    <span class="input-group-btn"><a id="metric_help" class="btn btn-default" data-toggle="popover" title="Metric Description"><i class="glyphicon glyphicon-question-sign"></i></a></span>
+                   </div>
                   <div class="btn-group" data-toggle="buttons">
                      <label class="btn btn-primary">
                         <input type="radio" name="period" id="1m" value="1m" autocomplete="off"> 1 Month</input>
@@ -77,14 +91,12 @@
                   </div>
               </form>
             </div>
+
+
+<div style="clear:both"></div>
+
             <div>
-           <div id="page_text" style="clear:both">
-<a href="http://www.egi.eu">EGI</a> is the European infrastructure for advanced computing offering distributed Compute, Storage and Data for researchers and international research collaborations. The EGI Federation comprises hundreds of data centres in Europe and other regions of the world. 
-
-The EGI Accounting Portal provides the accounting data for Compute, Storage and Data services gathered from the data centres of the EGI Federation. Users can create custom reports organising this information in several ways, selecting services, resource centers, user groups and defining a time period. Accounting data gathered by peer infrastructures, such as Open Science Grid (OSG), can be included in such reports.
-
-This graph shows the <span id="metric_description"></span> in the whole EGI infrastructure. Each point represents a period of <span id="month_period"></span> counting backwards from the last complete period. 
-           </div>
+<div style="font-size: larger">This graph shows the <span id="metric_description"></span> in the whole EGI infrastructure. Only non-local jobs on official EGI VOs are accounted. Each point represents a period of <span id="month_period"></span> counting backwards from the last complete period.</div>
               <div id="simplechart" class="pull-left" style="width:80%; height:600px;"></div>
               <div id="metrics" class="text-center pull-left" style=" height:600px;font-size:1em;font:Oswald;width:20%">
                  <div class="panel panel-default" style="">
@@ -121,7 +133,7 @@ This graph shows the <span id="metric_description"></span> in the whole EGI infr
         function(jqueryui, bootstrap, datepicker, declare, claro, Def, Store, locale, Chart, blue, Markers, MouseZoomAndPan, Tooltip, Magnify, Highlight, MoveSlice, dom, domConstruct, parser, dijit, registry, standby, on, domReady){
 
         store = null;
-        var imtitulo =  {'njobs' : 'Total number of jobs', 'normcpu' : 'Normalized CPU time (Raw hours)', 'normcpu_Raw' : 'Normalized CPU time (Raw hours)', 'sumcpu' : 'CPU Time (Raw hours)', 'sumelap' : 'Wall Time (Raw hours)', 'normelap' : 'Normalized Wall Time(Raw hours)', 'normelap_Raw' : 'Normalized Wall Time (Raw hours)', 'sumelcpu' : 'Wall Time (Raw hours)', 'cpueff' : 'CPU Efficiency (%)', 'vm_num' : 'Total number of VM run', 'sum_elap' : 'Sum Elapsed time (hours)', 'sum_cpu' : 'CPU Time (hours)', 'net_in' : 'Inbound Network Traffic (b)', 'net_out' : 'Outbound Network Traffic (b)', 'disk' : 'Disk Used (b)','normcpu_HEPSPEC06': 'Normalized CPU Time (HEPSPEC06 hours)','normelap_HEPSPEC06': 'Normalized Wall Time (HEPSPEC06 hours)'};
+        var imtitulo =  {'njobs' : 'Total number of jobs', 'normcpu' : 'Normalized Sum CPU HEPSPEC06 hours', 'normcpu_Raw' : 'Normalized CPU Hours', 'sumcpu' : 'Unnormalized CPU Hours', 'sumelap' : 'Unnormalized Sum Elapsed Hours', 'normelap' : 'Normalized Sum Elapsed HEPSPEC06 hours', 'normelap_Raw' : 'Normalized Sum Elapsed HEPSPEC06 hours', 'sumelcpu' : 'Sum Elapsed hours', 'cpueff' : 'CPU Efficiency (%)', 'vm_num' : 'Total number of VM run', 'sum_elap' : 'Unnormalized Sum Elapsed Hours', 'sum_cpu' : 'Unnormalized CPU Hours<', 'net_in' : 'Inbound Network Traffic (b)', 'net_out' : 'Outbound Network Traffic (b)', 'disk' : 'Disk Used (b)','normcpu_HEPSPEC06': 'Normalized Sum CPU HEPSPEC06 hours','normelap_HEPSPEC06': 'Normalized Sum Elapsed HEPSPEC06 hours'};
         $('#disciplines_menu').load('{{SUPPORT_SERVER}}discipline_tree.php');
         $('#ngis_menu').load('{{SUPPORT_SERVER}}ngi_tree.php');
         $('#cloud_menu').load('{{SUPPORT_SERVER}}cloud_tree.php');
@@ -140,12 +152,51 @@ This graph shows the <span id="metric_description"></span> in the whole EGI infr
         labeldate = function(str){ return locale.format(new Date(str), {selector: 'date', locale: 'en', datePattern: 'MMMM yyyy'}); };
         lfunc = function(text,value,precision){ return addCommas(value); };
 
+        $('.whatisegi').popover({html: true,
+        content: function() {
+        return $('#whatisegicontent').html();
+        } }); 
+$('[data-toggle="popover"]').popover();
+$('body').on('click', function (e) {
+    $('[data-toggle=popover]').each(function () {
+        // hide any open popovers when the anywhere else in the body is clicked
+        if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+            $(this).popover('hide');
+        }
+    });
+});
+//Destroy popovers when another one is shown
+$('body').popover({
+                selector: '[rel=popover]',
+                trigger: "click"
+            }).on("show.bs.popover", function(e){
+                // hide all other popovers
+                $("[rel=popover]").not(e.target).popover("destroy");
+                $(".popover").remove();                    
+            });
+
+function metric_help_set() {
+   content= $( "#inputMetric option:selected" ).attr('data-content');
+   $('#metric_help').attr("data-content",content); 
+   $('#metric_help').data('bs.popover').options.content = content;
+   $('#metric_help').data('bs.popover').tip().find('.popover-content').html(content); 
+}
+
         var last_period = "-1";
         $('#collapseOne').css('display','');
         $('#collapseOne').collapse({
         active: false,
         collapsible: true
         });
+
+function metric_help_set() {
+   content= $( "#metric option:selected" ).attr('data-content');
+   $('#metric_help').attr("data-content",content); 
+   $('#metric_help').data('bs.popover').options.content = content;
+   $('#metric_help').data('bs.popover').tip().find('.popover-content').html(content); 
+}
+$('#metric').change(metric_help_set);
+metric_help_set();
         $("#inputMetric").on('mouseleave', function(e) {
         $('#inputMetric').popover('destroy');
         });
@@ -225,10 +276,10 @@ dojo.addOnLoad(function() {
             }).then( function(){ 
                period_string = period_to_period_string(period);
                $('#njobs-header').html('Number of jobs in last ' + period_string + ' period');
-               $('#ncpu-header').html('Normalized CPU (HEPSPEC06 hours) in last ' + period_string + ' period');
-               $('#ucpu-header').html('CPU Time (Raw hours) in last ' + period_string + ' period');
-               $('#nwall-header').html('Normalized Wall (HEPSPEC06 hours) in last ' + period_string + ' period');
-               $('#uwall-header').html('Wall Time (Raw hours) in last ' + period_string + ' period');
+               $('#ncpu-header').html('Normalized CPU HEPSPEC06 hours in last ' + period_string + ' period');
+               $('#ucpu-header').html('CPU Time hours in last ' + period_string + ' period');
+               $('#nwall-header').html('Normalized Sum Elapsed HEPSPEC06 hours in last ' + period_string + ' period');
+               $('#uwall-header').html('Sum Elapsed hours in last ' + period_string + ' period');
                $('#njobs-panel').html(addCommas(last_values['njobs']));
                $('#ncpu-panel').html(addCommas(last_values['normcpu_HEPSPEC06']));
                $('#ucpu-panel').html(addCommas(last_values['sumcpu']));

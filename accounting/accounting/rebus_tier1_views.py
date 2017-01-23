@@ -203,7 +203,7 @@ def main(request):
 
     parameters = checkParameters(request)
     if parameters:
-        my_data = getSourceData(parameters['from'], parameters['months'], parameters['federations'], parameters['efficiencyFactors'])
+        my_data = getSourceData(parameters['from'], parameters['months'], parameters['federations'], parameters['efficiencyFactors'], parameters['metricdays'])
         if not request.GET.get("skipTotals"):
             my_data = calculateTotals(my_data)
     else:
@@ -214,7 +214,7 @@ def main(request):
         return HttpResponse(data, mimetype = 'application/json')
     else:
         content['my_pages'] = createPages(my_data, parameters['from'], parameters['months'], parameters['federations'],
-                                          parameters['tables'], parameters['experiments'], parameters['accsum'], parameters['expsum'])
+                                          parameters['tables'], parameters['experiments'], parameters['accsum'], parameters['expsum'], parameters['metricdays'])
 
 
         if reqType == 'pdf':
@@ -258,7 +258,7 @@ def main(request):
 def checkParameters(request):
     parameters = {}
 
-    for p in ('from', 'months', 'federations', 'tables', 'graphs', 'experiments', 'accsum', 'expsum'):
+    for p in ('from', 'months', 'federations', 'tables', 'graphs', 'experiments', 'accsum', 'expsum', 'metricdays'):
         parameters[p] = request.GET.get(p)
 
     if parameters['tables']:
@@ -270,7 +270,7 @@ def checkParameters(request):
     try:
         parameters['months'] = int(parameters['months'])
     except:
-        parameters['months'] = 12
+        parameters['months'] = 11
     parameters['efficiencyFactors'] = {}
     #for f in  EfficiencyFactor.objects.filter(Q(factor_tier = 1)):
     #    parameters['efficiencyFactors'][f.factor_name] = f.factor_value
@@ -293,6 +293,8 @@ def contentDefaultValues(parameters):
     content['selectedFederations'] = str(parameters['federations'])
     content['selectedAccSum'] = parameters['accsum']
     content['selectedExpSum'] = parameters['expsum']
+    content['selectedMetricDays'] = parameters['metricdays']
+
 
 
     return content
@@ -301,19 +303,6 @@ def createPlotSeries(plotType, fedName, my_data):
     COLORS = {'ALICE':'#F7F131', 'ATLAS':'#00C8FF', 'CMS':'#90ed7d', 'LHCb':'#BA1111'}
 
     plots = []
-    if plotType == 'cputime':
-        for exp in ('ALICE', 'ATLAS', 'CMS', 'LHCb'):
-            plots.append({  'type': 'column',
-                           'name': exp,
-                           'data':  map(lambda x: int(x / 1000) , my_data[exp + '_cpu_usage'][fedName][:-1]),
-                           'color': COLORS[exp],
-                          })
-        plots.append({
-                    'type': 'spline',
-                    'name': 'MoU commitment',
-                    'data': map(lambda x: x*24 / 1000 , my_data['CPU_Pledged_month'][fedName][:-1]),
-                    'color': '#8085e9'
-                    })
     if plotType == 'walltime':
         for exp in ('ALICE', 'ATLAS', 'CMS', 'LHCb'):
             plots.append({
@@ -342,6 +331,7 @@ def createPlotSeries(plotType, fedName, my_data):
                            'data': data,
                            'color': COLORS[exp],
                           })
+
     if ( plotType == 'disk' or plotType == 'tape'):
         fieldNames= ['installed_disk', 'Disk_Pledged_month']
         if plotType=='tape':
@@ -374,15 +364,13 @@ def createPlotSeries(plotType, fedName, my_data):
 
 def contentForPlots(parameters, content, my_data):
     content['plotMonths'] = '[' + ','.join([ "'" + a + "'"  for a in calculateMonthNames(parameters['from'], parameters['months']) ]) + ']'
-
+    period = 'days' if parameters['metricdays'] else 'hours'
     graphs = parameters['graphs']
     if not graphs:
         graphs = []
-    plot_info = {'cputime':{'title':'CPU Time Delivered', 'yAxis':'KHS06-hours', },
-
-                  'walltime':{'title':'Wall-clock Time Delivered', 'yAxis':'KHS06-hours * #cores',
+    plot_info = { 'walltime':{'title':'Wallclock Work*', 'yAxis':'Wallclock Work HS06 ' + period,
                               'series':"{'color': '#77F131', 'data': [868.78399999999999, 974.07600000000002, 1475.1179999999999, 1560.559, 2051.8490000000002, 1311.383, 1246.2850000000001, 1233.433, 1257.018, 1134.797, 1136.8989999999999, 951.875], 'type': 'column', 'name': 'ALICE'},"},
-                  'efficiency':{'title':'Ratio of CPU: Wall-clock Times', 'yAxis':'%',
+                  'efficiency':{'title':'Efficiency as CPU vs Wallclock time', 'yAxis':'%',
                                 'series':"{'color': '#777731', 'data': [868.78399999999999, 974.07600000000002, 1475.1179999999999, 1560.559, 2051.8490000000002, 1311.383, 1246.2850000000001, 1233.433, 1257.018, 1134.797, 1136.8989999999999, 951.875], 'type': 'column', 'name': 'ALICE'},"},
                   'disk':{'title':'Disk Storage Used', 'yAxis':'TeraBytes',
                                 'series':"{'color': '#777731', 'data': [868.78399999999999, 974.07600000000002, 1475.1179999999999, 1560.559, 2051.8490000000002, 1311.383, 1246.2850000000001, 1233.433, 1257.018, 1134.797, 1136.8989999999999, 951.875], 'type': 'column', 'name': 'ALICE'},"},
@@ -413,10 +401,10 @@ def contentForPlots(parameters, content, my_data):
 def createCustomised(parameters):
     content = contentDefaultValues(parameters)
 
-    my_data = getSourceData(parameters['from'], parameters['months'], parameters['federations'], parameters['efficiencyFactors'])
+    my_data = getSourceData(parameters['from'], parameters['months'], parameters['federations'], parameters['efficiencyFactors'], parameters['metricdays'])
     my_data = calculateTotals(my_data)
     my_pages = createPages(my_data, parameters['from'], parameters['months'], parameters['federations'],
-                           parameters['tables'], parameters['experiments'], parameters['accsum'], parameters['expsum'])  # year[-2:])
+                           parameters['tables'], parameters['experiments'], parameters['accsum'], parameters['expsum'], parameters['metricdays'])  # year[-2:])
 
     contentForPlots(parameters, content, my_data)
 
