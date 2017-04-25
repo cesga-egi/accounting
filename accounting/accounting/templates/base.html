@@ -77,7 +77,7 @@
                  </div>
                   {% endif %}
                 <div class="form-group">
-                  <div class="col-xs-4">
+                  <div class="col-xs-3">
                   <label for="inputMetric" class="control-label">Metric: </label>
                   <div class="input-group">
                     <select id="inputMetric" title="Metric used for the accounting" data-dojo-props="position:['above']" placeholder="Select Metric" class="form-control">
@@ -88,6 +88,20 @@
                   </div>
 
                   <div class="col-xs-3">
+                  <label for="inputMetricUnit" class="control-label">Metric Unit: </label>
+                  <div class="input-group">
+                    <select id="inputMetricUnit" title="Unit of the metric used for the accounting" data-dojo-props="position:['above']" placeholder="Select Metric Unit" class="form-control">
+                       <option class='' data-title='Hours' data-dojo-props='position:['above']' data-content='Hours' selected="selected" value='hour'>Hours</option>
+                       <option class='' data-title='Days' data-dojo-props='position:['above']' data-content='Days' value='day'>Days</option>
+                       <option class='' data-title='Months' data-dojo-props='position:['above']' data-content='Months' value='month'>Months</option>
+                       <option class='' data-title='Quarters' data-dojo-props='position:['above']' data-content='Quarters' value='quarter'>Quarters</option>
+                       <option class='' data-title='Half Years' data-dojo-props='position:['above']' data-content='Half Years' value='halfyear'>Half Years</option>
+                       <option class='' data-title='Years' data-dojo-props='position:['above']' data-content='Years' value='year'>Years</option>
+                    </select>
+                    <span class="input-group-btn"><a id="metric_unit_help" class="btn btn-default" data-toggle="popover" title="Metric Unit Description"><i class="glyphicon glyphicon-question-sign"></i></a></span>
+                  </div>
+                  </div>
+                  <div class="col-xs-2">
                     <label for="from_date" class="control-label">Start Time:</label>
                     <div class="input-group">
                        <input type="text" class="form-control col-xs-2" id="from_date" placeholder="Select start date" contenteditable="false">
@@ -95,7 +109,7 @@
                     </div>
                   </div>
              
-                  <div class="col-xs-3">
+                  <div class="col-xs-2">
                     <label for="to_date" class="control-label">End Time:</label>
                     <div class="input-group">
                        <input type="text" class="form-control col-xs-2" id="to_date" placeholder="Select end date" contenteditable="false">
@@ -198,6 +212,9 @@
    <div id="chart_pie1" class="claro" style="width: 95%; height: 40vw"></div>
    <br/>
    <div id="chart_pie2" class="claro" style=" width: 95%; height: 40vw"></div>
+   <br/>
+   <div id="worldmap" class="mapContainer" style="width: 95%; height: 40vw"></div>
+ <div id="map_legend"> </div>
 </div></div>
 
 <div id='overlay' daja-doto-id="overlay" data-dojo-type="dojox.widget.Standby" data-dojo-props="target:'loadingOverlay', color:'white', image:'/static/core/images/ajax-loader.gif'">
@@ -206,18 +223,18 @@
 <script>
 define.amd.jQuery = true;
 require(["jquery"], function ($) {
-require(["jquery-ui", "bootstrap", "bootstrap-datepicker", "dojo/_base/declare", "dojox/charting/axis2d/Default", "dojox/charting/plot2d/Pie", "dojox/charting/plot2d/Columns", "dgrid/Grid" , "dgrid/extensions/Pagination", "dgrid/ColumnSet", "dgrid/SummaryRow", "dstore/RequestMemory" , "dstore/Filter", "dojo/date/locale", "dojox/charting/Chart", "dojox/charting/themes/PlotKit/blue", "dojox/charting/themes/Claro", "dojox/charting/plot2d/Markers", "dojox/charting/widget/Legend", "dojox/charting/action2d/MouseZoomAndPan", "dojox/charting/action2d/Tooltip", "dojox/charting/action2d/Magnify", "dojox/charting/action2d/Highlight", "dojox/charting/action2d/MoveSlice" , "dojo/dom", "dojo/dom-construct", "dojo/window", "dojo/aspect", "dojo/number", "dojo/parser", "dijit", "dijit/registry", "dojo/promise/all", "dojox/widget/Standby", "dojo/when", "dojo/on", "dojo/domReady!"],
-  function(jqueryui, bootstrap, datepicker, declare, Def, Pie, Columns, Grid, Pagination, ColumnSet, SummaryRow, Store, Filter, locale, Chart, blue, claro, Markers, Legend, MouseZoomAndPan, Tooltip, Magnify, Highlight, MoveSlice, dom, domConstruct, win, aspect, dojonumber, parser, dijit, registry, all, standby, when, on, domReady){
+require(["jquery-ui", "bootstrap", "bootstrap-datepicker", "dojo/_base/declare", "dojox/geo/charting/Map",  "dojox/geo/charting/MouseInteractionSupport", "dojox/geo/charting/KeyboardInteractionSupport","dojox/charting/axis2d/Default", "dojox/charting/plot2d/Pie", "dojox/charting/plot2d/Columns", "dgrid/Grid" , "dgrid/extensions/Pagination", "dgrid/ColumnSet", "dgrid/SummaryRow", "dojo/data/ItemFileReadStore", "dstore/RequestMemory" , "dstore/Filter", "dojo/date/locale", "dojox/charting/Chart", "dojox/charting/themes/PlotKit/blue", "dojox/charting/themes/Claro", "dojox/charting/plot2d/Markers", "dojox/charting/widget/Legend", "dojox/charting/action2d/MouseZoomAndPan", "dojox/charting/action2d/Tooltip", "dojox/charting/action2d/Magnify", "dojox/charting/action2d/Highlight", "dojox/charting/action2d/MoveSlice" , "dojo/dom", "dojo/dom-construct", "dojo/window", "dojo/aspect", "dojo/number", "dojo/parser", "dijit", "dijit/registry", "dojo/promise/all", "dojox/widget/Standby", "dojox/geo/charting/widget/Legend", "dojo/when", "dojo/on", "dojo/domReady!"],
+  function(jqueryui, bootstrap, datepicker, declare, Map, MapMouse, MapKey, Def, Pie, Columns, Grid, Pagination, ColumnSet, SummaryRow, ItemFileReadStore, Store, Filter, locale, Chart, blue, claro, Markers, Legend, MouseZoomAndPan, Tooltip, Magnify, Highlight, MoveSlice, dom, domConstruct, win, aspect, dojonumber, parser, dijit, registry, all, standby, MapLegend, when, on, domReady){
 
      //Helpers
 {% if wlcg_page %} 
-     imtitulo =  {'njobs' : 'Total number of jobs', 'normcpu' : 'Sum CPU Work HS06 Hours', 'normcpu_days' : 'Sum CPU Work HS06 Days', 'normcpu-HEPSPEC06' : 'Normalized CPU time (HEPSPEC06)', 'sumcpu' : 'Sum CPU Time Hours used', 'sumcpu_days' : 'Sum CPU Time Days used', 'sumelap' : 'Total elapsed time', 'normelap' : 'Normalized Elapsed time', 'normelap-HEPSPEC06' : 'Normalized Elapsed time (HEPSPEC06)', 'normelap_processors' : 'SUM Wallclock Work HS06 Hours', 'normelap_processors_days' : 'SUM Wallclock Work HS06 Days', 'elap_processors' : 'Sum Wallclock Time Hours', 'elap_processors_days' : 'Sum Wallclock Time Days', 'sumelcpu' : 'Total Elapsed-CPU', 'cpueff' : 'CPU Efficiency', 'vm_num' : 'Total number of VM run', 'sum_elap' : 'Sum Elapsed time', 'sum_cpu' : 'Sum CPU time', 'net_in' : 'Inbound Network Traffic', 'net_out' : 'Outbound Network Traffic', 'disk' : 'Disk Used', 'cost' : 'Monetary Cost', 'mem' : 'Memory Used'};
-     imunit =  {'njobs' : '', 'normcpu' : '', 'normcpu_days' : '', 'sumcpu' : '', 'sumcpu_days': '',  'sumelap' : '(h)', 'normelap' : '(h)', 'normelap_processors' : '', 'normelap_processors_days' : '', 'elap_processors' : '', 'elap_processors_days' : '', 'sumelcpu' : '(h)', 'cpueff' : '(%)', 'vm_num' : '', 'sum_elap' : '(h)', 'sum_cpu' : '', 'sum_cpu_days': '',  'net_in' : '(b)', 'net_out' : '(b)', 'disk' : '(b)', 'cost' : '(€)', 'mem' : '(b)'};
+     imtitulo =  {'mixed': 'Total number of jobs, Normalized CPU time (HEPSPEC06) and SUM Wallclock Work HS06 Hours','njobs' : 'Total number of jobs', 'normcpu' : 'Sum CPU Work HS06 Hours', 'normcpu_days' : 'Sum CPU Work HS06 Days', 'normcpu-HEPSPEC06' : 'Normalized CPU time (HEPSPEC06)', 'sumcpu' : 'Sum CPU Time Hours used', 'sumcpu_days' : 'Sum CPU Time Days used', 'sumelap' : 'Total elapsed time', 'normelap' : 'Normalized Elapsed time', 'normelap-HEPSPEC06' : 'Normalized Elapsed time (HEPSPEC06)', 'normelap_processors' : 'SUM Wallclock Work HS06 Hours', 'normelap_processors_days' : 'SUM Wallclock Work HS06 Days', 'elap_processors' : 'Sum Wallclock Time Hours', 'elap_processors_days' : 'Sum Wallclock Time Days', 'sumelcpu' : 'Total Elapsed-CPU', 'cpueff' : 'CPU Efficiency', 'vm_num' : 'Total number of VM run', 'sum_elap' : 'Sum Elapsed time', 'sum_cpu' : 'Sum CPU time', 'net_in' : 'Inbound Network Traffic', 'net_out' : 'Outbound Network Traffic', 'disk' : 'Disk Used', 'cost' : 'Monetary Cost', 'mem' : 'Memory Used', 'resource_tb_used_min' : 'Resource Terabytes consumed minimum', 'resource_tb_used_max' : 'Resource Terabytes consumed maximum', 'resource_tb_used_avg' : 'Resource Terabytes consumed average', 'resource_tb_alloc_min' : 'Resource Terabytes allocated minimum', 'resource_tb_alloc_min' : 'Resource Terabytes allocated minimum', 'resource_tb_alloc_max' : 'Resource Terabytes allocated maximum', 'resource_tb_alloc_avg' : 'Resource Terabytes allocated average', 'logical_tb_used_min': 'Logical Terabytes consumed minimum', 'logical_tb_used_max': 'Logical Terabytes consumed maximum', 'logical_tb_used_avg': 'Logical Terabytes consumed average', 'file_count_min': 'Files used count minimum', 'file_count_max': 'Files used count maximum', 'file_count_avg': 'Files used count average'};
+     imunit =  {'mixed' : '(Number of jobs and hours)', 'njobs' : '', 'normcpu' : '', 'normcpu_days' : '', 'sumcpu' : '', 'sumcpu_days': '',  'sumelap' : '(h)', 'normelap' : '(h)', 'normelap_processors' : '', 'normelap_processors_days' : '', 'elap_processors' : '', 'elap_processors_days' : '', 'sumelcpu' : '(h)', 'cpueff' : '(%)', 'vm_num' : '', 'sum_elap' : '(h)', 'sum_cpu' : '', 'sum_cpu_days': '',  'net_in' : '(b)', 'net_out' : '(b)', 'disk' : '(b)', 'cost' : '(€)', 'mem' : '(b)', 'resource_tb_used_min' : 'TBytes', 'resource_tb_used_max' : 'TBytes', 'resource_tb_used_avg' : 'TBytes', 'resource_tb_alloc_min' : 'TBytes', 'resource_tb_alloc_min' : 'TBytes', 'resource_tb_alloc_max' : 'TBytes', 'resource_tb_alloc_avg' : 'TBytes', 'logical_tb_used_min': 'TBytes', 'logical_tb_used_max': 'TBytes', 'logical_tb_used_avg': 'TBytes', 'file_count_min': 'files', 'file_count_max': 'files', 'file_count_avg': 'files'};
      imrange = {'DISCIPLINE_3' : 'Scientific Discipline Level 3', 'DISCIPLINE_2' : 'Scientific Discipline Level 2', 'DISCIPLINE': 'Scientific Discipline', 'DATE': 'Month', 'Year': 'Year', 'Country': 'Country', 'VO': 'VO', 'REGION': 'Operations Centre', 'NGI': 'Operations Centre', 'COUNTRY': 'Country', 'SITE': 'Site','vm_id' : 'VM Identifier', 'NUMBER PROCESSORS': 'Number of processors', 'NODECOUNT': 'Nodes', 'TIER1': 'Tier 1 Node', 'FEDERATION': 'Tier 2 Federation', 'SubmitHost': 'Submit Host', 'UserDN': 'User DN', 'User Role' : 'User Role', '3M': 'Quarter', '6M': 'Half-year', 'STATUS': 'VM Execution Status'};
      range_help = {'DISCIPLINE_3' : 'Scientific Discipline Level 3', 'DISCIPLINE_2' : 'Scientific Discipline Level 2', 'DISCIPLINE': 'Scientific Discipline', 'DATE': 'Aggregate data with a granularity of months', 'Year': 'Aggregate data with a granularity of years', 'Country': 'Country of the resource provider in which the job was executed.', 'VO': 'Aggregate data for virtual organisation', 'REGION': 'Region', 'Operations Centre': 'Aggregate data for Operations Centre of the Resource Centre in which the job was executed', 'COUNTRY': 'Country of the resource provider in which the job was executed', 'SITE': 'Aggregate data for Sites','vm_id' : 'VM Identifier', 'NUMBER PROCESSORS': 'Number of logical processors used by the jobs', 'NODECOUNT': 'Number of processing nodes used by the jobs', 'TIER1': 'Tier 1 Node', 'FEDERATION': 'Tier 2 Federation', 'SubmitHost': 'Name of the machine where the job has been executed', 'UserDN': 'User DN', 'User Role' : 'User Role', '3M': 'Aggregate data with a granularity of quarters', '6M': 'Aggregate data with a granularity of half-years', 'STATUS': 'Status of execution of the Virtual Machine.'};
 {% else %}
-     imtitulo =  {'njobs' : 'Total number of jobs', 'normcpu' : 'Normalized CPU time', 'normcpu-HEPSPEC06' : 'Normalized CPU time (HEPSPEC06)', 'sumcpu' : 'Total CPU time used', 'sumelap' : 'Total elapsed time', 'normelap' : 'Normalized Elapsed time', 'normelap-HEPSPEC06' : 'Normalized Elapsed time (HEPSPEC06)', 'normelap_processors' : 'Normalized Elapsed time (HEPSPEC06) * Number of Processors', 'elap_processors' : 'Elapsed time (HEPSPEC06) * Number of Processors', 'sumelcpu' : 'Total Elapsed-CPU', 'cpueff' : 'CPU Efficiency', 'vm_num' : 'Total number of VM run', 'sum_elap' : 'Sum Elapsed time', 'sum_cpu' : 'Sum CPU time', 'net_in' : 'Inbound Network Traffic', 'net_out' : 'Outbound Network Traffic', 'disk' : 'Disk Used', 'cost' : 'Monetary Cost', 'mem' : 'Memory Used'};
-     imunit =  {'njobs' : '', 'normcpu' : '(h)', 'sumcpu' : '(h)', 'sumelap' : '(h)', 'normelap' : '(h)', 'normelap_processors' : '(h)', 'elap_processors' : '(h)', 'sumelcpu' : '(h)', 'cpueff' : '(%)', 'vm_num' : '', 'sum_elap' : '(h)', 'sum_cpu' : '(h)', 'net_in' : '(b)', 'net_out' : '(b)', 'disk' : '(b)', 'cost' : '(€)', 'mem' : '(b)'};
+     imtitulo =  {'mixed': 'Total number of jobs, Normalized CPU time and Normalized Elapsed time (HEPSPEC06) * Number of Processors','njobs' : 'Total number of jobs', 'normcpu' : 'Normalized CPU time', 'normcpu-HEPSPEC06' : 'Normalized CPU time (HEPSPEC06)', 'sumcpu' : 'Total CPU time used', 'sumelap' : 'Total elapsed time', 'normelap' : 'Normalized Elapsed time', 'normelap-HEPSPEC06' : 'Normalized Elapsed time (HEPSPEC06)', 'normelap_processors' : 'Normalized Elapsed time (HEPSPEC06) * Number of Processors', 'sum_elap_processors' : 'Elapsed time * Number of Processors', 'elap_processors' : 'Elapsed time (HEPSPEC06) * Number of Processors', 'sumelcpu' : 'Total Elapsed-CPU', 'cpueff' : 'CPU Efficiency', 'vm_num' : 'Total number of VM run', 'sum_elap' : 'Sum Elapsed time', 'sum_cpu' : 'Sum CPU time', 'net_in' : 'Inbound Network Traffic', 'net_out' : 'Outbound Network Traffic', 'disk' : 'Disk Used', 'cost' : 'Monetary Cost', 'mem' : 'Memory Used',  'resource_tb_used_min' : 'Resource Terabytes consumed minimum', 'resource_tb_used_max' : 'Resource Terabytes consumed maximum', 'resource_tb_used_avg' : 'Resource Terabytes consumed average', 'resource_tb_alloc_min' : 'Resource Terabytes allocated minimum', 'resource_tb_alloc_min' : 'Resource Terabytes allocated minimum', 'resource_tb_alloc_max' : 'Resource Terabytes allocated maximum', 'resource_tb_alloc_avg' : 'Resource Terabytes allocated average', 'logical_tb_used_min': 'Logical Terabytes consumed minimum', 'logical_tb_used_max': 'Logical Terabytes consumed maximum', 'logical_tb_used_avg': 'Logical Terabytes consumed average', 'file_count_min': 'Files used count minimum', 'file_count_max': 'Files used count maximum', 'file_count_avg': 'Files used count average'};
+     imunit =  {'mixed': '(Number of jobs and hours)' ,'njobs' : '', 'normcpu' : '(h)', 'sumcpu' : '(h)', 'sumelap' : '(h)', 'sum_elap_processors' : '(h)', 'normelap' : '(h)', 'normelap_processors' : '(h)', 'elap_processors' : '(h)', 'sumelcpu' : '(h)', 'cpueff' : '(%)', 'vm_num' : '', 'sum_elap' : '(h)', 'sum_cpu' : '(h)', 'net_in' : '(b)', 'net_out' : '(b)', 'disk' : '(b)', 'cost' : '(€)', 'mem' : '(b)',  'resource_tb_used_min' : 'TBytes', 'resource_tb_used_max' : 'TBytes', 'resource_tb_used_avg' : 'TBytes', 'resource_tb_alloc_min' : 'TBytes', 'resource_tb_alloc_min' : 'TBytes', 'resource_tb_alloc_max' : 'TBytes', 'resource_tb_alloc_avg' : 'TBytes', 'logical_tb_used_min': 'TBytes', 'logical_tb_used_max': 'TBytes', 'logical_tb_used_avg': 'TBytes', 'file_count_min': 'files', 'file_count_max': 'files', 'file_count_avg': 'files'};
      imrange = {'DISCIPLINE_3' : 'Scientific Discipline Level 3', 'DISCIPLINE_2' : 'Scientific Discipline Level 2', 'DISCIPLINE': 'Scientific Discipline', 'DATE': 'Month', 'Year': 'Year', 'Country': 'Country', 'VO': 'VO', 'REGION': 'Operations Centre', 'NGI': 'Operations Centre', 'COUNTRY': 'Country', 'SITE': 'Resource Centre','vm_id' : 'VM Identifier', 'NUMBER PROCESSORS': 'Number of processors', 'NODECOUNT': 'Nodes', 'TIER1': 'Tier 1 Node', 'FEDERATION': 'Tier 2 Federation', 'SubmitHost': 'Submit Host', 'UserDN': 'User DN', 'User Role' : 'User Role', '3M': 'Quarter', '6M': 'Half-year', 'STATUS': 'VM Execution Status'};
      range_help = {'DISCIPLINE_3' : 'Scientific Discipline Level 3', 'DISCIPLINE_2' : 'Scientific Discipline Level 2', 'DISCIPLINE': 'Scientific Discipline', 'DATE': 'Aggregate data with a granularity of months', 'Year': 'Aggregate data with a granularity of years', 'Country': 'Country of the resource provider in which the job was executed.', 'VO': 'Aggregate data for virtual organisation', 'REGION': 'Region', 'Operations Centre': 'Aggregate data for Operations Centre of the Resource Centre in which the job was executed', 'COUNTRY': 'Country of the resource provider in which the job was executed', 'SITE': 'Aggregate data for Resource Centres','vm_id' : 'VM Identifier', 'NUMBER PROCESSORS': 'Number of logical processors used by the jobs', 'NODECOUNT': 'Number of processing nodes used by the jobs', 'TIER1': 'Tier 1 Node', 'FEDERATION': 'Tier 2 Federation', 'SubmitHost': 'Name of the machine where the job has been executed', 'UserDN': 'User DN', 'User Role' : 'User Role', '3M': 'Aggregate data with a granularity of quarters', '6M': 'Aggregate data with a granularity of half-years', 'STATUS': 'Status of execution of the Virtual Machine.'};
 {% endif %}
@@ -249,12 +266,31 @@ require(["jquery-ui", "bootstrap", "bootstrap-datepicker", "dojo/_base/declare",
      return {fill : "#00FFFF"};
      }
      bold = function(data) { return '<b>' + data + '</b>' };
+     percent_bold = function(data) { return '<b>' + data + '%</b>' };
      fcomas = function(data) { return addCommas(Math.round(data)); };
+     fmixed = function(data) { data = data.toString();
+                               if (data.indexOf(",") == -1) {
+                                return addCommas(Math.round(data));
+                               }
+                               datalist = data.split(','); 
+                               str = "";
+                               data_el = [];
+                               datalist.forEach(function(data) {
+                                data_el.push(addCommas(Math.round(data))); 
+                               });
+                               str = data_el.join(' - ');
+                               return str;
+                               };
      todate = function(object){ return locale.format(new Date(object.id), {selector: 'date', locale: 'en', datePattern: 'MMM yyyy'}); };
      tomdate = function(object){ dates = object.id.split('/'); return locale.format(new Date(dates[0]), {selector: 'date', locale: 'en', datePattern: 'MMM yyyy'})+' \u2014 '+locale.format(new Date(dates[1]), {selector: 'date', locale: 'en', datePattern: 'MMM yyyy'}); };
      strtodate = function(str){ return locale.format(new Date(str), {selector: 'date', locale: 'en', datePattern: 'MMM yyyy'}); };
-     labeldate = function(str){ return locale.format(new Date(str), {selector: 'date', locale: 'en', datePattern: 'MMM yyyy'}); };
+     labeldate = function(str){ if (str.indexOf(" ") != -1) {rest=str.substr(str.indexOf(" ") + 1);} else rest=""; str=str.split(" ")[0]; return locale.format(new Date(str), {selector: 'date', locale: 'en', datePattern: 'MMM yyyy'}) + " " + rest; };
      labelmdate = function(str){ dates = str.split('/'); return locale.format(new Date(dates[0]), {selector: 'date', locale: 'en', datePattern: 'MMM yyyy'})+' \u2014 '+locale.format(new Date(dates[1]), {selector: 'date', locale: 'en', datePattern: 'MMM yyyy'}); };
+     var units = ['TB','PB','EB','ZB','YB'];
+     storagelabel = function(str){ 
+
+
+ };
      {% block display_funcs %}{% endblock %}
      vmidlabel = function(str){ if (str.toString().indexOf("appdb") >= 0) 
                                    return '<b><a style="text-decoration:none" href="' + str + '">' + str + '</a></b>'; 
@@ -283,6 +319,12 @@ function metric_help_set() {
    $('#metric_help').data('bs.popover').options.content = content;
    $('#metric_help').data('bs.popover').tip().find('.popover-content').html(content); 
 }
+function metric_unit_help_set() {
+   content= $( "#inputMetricUnit option:selected" ).attr('data-content');
+   $('#metric_unit_help').attr("data-content",content); 
+   $('#metric_unit_help').data('bs.popover').options.content = content;
+   $('#metric_unit_help').data('bs.popover').tip().find('.popover-content').html(content); 
+}
 function range_help_set() {
    content_x = range_help[$("#inputX option:selected").attr('value')];
    content_y = range_help[$("#inputY option:selected").attr('value')];
@@ -295,6 +337,8 @@ function range_help_set() {
 }
 $('#inputMetric').change(metric_help_set);
 metric_help_set();
+$('#inputMetricUnit').change(metric_unit_help_set);
+metric_unit_help_set();
 
 option={% block option %}{% endblock %};
 tree={% block tree %}{% endblock %};
@@ -354,7 +398,13 @@ $('#from_date').datepicker("update", new Date({{sYear}}, {{sMonth}}-1));
 $('#to_date').datepicker("update", new Date({{eYear}}, {{eMonth}}-1));
 {% endif %}
 {% if query %}
-$('#inputMetric').val('{{query}}');
+query_arr = '{{query}}'.split("-");
+$('#inputMetric').val(query_arr[0]);
+if (query_arr[1]) {
+   $('#inputMetricUnit').val(query_arr[1]);
+} else {
+   $('#inputMetricUnit').val('hour');
+}
 {% endif %}
 {% if xRange and yRange %}
    $('#inputY').val('{{xRange}}');
@@ -491,6 +541,7 @@ on(dgrid_table,'dgrid-error', function(update) {overlay.hide();});
 function resizeGrid() {
    grid.resize();
    grid.refresh();
+   if (map) map.resize();
    chart1.resize();
    chart_pie1.resize();
    chart_pie2.resize();
@@ -502,6 +553,11 @@ dojo.addOnLoad(function() {
   
 function state_url(yrange) {
    var query = $('#inputMetric').val();
+   query_unit ='';
+   if (['njobs','vm_num','net_in','net_out','mem','disk','cpueff','cost','estimated_cost'].indexOf(query) == -1 ) {
+     var query_unit = '-' + $('#inputMetricUnit').val();
+     if (query_unit == '-hour') query_unit ='';
+   }
    {% if vo_admin %}
    if ($('#permsinput').has('option').length > 0) var vo = $('#permsinput').val(); else var vo = "{{vo}}";
    {% elif site_admin %}
@@ -523,14 +579,14 @@ function state_url(yrange) {
    if (xrange == "DISCIPLINE_2" || xrange == "DISCIPLINE_3") xrange = "DISCIPLINE";
    if (yrange == "DISCIPLINE_2" || yrange == "DISCIPLINE_3") yrange = "DISCIPLINE";
    {% if vo_admin %}
-   var st = vo + '/' + query + '/' + yrange + '/' + xrange + '/' + sYear + '/' + sMonth + '/' + eYear + '/' + eMonth;
+   var st = vo + '/' + query + query_unit + '/' + yrange + '/' + xrange + '/' + sYear + '/' + sMonth + '/' + eYear + '/' + eMonth + '/';
    {% elif site_admin %}
-   var st = site + '/' + query + '/' + yrange + '/' + xrange + '/' + sYear + '/' + sMonth + '/' + eYear + '/' + eMonth;
+   var st = site + '/' + query + query_unit + '/' + yrange + '/' + xrange + '/' + sYear + '/' + sMonth + '/' + eYear + '/' + eMonth + '/';
    {% else %}
-   var st = query + '/' + yrange + '/' + xrange + '/' + sYear + '/' + sMonth + '/' + eYear + '/' + eMonth;
+   var st = query + query_unit + '/' + yrange + '/' + xrange + '/' + sYear + '/' + sMonth + '/' + eYear + '/' + eMonth + '/';
    {% endif %}
    if (localJobs) 
-      var st = st + '/' + VOGroup + '/' + localJobs + '/';
+      var st = st + VOGroup + '/' + localJobs + '/';
    return st;
 }  
 
@@ -542,6 +598,8 @@ function state_url(yrange) {
      render(data_url);
      var new_url = '/{{url}}' + state_url(); 
      history.pushState(new_url, "", new_url);
+     $('#json_data').attr("href",window.location.pathname+'JSON/');
+     $('#csv_data').attr("href",window.location.pathname+"CSV/");
   }
 
 function error_handler (message) {
@@ -551,7 +609,10 @@ function error_handler (message) {
 }
 
   function getDataURL(option, tree) {
-        var query = $('#inputMetric').val();
+        var query = $('#inputMetric').val() 
+        if (['njobs','vm_num','net_in','net_out','mem','disk','cpueff','cost','estimated_cost'].indexOf(query) == -1 ) {
+           query += '-' + $('#inputMetricUnit').val();
+        }
         {% if vo_admin %}
         if ($('#permsinput').has('option').length > 0) var vo = $('#permsinput').val(); else var vo = "{{vo}}";
         {% elif site_admin %}
@@ -592,6 +653,10 @@ function error_handler (message) {
      domConstruct.empty("simplechart");
      var legend = dijit.byId('legend');
      if (legend) {legend.destroy(true);};
+     var map_legend = dijit.byId('map_legend');
+     if (map_legend) {map_legend.destroy(true);};
+     domConstruct.empty("map_legend");
+     domConstruct.empty("worldmap");
      domConstruct.empty("legend");
      domConstruct.empty("info");
      domConstruct.empty("chart_pie1");
@@ -599,7 +664,7 @@ function error_handler (message) {
   }
 
   function render(data_url) { 
-     $('#json_data').attr("href",data_url);
+     $('#json_data').attr("href",window.location.pathname+'JSON/');
      $('#json_data').attr("type","application/json");
      //Store
      var store = new Store({target: data_url});
@@ -634,7 +699,13 @@ function error_handler (message) {
         var index;
         var yrange = response['var']['yrange']; 
         var xrange = response['var']['xrange']; 
-        var query_name = response['var']['query']; 
+        var query_name = response['var']['query'].split("-")[0]; 
+        var unit = response['var']['query'].split("-")[1]; 
+        if (['njobs','vm_num','net_in','net_out','mem','disk','cpueff','cost','estimated_cost'].indexOf(query_name) == -1 ) {
+           query_unit = '(' + unit + 's)';
+        } else {
+           query_unit = imunit[query_name];
+        }
         var ylegend = response['ylegend']
         var xlegend = response['xlegend']
         if (user_dn = response['var']['user_dn']) $("#user_dn").replaceWith('<div id="user_dn">Logged in as <i>'+user_dn+'</i></div>');
@@ -664,14 +735,20 @@ function error_handler (message) {
            else { label = y; };
            if (query_name == 'cpueff') { 
               field_list += '{field:"' + y + '", label:"' + label + '", formatter: effForm}'; 
+        //   } else if (query_name == 'mixed') {
+         //     field_list += '{field:"' + y + '", label:"' + label + '", formatter: fcommas}'; 
+          //    field_list += '{field:"' + y + '", label:"' + label + '", formatter: fcommas}'; 
+           //   field_list += '{field:"' + y + '", label:"' + label + '", formatter: fcommas}'; 
            } else {
               field_list += '{field:"' + y + '", label:"' + label + '", formatter: fcomas}'; 
            }
            if (index + 1 < ylength) field_list += ', ';
         } 
-        if (query_name != 'cpueff') {
-            var layout = eval ('[[['+field_id+']],[['+field_list+',{field:"Total",label:"Total", formatter: boldcommas}, {field:"Percent",label:"Percent", formatter: bold} ]]]');
-        } else {
+        if (query_name != 'cpueff' && query_name !='mixed') {
+            var layout = eval ('[[['+field_id+']],[['+field_list+',{field:"Total",label:"Total", formatter: boldcommas}, {field:"Percent",label:"Percent", formatter: percent_bold} ]]]');
+         } else if (query_name == 'mixed') {
+            var layout = eval ('[[['+field_id+']],[['+field_list + ']]]');
+         } else {
             var layout = eval ('[[['+field_id+']],[['+field_list+',{field:"Total",label:"Total", formatter: boldEffForm} ]]]');
         }
         var filter = new store.Filter();
@@ -681,14 +758,38 @@ function error_handler (message) {
         var wo_ylegend = filter.ne('id','ylegend');
         var wo_var = filter.ne('id','var');
         var w_totals = filter.eq('id','Total');
+        var w_percents = filter.eq('id','Percent');
         var store_wo_totals = store.filter(wo_totals).filter(wo_percent).filter(wo_xlegend).filter(wo_ylegend).filter(wo_var);
         var store_totals = store.filter(w_totals);
-        var ComplexGrid = declare(([Grid, ColumnSet, SummaryRow, Pagination]));
+        var store_percents = store.filter(w_percents);
+        if (yrange == 'COUNTRY') {
+           map_store = new ItemFileReadStore({url: data_url+'&geo=true'});
+           map = new Map("worldmap", "/static/WorldCountriesMercator.json");
+           map.setDataStore(map_store, "Percent");
+           map.setMarkerData("/static/WorldMap.json");
+           map.addSeries("/static/series.json");
+           map.setMapCenterAndScale(4212.403066,2625.694230,0.30022978,true);
+           var map_legend = new MapLegend({map: map, swatchsize: 10, horizontal: true}, "map_legend");
+           mouseInteraction = new MapMouse(map, {enablePan:true, enableZoom:true});
+           mouseInteraction.disconnect();
+           var mzap_map_connected = false;
+           var keyboardInteraction = new MapKey(map, {enableZoom: true});
+           keyboardInteraction.connect();
+        }
+        if (query_name !='mixed') {
+           var ComplexGrid = declare(([Grid, ColumnSet, SummaryRow, Pagination]));
+        } else {
+           var ComplexGrid = declare(([Grid, ColumnSet, Pagination]));
+        }
         grid = new ComplexGrid({collection: store_wo_totals, columnSets: layout, rowsPerPage:30, pageSizeOptions:[30,50,100]}, 'acct_store');
         all({total: store.get('Total'), percent: store.get('Percent')}).then (function (response){
         if (query_name != 'cpueff') grid.set('summary', response['total'], response['percent']);
         else grid.set('summary', response['total'], []);
         grid.startup();
+        //if (query_name == 'mixed') { 
+        //   $(".dgrid-cell").css("width","18em"); 
+        //   $(".dgrid-column-set-0").css("width",width); 
+       // }
         if (yrange == 'UserDN' || yrange == 'SubmitHost' || yrange == 'vm_id') { 
            if (yrange=='vm_id') width = '50em'; else width = (yrange=='UserDN')?'40em':'30em';
            $(".dgrid-column-set-0").css("width",width); 
@@ -708,7 +809,7 @@ function error_handler (message) {
               });
            });
         }
-        //$('#table-title').replaceWith("<div id='table-title'><h4 style='text-align:center'>" + imtitulo[query_name] + ' ' + imunit[query_name] + ' by ' + imrange[yrange] + ' and ' + imrange[xrange]);
+        //$('#table-title').replaceWith("<div id='table-title'><h4 style='text-align:center'>" + imtitulo[query_name] + ' ' + unit + ' by ' + imrange[yrange] + ' and ' + imrange[xrange]);
         {% if wlcg_page %}
         if ($.inArray(query_name, ["sumcpu_days", "sumcpu", "elap_processors_days", "elap_processors"]) > -1) {
            $('#warning').replaceWith("<div id='warning' style='font-size: larger'><b>Warning: </b> The \"" + imtitulo[query_name] + "\" metric is not normalised, which makes all plots and tables using it misleading when comparing among sites since it does not take into account the relative power of CPUs used on different sites. </div>");
@@ -744,20 +845,20 @@ function error_handler (message) {
         localJobs_description = '';
         if (localJobs == 'onlyinfrajobs') localJobs_description = 'No local jobs are shown';
         if (localJobs == 'onlylocaljobs') localJobs_description = 'Only local jobs are shown';
-        $('#subtitle').replaceWith("<div id='subtitle'><h3 style='text-align:center'>" + subtitle_begin + ' &mdash; ' + imtitulo[query_name] + ' ' + imunit[query_name] + ' by ' + imrange[yrange] + ' and ' + imrange[xrange] + vo_selection);
+        $('#subtitle').replaceWith("<div id='subtitle'><h3 style='text-align:center'>" + subtitle_begin + ' &mdash; ' + imtitulo[query_name] + ' ' + query_unit + ' by ' + imrange[yrange] + ' and ' + imrange[xrange] + vo_selection);
         $("#metric_description").replaceWith('<span id="metric_description">' + imtitulo[query_name] + '</span>');
         $("#inputX_description").replaceWith('<span id="inputX_description">' + imrange[xrange] + '</span>');
         $("#inputY_description").replaceWith('<span id="inputY_description">' + imrange[yrange] + '</span>');
         $("#vo_description").replaceWith('<span id="vo_description">' + vo_description + '</span>');
         $("#LocalJobs_description").replaceWith('<span id="LocalJobs_description">' + localJobs_description + '</span>');
-
-        $('#csv_data').attr("href",data_url+"&csv=true");
+        $('#csv_data').attr("href",window.location.pathname+"CSV/");
         $('#csv_data').attr("type","data:application/csv");
-        $('#csv_data').attr("download",(' ', '-', subtitle_begin + ' - ' + imtitulo[query_name] + ' ' + imunit[query_name] + ' by ' + imrange[yrange] + ' and ' + imrange[xrange] + vo_selection + '.csv').replace(/\s/g, "-"));
+        $('#csv_data').attr("download",(' ', '-', subtitle_begin + ' - ' + imtitulo[query_name] + ' ' + query_unit + ' by ' + imrange[yrange] + ' and ' + imrange[xrange] + vo_selection + '.csv').replace(/\s/g, "-"));
+        
         })
         // Line chart
         $('#info').append("<p>The information in the previous table is also shown in the following graph.</p>");
-        chart1 = new Chart("simplechart", {enableCache: true, titleFont: "normal normal normal 15pt Oswald", title: imtitulo[query_name] + ' ' + imunit[query_name] + ' by ' + imrange[yrange] + ' and ' + imrange[xrange], titlepos: "top"});
+        chart1 = new Chart("simplechart", {enableCache: true, titleFont: "normal normal normal 15pt Oswald", title: imtitulo[query_name] + ' ' + query_unit + ' by ' + imrange[yrange] + ' and ' + imrange[xrange], titlepos: "top"});
         chart1.addPlot("default", {type: Markers}); 
         var labels = [];
         for (index = 0; index < ylength; index++) 
@@ -765,7 +866,7 @@ function error_handler (message) {
            else if (xrange == '3M' || xrange == '6M') labels.push({value: (index+1), text: labelmdate(ylegend[index])});
            else labels.push({value: (index+1), text: ylegend[index]});
         chart1.addAxis("x", {titleFont: "normal normal bold 30pt Oswald", font: "normal normal normal 12pt Oswald", vertical:false, minorTicks: false, majorTickStep:1, includeZero:false, rotation: 40, labels: labels});
-        chart1.addAxis("y", {min:0, vertical: true,titleFont: "normal normal normal 17pt Oswald", font: "normal normal normal 12pt Oswald",  title: imtitulo[query_name] + ' ' + imunit[query_name]});
+        chart1.addAxis("y", {min:0, vertical: true,titleFont: "normal normal normal 17pt Oswald", font: "normal normal normal 12pt Oswald",  title: imtitulo[query_name] + ' ' + query_unit});
         store_wo_totals.forEach(function(entry) {
            values = [];
 
@@ -774,7 +875,7 @@ function error_handler (message) {
                  value = entry[key];
                  //Removes '%' and transforms back to int
                  if (query_name == 'cpueff') value = value?parseInt(value):0;
-                 values.push({y: value, tooltip: '<p><b>'+ entry.id + '</b> &mdash; <b>' + key + '</b><br/> '+ addCommas(value) + ' ' + imunit[query_name] +'</p>'});
+                 values.push({y: value, tooltip: '<p><b>'+ entry.id + '</b> &mdash; <b>' + key + '</b><br/> '+ addCommas(value) + ' ' + query_unit +'</p>'});
               }
            chart1.addSeries(entry.id, values, {stroke: {width: "4.0"}} );
         }).then(function(){
@@ -787,6 +888,19 @@ function error_handler (message) {
               mzap_connected = true;
            }
            });
+           if (yrange == 'COUNTRY') {
+           $( "#worldmap" ).bind( "click", function() {
+           if (mzap_map_connected) {
+              mouseInteraction.disconnect();
+              mzap_map_connected = false;
+           } else {
+              mouseInteraction.connect();
+              mzap_map_connected = true;
+           }
+           });
+
+
+           }
            chart1.setTheme(claro);
            new Tooltip(chart1, "default");
            new Magnify(chart1, "default", {duration: 60, scale: 3});
@@ -800,6 +914,7 @@ function error_handler (message) {
            }
         });
         // Pie charts 
+        if (query_name != 'mixed') {
         blue.chart.fill = "white";
         blue.chart.stroke = {color:"transparent"};
         blue.plotarea.fill = "white";
@@ -830,14 +945,14 @@ function error_handler (message) {
                     }
                     pie1_values.push({y: value, width: "1.0", 
                                      text: key_text + ' (' + (value * 100/grand_total).toFixed(2) + '%)', 
-                                     tooltip: '<b>' + key_text + '</b><br/> '+ addCommas(value) + ' ' + imunit[query_name]});
+                                     tooltip: '<b>' + key_text + '</b><br/> '+ addCommas(value) + ' ' + query_unit});
                      }
                  } 
            }
            if (other) pie1_values.push({y: other, 
                                         width: "1.0", text: 'Other (' + (other*100/grand_total).toFixed(2) + '%)', 
                                         tooltip: '<b>Other</b><br/> '+ addCommas(other)});
-           chart_pie1 = new Chart("chart_pie1", {enableCache: true,titleFont: "normal normal normal 15pt Oswald", title: imtitulo[query_name] + ' ' + imunit[query_name] + ' by ' + imrange[xrange], titlepos: "top"});
+           chart_pie1 = new Chart("chart_pie1", {enableCache: true,titleFont: "normal normal normal 15pt Oswald", title: imtitulo[query_name] + ' ' + query_unit + ' by ' + imrange[xrange], titlepos: "top"});
            chart_pie1.setTheme(blue);
            var labels = [];
            chart_pie1.addSeries(entry.id, pie1_values);
@@ -854,7 +969,7 @@ function error_handler (message) {
                    if (xrange == '3M' || xrange == '6M') labels.push({value: (index+1), text: labelmdate(ylegend[index])});
                    else labels.push({value: (index+1), text: ylegend[index]});
                    chart_pie1.addAxis("x", {titleFont: "normal normal bold 30pt Oswald", font: "normal normal normal 10pt Oswald", vertical:false, minorTicks: false, majorTickStep:1, includeZero:false, rotation: 40, labels: labels});
-                   chart_pie1.addAxis("y", {min:0, vertical: true,titleFont: "normal normal normal 15pt Oswald", font: "normal normal normal 10pt Oswald",  title: imtitulo[query_name] + ' ' + imunit[query_name]});
+                   chart_pie1.addAxis("y", {min:0, vertical: true,titleFont: "normal normal normal 15pt Oswald", font: "normal normal normal 10pt Oswald",  title: imtitulo[query_name] + ' ' + query_unit});
                    new Tooltip(chart_pie1, "default");
            }
            chart_pie1.render();
@@ -882,13 +997,13 @@ function error_handler (message) {
                     }
                     pie2_values.push({y: value, width: "1.0", 
                                      text: key_text + ' (' + (value * 100/grand_total).toFixed(2) + '%)', 
-                                     tooltip: '<b>' + key_text + '</b><br/> '+ addCommas(value) + imunit[query_name]});
+                                     tooltip: '<b>' + key_text + '</b><br/> '+ addCommas(value) + query_unit});
                      }
         }).then(function(){
            if (other) pie2_values.push({y: other, 
                                         width: "1.0", text: 'Other (' + (other*100/grand_total).toFixed(2) + '%)', 
                                         tooltip: '<b>Other</b><br/> '+ addCommas(other)});
-           chart_pie2 = new Chart("chart_pie2", {enableCache: true,titleFont: "normal normal normal 15pt Oswald", title: imtitulo[query_name] + ' ' + imunit[query_name] + ' by ' + imrange[yrange], titlepos: "top"});
+           chart_pie2 = new Chart("chart_pie2", {enableCache: true,titleFont: "normal normal normal 15pt Oswald", title: imtitulo[query_name] + ' ' + query_unit + ' by ' + imrange[yrange], titlepos: "top"});
            chart_pie2.setTheme(blue);
            var labels = [];
            chart_pie2.addSeries('y', pie2_values);
@@ -905,17 +1020,19 @@ function error_handler (message) {
                    else if (yrange == '3M' || yrange == '6M') labels.push({value: (index+1), text: labelmdate(xlegend[index])});
                    else labels.push({value: (index+1), text: xlegend[index]});
                    chart_pie2.addAxis("x", {titleFont: "normal normal bold 30pt Oswald", font: "normal normal normal 10pt Oswald", vertical:false, minorTicks: false, majorTickStep:1, includeZero:false, rotation: 40, labels: labels});
-                   chart_pie2.addAxis("y", {min:0, vertical: true,titleFont: "normal normal normal 15pt Oswald", font: "normal normal normal 10pt Oswald",  title: imtitulo[query_name] + ' ' + imunit[query_name]});
+                   chart_pie2.addAxis("y", {min:0, vertical: true,titleFont: "normal normal normal 15pt Oswald", font: "normal normal normal 10pt Oswald",  title: imtitulo[query_name] + ' ' + query_unit});
                    new Tooltip(chart_pie2, "default");
            }
            chart_pie2.render();
         });
+     }
      }}, function(err) {
       console.log(err);
       alert(err)
       overlay.hide();
       });
-  }})});
+  }
+})});
 </script>
 </body>
 </html>

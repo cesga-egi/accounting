@@ -143,6 +143,24 @@ def egi_countries_view(request, query = None, xRange = None, yRange = None, sMon
   return render_to_response("egi.html", {'url':'egi/countries/','query': query, 'ovw_country': 'True', 'xRange': xRange, 'yRange': yRange, 'sMonth': sMonth, 'eMonth': eMonth, 'sYear': sYear, 'eYear': eYear, 'VOGroup': VOGroup, 'localJobGroup': localJobGroup}, 
          context_instance=RequestContext(request))
 
+def storage_view(request, query = None, xRange = None, yRange = None, sMonth = None, eMonth = None, sYear = None, eYear = None, VOGroup="egi", localJobGroup="onlyinfrajobs"):
+  return render_to_response("storage.html", {'url':'storage/', 'query': query, 'xRange': xRange, 'yRange': yRange, 'sMonth': sMonth, 'eMonth': eMonth, 'sYear': sYear, 'eYear': eYear, 'VOGroup': VOGroup, 'localJobGroup': localJobGroup}, 
+         context_instance=RequestContext(request))
+
+def storage_site_view(request, site, query = None, xRange = None, yRange = None, sMonth = None, eMonth = None, sYear = None, eYear = None, VOGroup="egi", localJobGroup="onlyinfrajobs"):
+  return render_to_response("storage.html", {'url':'storage/site/'+site+'/', 'site': site, 'query': query, 'xRange': xRange, 'yRange': yRange, 'sMonth': sMonth, 'eMonth': eMonth, 'sYear': sYear, 'eYear': eYear, 'VOGroup': VOGroup, 'localJobGroup': localJobGroup},         context_instance=RequestContext(request))
+
+def storage_ngi_view(request, ngi, query = None, xRange = None, yRange = None, option="roc", sMonth = None, eMonth = None, sYear = None, eYear = None, VOGroup="egi", localJobGroup="onlyinfrajobs"):
+  return render_to_response("storage.html", {'url':'storage/ngi/'+ngi+'/', 'ngi': ngi, 'query': query,'xRange': xRange, 'yRange': yRange, 'sMonth': sMonth, 'eMonth': eMonth, 'sYear': sYear, 'eYear': eYear, 'VOGroup': VOGroup, 'localJobGroup': localJobGroup}, 
+         context_instance=RequestContext(request))
+
+def storage_country_view(request, country, query = None, xRange = None, yRange = None, sMonth = None, eMonth = None, sYear = None, eYear = None, VOGroup="egi", localJobGroup="onlyinfrajobs"):
+  return render_to_response("storage.html", {'url':'storage/country/'+country+'/', 'country': country, 'query': query, 'xRange': xRange, 'yRange': yRange, 'sMonth': sMonth, 'eMonth': eMonth, 'sYear': sYear, 'eYear': eYear, 'VOGroup': VOGroup, 'localJobGroup': localJobGroup}, 
+         context_instance=RequestContext(request))
+
+def storage_countries_view(request, query = None, xRange = None, yRange = None, sMonth = None, eMonth = None, sYear = None, eYear = None, VOGroup="egi", localJobGroup="onlyinfrajobs"):
+  return render_to_response("storage.html", {'url':'storage/countries/','query': query, 'ovw_country': 'True', 'xRange': xRange, 'yRange': yRange, 'sMonth': sMonth, 'eMonth': eMonth, 'sYear': sYear, 'eYear': eYear, 'VOGroup': VOGroup, 'localJobGroup': localJobGroup}, 
+         context_instance=RequestContext(request))
 def wlcg_countries_view(request, query = None, xRange = None, yRange = None, sMonth = None, eMonth = None, sYear = None, eYear = None, VOGroup="lhc", localJobGroup="onlyinfrajobs"):
   return render_to_response("wlcg.html", {'url':'wlcg/countries/','query': query, 'wlcg': 'wlcg/', 'wlcg_page': True, 'ovw_country': 'True', 'xRange': xRange, 'yRange': yRange, 'sMonth': sMonth, 'eMonth': eMonth, 'sYear': sYear, 'eYear': eYear, 'VOGroup': VOGroup, 'localJobGroup': localJobGroup, 'allcountry_ovw': True}, 
          context_instance=RequestContext(request))
@@ -213,51 +231,51 @@ def vo_admin_cloud_country_view(request, wlcg = False, country = None, vo = '', 
   return render_to_response("userdn_cloud.html", {'wlcg_page': wlcg_page, 'wlcg': wlcg, 'vo_admin': True, 'country': country, 'vo': vo, 'role':'vo_admin', 'url':url, 'country': country, 'query': query, 'xRange': xRange, 'yRange': yRange, 'sMonth': sMonth, 'eMonth': eMonth, 'sYear': sYear, 'eYear': eYear}, 
          context_instance=RequestContext(request))
 
-def user_view_view(request, wlcg = False, query = None, xRange = None, yRange = None, sMonth = None, eMonth = None, sYear = None, eYear = None, VOGroup="egi", localJobGroup="onlyinfrajobs"):
+def user(request, wlcg = False, query = None, xRange = None, yRange = None, sMonth = None, eMonth = None, sYear = None, eYear = None, VOGroup="egi", localJobGroup="onlyinfrajobs"):
   wlcg_page = True if wlcg.find('wlcg') != -1 else False;
-  url = ('wlcg/' if wlcg else '') + 'user_view/'
-  return render_to_response("userdn.html", {'wlcg_page': wlcg_page, 'wlcg': wlcg, 'user_view': True, 'role':'user_view', 'url':url,'query': query, 'xRange': xRange, 'yRange': yRange, 'sMonth': sMonth, 'eMonth': eMonth, 'sYear': sYear, 'eYear': eYear, 'VOGroup': VOGroup, 'localJobGroup': localJobGroup}, 
+  url = ('wlcg/' if wlcg else '') + 'user/'
+  return render_to_response("userdn.html", {'wlcg_page': wlcg_page, 'wlcg': wlcg, 'user': True, 'role':'user', 'url':url,'query': query, 'xRange': xRange, 'yRange': yRange, 'sMonth': sMonth, 'eMonth': eMonth, 'sYear': sYear, 'eYear': eYear, 'VOGroup': VOGroup, 'localJobGroup': localJobGroup, 'optval': ''}, 
          context_instance=RequestContext(request))
 
-def user_view_site_view(request, site, wlcg = False, query = None, xRange = None, yRange = None, sMonth = None, eMonth = None, sYear = None, eYear = None, VOGroup="egi", localJobGroup="onlyinfrajobs"):
+def user_site_view(request, site, wlcg = False, query = None, xRange = None, yRange = None, sMonth = None, eMonth = None, sYear = None, eYear = None, VOGroup="egi", localJobGroup="onlyinfrajobs"):
   wlcg_page = True if wlcg.find('wlcg') != -1 else False;
-  url = ('wlcg/' if wlcg else '') + 'user_view/site/'+site+'/'
-  return render_to_response("userdn.html", {'wlcg_page': wlcg_page, 'wlcg': wlcg, 'user_view': True, 'site': site, 'role':'user_view', 'url':url, 'query': query, 'xRange': xRange, 'yRange': yRange, 'sMonth': sMonth, 'eMonth': eMonth, 'sYear': sYear, 'eYear': eYear, 'VOGroup': VOGroup, 'localJobGroup': localJobGroup},         context_instance=RequestContext(request))
+  url = ('wlcg/' if wlcg else '') + 'user/site/'+site+'/'
+  return render_to_response("userdn.html", {'wlcg_page': wlcg_page, 'wlcg': wlcg, 'user': True, 'site': site, 'role':'user', 'url':url, 'query': query, 'xRange': xRange, 'yRange': yRange, 'sMonth': sMonth, 'eMonth': eMonth, 'sYear': sYear, 'eYear': eYear, 'VOGroup': VOGroup, 'localJobGroup': localJobGroup, 'optval': site},         context_instance=RequestContext(request))
 
-def user_view_ngi_view(request, ngi, wlcg = False, query = None, xRange = None, yRange = None, option="roc", sMonth = None, eMonth = None, sYear = None, eYear = None, VOGroup="egi", localJobGroup="onlyinfrajobs"):
+def user_ngi_view(request, ngi, wlcg = False, query = None, xRange = None, yRange = None, option="roc", sMonth = None, eMonth = None, sYear = None, eYear = None, VOGroup="egi", localJobGroup="onlyinfrajobs"):
   wlcg_page = True if wlcg.find('wlcg') != -1 else False;
-  url = ('wlcg/' if wlcg else '') + 'user_view/ngi/'+ngi+'/'
-  return render_to_response("userdn.html", {'wlcg_page': wlcg_page, 'wlcg': wlcg, 'user_view': True, 'ngi': ngi, 'role':'user_view', 'url':url, 'query': query,'xRange': xRange, 'yRange': yRange, 'sMonth': sMonth, 'eMonth': eMonth, 'sYear': sYear, 'eYear': eYear, 'VOGroup': VOGroup, 'localJobGroup': localJobGroup}, 
+  url = ('wlcg/' if wlcg else '') + 'user/ngi/'+ngi+'/'
+  return render_to_response("userdn.html", {'wlcg_page': wlcg_page, 'wlcg': wlcg, 'user': True, 'ngi': ngi, 'role':'user', 'url':url, 'query': query,'xRange': xRange, 'yRange': yRange, 'sMonth': sMonth, 'eMonth': eMonth, 'sYear': sYear, 'eYear': eYear, 'VOGroup': VOGroup, 'localJobGroup': localJobGroup, 'optval': ngi}, 
          context_instance=RequestContext(request))
 
-def user_view_country_view(request, country, wlcg = False, vo = '', query = None, xRange = None, yRange = None, sMonth = None, eMonth = None, sYear = None, eYear = None, VOGroup="egi", localJobGroup="onlyinfrajobs"):
+def user_country_view(request, country, wlcg = False, vo = '', query = None, xRange = None, yRange = None, sMonth = None, eMonth = None, sYear = None, eYear = None, VOGroup="egi", localJobGroup="onlyinfrajobs"):
   wlcg_page = True if wlcg.find('wlcg') != -1 else False;
-  url = ('wlcg/' if wlcg else '') + 'user_view/country/'+country+'/'
-  return render_to_response("userdn.html", {'wlcg_page': wlcg_page, 'wlcg': wlcg, 'user_view': True, 'country': country, 'vo': '', 'role':'user_view', 'url':url, 'query': query, 'xRange': xRange, 'yRange': yRange, 'sMonth': sMonth, 'eMonth': eMonth, 'sYear': sYear, 'eYear': eYear, 'VOGroup': VOGroup, 'localJobGroup': localJobGroup}, 
+  url = ('wlcg/' if wlcg else '') + 'user/country/'+country+'/'
+  return render_to_response("userdn.html", {'wlcg_page': wlcg_page, 'wlcg': wlcg, 'user': True, 'country': country, 'vo': '', 'role':'user', 'url':url, 'query': query, 'xRange': xRange, 'yRange': yRange, 'sMonth': sMonth, 'eMonth': eMonth, 'sYear': sYear, 'eYear': eYear, 'VOGroup': VOGroup, 'localJobGroup': localJobGroup, 'optval': country}, 
          context_instance=RequestContext(request))
 
-def user_view_cloud_view(request, wlcg = False, query = None, xRange = None, yRange = None, sMonth = None, eMonth = None, sYear = None, eYear = None, VOGroup="egi", localJobGroup="onlyinfrajobs"):
+def user_cloud_view(request, wlcg = False, query = None, xRange = None, yRange = None, sMonth = None, eMonth = None, sYear = None, eYear = None, VOGroup="egi", localJobGroup="onlyinfrajobs"):
   wlcg_page = True if wlcg.find('wlcg') != -1 else False;
-  url = ('wlcg/' if wlcg else '') + 'user_view/cloud/'
-  return render_to_response("userdn_cloud.html", {'wlcg_page': wlcg_page, 'wlcg': wlcg, 'user_view': True, 'vo': '', 'role':'user_view', 'url':url,'query': query, 'xRange': xRange, 'yRange': yRange, 'sMonth': sMonth, 'eMonth': eMonth, 'sYear': sYear, 'eYear': eYear, 'VOGroup': VOGroup, 'localJobGroup': localJobGroup}, 
+  url = ('wlcg/' if wlcg else '') + 'user/cloud/'
+  return render_to_response("userdn_cloud.html", {'wlcg_page': wlcg_page, 'wlcg': wlcg, 'user': True, 'vo': '', 'role':'user', 'url':url,'query': query, 'xRange': xRange, 'yRange': yRange, 'sMonth': sMonth, 'eMonth': eMonth, 'sYear': sYear, 'eYear': eYear, 'VOGroup': VOGroup, 'localJobGroup': localJobGroup, 'optval':''}, 
          context_instance=RequestContext(request))
 
-def user_view_cloud_site_view(request, wlcg = False, site = None, query = None, xRange = None, yRange = None, sMonth = None, eMonth = None, sYear = None, eYear = None, VOGroup="egi", localJobGroup="onlyinfrajobs"):
+def user_cloud_site_view(request, wlcg = False, site = None, query = None, xRange = None, yRange = None, sMonth = None, eMonth = None, sYear = None, eYear = None, VOGroup="egi", localJobGroup="onlyinfrajobs"):
   wlcg_page = True if wlcg.find('wlcg') != -1 else False;
-  url = ('wlcg/' if wlcg else '') + 'user_view/cloud/site/'+site+'/'
-  return render_to_response("userdn_cloud.html", {'wlcg_page': wlcg_page, 'wlcg': wlcg, 'user_view': True, 'site': site, 'vo': '', 'role':'user_view', 'url':url,'site': site, 'query': query, 'xRange': xRange, 'yRange': yRange, 'sMonth': sMonth, 'eMonth': eMonth, 'sYear': sYear, 'eYear': eYear, 'VOGroup': VOGroup, 'localJobGroup': localJobGroup},
+  url = ('wlcg/' if wlcg else '') + 'user/cloud/site/'+site+'/'
+  return render_to_response("userdn_cloud.html", {'wlcg_page': wlcg_page, 'wlcg': wlcg, 'user': True, 'site': site, 'vo': '', 'role':'user', 'url':url,'site': site, 'query': query, 'xRange': xRange, 'yRange': yRange, 'sMonth': sMonth, 'eMonth': eMonth, 'sYear': sYear, 'eYear': eYear, 'VOGroup': VOGroup, 'localJobGroup': localJobGroup, 'optval':site},
          context_instance=RequestContext(request))
 
-def user_view_cloud_ngi_view(request, wlcg = False, ngi = None, query = None, xRange = None, yRange = None, option="roc", sMonth = None, eMonth = None, sYear = None, eYear = None, VOGroup="egi", localJobGroup="onlyinfrajobs"):
+def user_cloud_ngi_view(request, wlcg = False, ngi = None, query = None, xRange = None, yRange = None, option="roc", sMonth = None, eMonth = None, sYear = None, eYear = None, VOGroup="egi", localJobGroup="onlyinfrajobs"):
   wlcg_page = True if wlcg.find('wlcg') != -1 else False;
-  url = ('wlcg/' if wlcg else '') + 'user_view/cloud/ngi/'+ngi+'/'
-  return render_to_response("userdn_cloud.html", {'wlcg_page': wlcg_page, 'wlcg': wlcg, 'user_view': True, 'ngi': ngi, 'vo': '', 'role':'user_view', 'url':url, 'ngi': ngi, 'query': query,'xRange': xRange, 'yRange': yRange, 'sMonth': sMonth, 'eMonth': eMonth, 'sYear': sYear, 'eYear': eYear, 'VOGroup': VOGroup, 'localJobGroup': localJobGroup}, 
+  url = ('wlcg/' if wlcg else '') + 'user/cloud/ngi/'+ngi+'/'
+  return render_to_response("userdn_cloud.html", {'wlcg_page': wlcg_page, 'wlcg': wlcg, 'user': True, 'ngi': ngi, 'vo': '', 'role':'user', 'url':url, 'ngi': ngi, 'query': query,'xRange': xRange, 'yRange': yRange, 'sMonth': sMonth, 'eMonth': eMonth, 'sYear': sYear, 'eYear': eYear, 'VOGroup': VOGroup, 'localJobGroup': localJobGroup, 'optval': ngi}, 
          context_instance=RequestContext(request))
 
-def user_view_cloud_country_view(request, wlcg = False, country = None, query = None, xRange = None, yRange = None, sMonth = None, eMonth = None, sYear = None, eYear = None, VOGroup="egi", localJobGroup="onlyinfrajobs"):
+def user_cloud_country_view(request, wlcg = False, country = None, query = None, xRange = None, yRange = None, sMonth = None, eMonth = None, sYear = None, eYear = None, VOGroup="egi", localJobGroup="onlyinfrajobs"):
   wlcg_page = True if wlcg.find('wlcg') != -1 else False;
-  url = ('wlcg/' if wlcg else '') + 'user_view/cloud/country/'+country+'/'
-  return render_to_response("userdn_cloud.html", {'wlcg_page': wlcg_page, 'wlcg': wlcg, 'user_view': True, 'country': country, 'vo': '', 'role':'user_view', 'url':url, 'country': country, 'query': query, 'xRange': xRange, 'yRange': yRange, 'sMonth': sMonth, 'eMonth': eMonth, 'sYear': sYear, 'eYear': eYear, 'VOGroup': VOGroup, 'localJobGroup': localJobGroup}, 
+  url = ('wlcg/' if wlcg else '') + 'user/cloud/country/'+country+'/'
+  return render_to_response("userdn_cloud.html", {'wlcg_page': wlcg_page, 'wlcg': wlcg, 'user': True, 'country': country, 'vo': '', 'role':'user', 'url':url, 'country': country, 'query': query, 'xRange': xRange, 'yRange': yRange, 'sMonth': sMonth, 'eMonth': eMonth, 'sYear': sYear, 'eYear': eYear, 'VOGroup': VOGroup, 'localJobGroup': localJobGroup, 'optval': country}, 
          context_instance=RequestContext(request))
 
 def cloud_view(request, query = None, xRange = None, yRange = None, sMonth = None, eMonth = None, sYear = None, eYear = None, VOGroup="egi", localJobGroup="onlyinfrajobs"):
@@ -276,7 +294,7 @@ def cloud_country_view(request, country, query = None, xRange = None, yRange = N
   return render_to_response("cloud.html", {'url':'cloud/country/'+country+'/', 'country': country, 'query': query,'xRange': xRange, 'yRange': yRange, 'sMonth': sMonth, 'eMonth': eMonth, 'sYear': sYear, 'eYear': eYear, 'VOGroup': VOGroup, 'localJobGroup': localJobGroup}, 
          context_instance=RequestContext(request))
 
-def cloud_countries_view(request, query = 'vm_num', xRange = None, yRange = None, sMonth = None, eMonth = None, sYear = None, eYear = None, VOGroup="egi", localJobGroup="onlyinfrajobs"):
+def cloud_countries_view(request, query = None, xRange = None, yRange = None, sMonth = None, eMonth = None, sYear = None, eYear = None, VOGroup="egi", localJobGroup="onlyinfrajobs"):
   return render_to_response("cloud.html", {'url':'cloud/countries/', 'ovw_country': 'True', 'query': query,'xRange': xRange, 'yRange': yRange, 'sMonth': sMonth, 'eMonth': eMonth, 'sYear': sYear, 'eYear': eYear, 'VOGroup': VOGroup, 'localJobGroup': localJobGroup}, 
          context_instance=RequestContext(request))
 

@@ -67,11 +67,11 @@ The EGI Accounting Portal provides the accounting data for Compute, Storage and 
                 <div class="form-group">
                 <div style="width: 30em;" class="input-group">
                     <select id="metric" data-toggle="tooltip" title="Metric used for the accounting" data-dojo-props="position:['above']" placeholder="Select Metric" class="form-control col-xs-2">
-                       <option class='' data-toggle='tooltip' data-title='Number of jobs'  data-dojo-props='position:['above']' data-content='Total number of jobs' value='njobs'>Number of jobs</option>
                        <option class='' data-title='Normalized CPU Hours'  data-dojo-props='position:['above']' data-content='Hours of CPU time consumed in calculations by jobs, normalised using the <a href="http://w3.hepix.org/benchmarks/doku.php">HEPSPEC06 benchmark</a>.' value='normcpu_HEPSPEC06'>Normalized Sum CPU HEPSPEC06 hours</option> 
+                       <option class='' data-toggle='tooltip' data-title='Number of jobs'  data-dojo-props='position:['above']' data-content='Total number of jobs' value='njobs'>Number of jobs</option>
                        <option data-toggle='tooltip' data-title='Unnormalized CPU Hours' data-dojo-props='position:['above']' data-content='Hours of not normalised CPU time consumed by jobs.' class='' value='sumcpu'>Unnormalized CPU Hours</option> 
-                       <option data-toggle='tooltip' data-title='Normalized Sum Elapsed HEPSPEC06 hours' data-dojo-props='position:['above']' data-content='Hours of wall-clock time consumed by jobs, including I/O, OS and other housekeeping tasks, normalised using the <a href="http://w3.hepix.org/benchmarks/doku.php">HEPSPEC06 benchmark</a>.' class='' value='normelap_HEPSPEC06'>Normalized Sum Elapsed HEPSPEC06 hours</option> 
-                       <option data-toggle='tooltip' data-title='Unnormalized Sum Elapsed Hours' data-dojo-props='position:['above']' data-content='Hours of not normalised wall-clock time consumed by jobs, including I/O, OS and other housekeeping tasks.' class='' value='sum_elap'>Unnormalized Sum Elapsed Hours</option>
+                    <!--   <option data-toggle='tooltip' data-title='Normalized Sum Elapsed HEPSPEC06 hours' data-dojo-props='position:['above']' data-content='Hours of wall-clock time consumed by jobs, including I/O, OS and other housekeeping tasks, normalised using the <a href="http://w3.hepix.org/benchmarks/doku.php">HEPSPEC06 benchmark</a>.' class='' value='normelap_HEPSPEC06'>Normalized Sum Elapsed HEPSPEC06 hours</option> 
+                       <option data-toggle='tooltip' data-title='Unnormalized Sum Elapsed Hours' data-dojo-props='position:['above']' data-content='Hours of not normalised wall-clock time consumed by jobs, including I/O, OS and other housekeeping tasks.' class='' value='sum_elap'>Unnormalized Sum Elapsed Hours</option> -->
                     </select>
                     <span class="input-group-btn"><a id="metric_help" class="btn btn-default" data-toggle="popover" title="Metric Description"><i class="glyphicon glyphicon-question-sign"></i></a></span>
                    </div>
@@ -100,25 +100,25 @@ The EGI Accounting Portal provides the accounting data for Compute, Storage and 
               <div id="simplechart" class="pull-left" style="width:80%; height:600px;"></div>
               <div id="metrics" class="text-center pull-left" style=" height:600px;font-size:1em;font:Oswald;width:20%">
                  <div class="panel panel-default" style="">
-                    <div id="njobs-header" class="panel-heading">Number of jobs</div>
-                    <div id="njobs-panel" style="margin-top: -10px" class="panel-body">-----</div>
-                 </div>
-                 <div class="panel panel-default" style="">
                     <div id="ncpu-header" class="panel-heading">Normalized CPU (HEPSPEC06 hours)</div>
                     <div id="ncpu-panel" style="margin-top: -10px" class="panel-body">-----</div>
                  </div>
                  <div class="panel panel-default" style="">
+                    <div id="njobs-header" class="panel-heading">Number of jobs</div>
+                    <div id="njobs-panel" style="margin-top: -10px" class="panel-body">-----</div>
+                 </div>
+          <!--       <div class="panel panel-default" style="">
                     <div id="nwall-header" class="panel-heading">Normalized Wall (HEPSPEC06 hours)</div>
                     <div id="nwall-panel" style="margin-top: -10px" class="panel-body">-----</div>
-                 </div>
+                 </div>-->
                  <div class="panel panel-default" style="">
                     <div id="ucpu-header" class="panel-heading">Unnormalized CPU (Raw hours)</div>
                     <div id="ucpu-panel" style="margin-top: -10px" class="panel-body">-----</div>
                  </div>
-                 <div class="panel panel-default" style="">
+           <!--      <div class="panel panel-default" style="">
                     <div id="uwall-header" class="panel-heading">Unnormalized Wall (Raw hours)</div>
                     <div id="uwall-panel" style="margin-top: -10px" class="panel-body">-----</div>
-                 </div>
+                 </div>-->
               </div>
               </div>
             </div>
@@ -278,13 +278,13 @@ dojo.addOnLoad(function() {
                $('#njobs-header').html('Number of jobs in last ' + period_string + ' period');
                $('#ncpu-header').html('Normalized CPU HEPSPEC06 hours in last ' + period_string + ' period');
                $('#ucpu-header').html('CPU Time hours in last ' + period_string + ' period');
-               $('#nwall-header').html('Normalized Sum Elapsed HEPSPEC06 hours in last ' + period_string + ' period');
-               $('#uwall-header').html('Sum Elapsed hours in last ' + period_string + ' period');
+            //   $('#nwall-header').html('Normalized Sum Elapsed HEPSPEC06 hours in last ' + period_string + ' period');
+           //    $('#uwall-header').html('Sum Elapsed hours in last ' + period_string + ' period');
                $('#njobs-panel').html(addCommas(last_values['njobs']));
                $('#ncpu-panel').html(addCommas(last_values['normcpu_HEPSPEC06']));
                $('#ucpu-panel').html(addCommas(last_values['sumcpu']));
-               $('#nwall-panel').html(addCommas(last_values['normelap_HEPSPEC06']));
-               $('#uwall-panel').html(addCommas(last_values['sum_elap']));
+            //   $('#nwall-panel').html(addCommas(last_values['normelap_HEPSPEC06']));
+            //   $('#uwall-panel').html(addCommas(last_values['sum_elap']));
             });
         }
         function update_chart(query, period) {

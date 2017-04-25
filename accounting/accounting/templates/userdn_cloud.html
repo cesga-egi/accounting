@@ -11,6 +11,7 @@ The metric shown is <span id="metric_description">Total number of jobs</span>, g
 {% block inputMetric %} 
 <option class='' data-toggle='tooltip' data-title='Number of VMs'  data-dojo-props='position:['above']' data-content='Number of VM instances running in the selected time period.' value='vm_num'>Number of Virtual Machines</option>
 <option data-toggle='tooltip' data-title='Wall Hours' data-dojo-props='position:['above']' data-content='Hours of not normalised wall-clock time consumed by jobs, including I/O, OS and other housekeeping tasks.' selected='selected' class='' value='sumelap'>Sum Wall hours (Elapsed time)</option> 
+<option data-title='Wall Hours * Number of Processors' data-dojo-props='position:['above']' data-content='Hours of wall-clock time consumed by jobs, including I/O, OS and other housekeeping tasks, multiplied by the number of logical cores used by each job..' class='' value='sum_elap_processors'>Sum Elapsed * Number of Processors</option> 
 <option data-toggle='tooltip' data-title='Monetary cost estimate' data-dojo-props='position:['above']' data-content='Estimated cost in € of the resources allocated in the infrastructure. Currently used only for informative aims.' class='' value='cost'>Monetary Cost</option>
 <option data-toggle='tooltip' data-title='Inbound Network Traffic' data-dojo-props='position:['above']' data-content='Inbound network traffic in bytes towards running VM instances.' class='' value='net_in'>Inbound Network Traffic</option>
 <option data-toggle='tooltip' data-title='Outbound Network Traffic' data-dojo-props='position:['above']' data-content='Outcoming network traffic in bytes from running VM instances.' class='' value='net_out'>Outbound Network Traffic</option>
@@ -19,8 +20,12 @@ The metric shown is <span id="metric_description">Total number of jobs</span>, g
 {% endblock %}
 {% block display_funcs %}
 userdnlabel = function(str){ return '<div><span class="UserDN" style="font-size:smaller;text-decoration:none">' + str + '</span></div>';};
-{% if vo_admin %}
-sitelabel = function(str){ return '<b><a style="text-decoration:none" href="/{{wlcg}}{{role}}/cloud/site/' + str + '/' + state_url('VO') + '">' + str + '</a></b>';};
+{% if vo_admin or user%}
+{% if user %}
+sitelabel = function(str){ return '<b><a style="text-decoration:none" href="/{{wlcg}}{{role}}/cloud/site/' + str + '/' + state_url('UserRole') + '">' + str + '</a></b>';};
+{% elif vo_admin %}
+sitelabel = function(str){ return '<b><a style="text-decoration:none" href="/{{wlcg}}{{role}}/cloud/site/' + str + '/' + state_url('DATE') +'">' + str + '</a></b>';};
+{% endif %}
 ngilabel = function(str){ return '<b><a style="text-decoration:none" href="/{{wlcg}}{{role}}/cloud/ngi/' + str + '/' + state_url('SITE') + '">' + str + '</a></b>';};
 countrylabel = function(str){ return '<b><a style="text-decoration:none" href="/{{wlcg}}{{role}}/cloud/country/' + str + '/' + state_url('SITE') + '">' + str + '</a></b>';};
 {% endif %}
@@ -35,6 +40,7 @@ countrylabel = function(str){ return '<b><a style="text-decoration:none" href="/
 <option data-title="3M" value="3M" class="">Quarter</option>
 <option data-title="6M" value="6M" class="">Half-year</option>
 <option class="" value="STATUS">Status</option>
+<option value="NUMBER PROCESSORS" class="">Number of processors</option>
 {% if vo_admin or user_view %}
 <option value="COUNTRY" class="">Country</option>
 {% if site %}
@@ -49,8 +55,9 @@ countrylabel = function(str){ return '<b><a style="text-decoration:none" href="/
 <option selected="selected" value="REGION" class="">Operations Centre</option>
 <option data-title="Resource Centre" value="SITE" class="">Resource Centre</option>
 {% endif %}
-{% else %}
-<option class="" value="VO">VO</option>
+{% endif %}
+{% if site_admin %}
+<option class="" value="VO" selected="selected">VO</option>
 {% endif %}
 {% endblock %} 
 {% block YOptions %} 
@@ -63,6 +70,7 @@ countrylabel = function(str){ return '<b><a style="text-decoration:none" href="/
 <option data-title="3M" value="3M" class="">Quarter</option>
 <option data-title="6M" value="6M" class="">Half-year</option>
 <option class="" value="STATUS">Status</option>
+<option value="NUMBER PROCESSORS" class="">Number of processors</option>
 {% if vo_admin or user_view %}
 <option value="REGION" class="">Operations Centre</option>
 <option value="COUNTRY" class="">Country</option>
@@ -76,4 +84,4 @@ countrylabel = function(str){ return '<b><a style="text-decoration:none" href="/
 {% block first_level %}<a href="/{{role}}/cloud/" class="">{% if vo_admin%}Cloud VO Admin{% elif site_admin %}Cloud Resource Centre Admin{%else%}Cloud User View{%endif%}</a>{% endblock %}
 {% block second_level %}{% if site %}/ <a href="/{{role}}/cloud/site/{{site}}" class="">{{site}}</a>{% elif ngi %}/ <a href="/{{role}}/cloud/ngi/{{ngi}}" class="">{{ngi}}</a>{% elif country %}/ <a href="/{{role}}/cloud/country/{{country}}" class="">{{country}}</a>{% endif %}{% endblock %}
 {% block third_level %}{% endblock %}
-{% block remote_url %}{% if site_admin %}"{{SUPPORT_SERVER}}user/dn_data.php?&query="+query+"&option=SITE&optval="+site+"&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&role={{role}}&groupVO="+VOGroup+"&localJobs="+localJobs+"&tree="+tree{% elif site %}"{{SUPPORT_SERVER}}user/dn_data.php?&query="+query+"&option=SITE&optval={{site}}&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&role={{role}}&vo="+vo+"&groupVO="+VOGroup+"&localJobs="+localJobs+"&tree="+tree{% elif ngi %}"{{SUPPORT_SERVER}}user/dn_data.php?query="+query+"&option=ROC&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&role={{role}}&vo="+vo+"&groupVO="+VOGroup+"&localJobs="+localJobs+"&tree="+tree+"&optval={{ngi}}"{% elif country %}"{{SUPPORT_SERVER}}user/dn_data.php?query="+query+"&option=COUNTRY&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&vo="+vo+"&role={{role}}&groupVO="+VOGroup+"&localJobs="+localJobs+"&tree="+tree+"&optval={{country}}"{% else %}"{{SUPPORT_SERVER}}user/dn_data.php?query="+query+"&option="+option+"&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&vo="+vo+"&role={{role}}&groupVO="+VOGroup+"&localJobs="+localJobs+"&tree="+tree+"&optval="{% endif %}{% endblock %}
+{% block remote_url %}{% if site_admin %}"{{SUPPORT_SERVER}}user/dn_data.php?&query="+query+"&option=SITE&optval="+site+"&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&localJobs="+localJobs+"&xrange="+xrange+"&role={{role}}&tree="+tree{% elif vo_admin and site %}"{{SUPPORT_SERVER}}user/dn_data.php?&query="+query+"&option=SITE&optval={{site}}&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&role={{role}}&vo="+vo+"&tree="+tree{% elif vo_admin and ngi %}"{{SUPPORT_SERVER}}user/dn_data.php?query="+query+"&option=ROC&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&role={{role}}&vo="+vo+"&tree="+tree+"&optval={{ngi}}"{% elif vo_admin and country %}"{{SUPPORT_SERVER}}user/dn_data.php?query="+query+"&option=COUNTRY&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&role={{role}}&vo="+vo+"&tree="+tree+"&optval={{country}}"{% elif vo_admin%}"{{SUPPORT_SERVER}}user/dn_data.php?query="+query+"&option="+option+"&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&role={{role}}&vo="+vo+"&tree="+tree+"&optval="{% elif user %}"{{SUPPORT_SERVER}}user/dn_data.php?query="+query+"&option="+option+"&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&role={{role}}&tree="+tree+"&optval={{optval}}"{% endif %}{% endblock %}

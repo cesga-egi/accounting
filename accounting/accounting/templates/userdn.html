@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% block description %}
 <div id="page_text" style="clear:both">
-This Restricted View allows {% if vo_admin %}VO Administrators{% elif site_admin %}Resource Centre Administrators{% elif user_view %}Users{% endif %} to retrieve accounting data of their {%if vo_admin%}VO{% elif site_admin %}Resource Centre{% elif user_view %}Jobs{% endif %}.
+This Restricted View allows {% if vo_admin %}VO Administrators{% elif site_admin %}Resource Centre Administrators{% elif user %}Users{% endif %} to retrieve accounting data of their {%if vo_admin%}VO{% elif site_admin %}Resource Centre{% elif user %}Jobs{% endif %}.
 
 The metric shown is <span id="metric_description">Total number of jobs</span>, grouped by <span id="inputY_description">Region</span> and <span id="inputX_description">Month</span>, <span id="vo_description">the official EGI VOs </span> are shown. <span id="LocalJobs_description"></span>
 </div>
 {% endblock %}
-{% block option %}{% if site %}"SITE"{% else %}"REGION"{% endif %}{% endblock %}
-{% block tree %}"EGI"{% endblock %}
+{% block option %}{% if site %}"VO"{%elif ngi%}"ROC"{%elif site%}"SITE"{% else %}"REGION"{% endif %}{% endblock %}
+{% block tree %}{%if country%}"ALLCOUNTRY"{%else%}"EGI"{% endif %}{% endblock %}
 {% block inputMetric %} 
 {% if wlcg_page %}
 <option class='' data-title='Number of jobs'  data-dojo-props='position:['above']' data-content='Number of discrete jobs launched, independent on completion status.' selected="selected" value='njobs'>Number of jobs</option>
@@ -21,6 +21,7 @@ The metric shown is <span id="metric_description">Total number of jobs</span>, g
 <option data-title='Sum Wallclock Work HS06 Days' data-dojo-props='position:['above']' data-content='(Same as "Normalised Sum elapsed * Number of processors"). Wallclock time as reported by the batch system and multiplied by benchmarked HEPSPEC06 power of a given CPU resource and by number of processors. For some sites represent raw wallclock time defined as end time stamp of a particular job minus start time stamp and multiplied by number of processors.  There are other sites which do not report raw wallclock time, but rather report raw wallclock time scaled by a batch system to a reference node. For such sites this metric currently shows scaled and Normalised Wallclock multiplied by Number of Processors' class='' value='normelap_processors_days'>Sum Wallclock Work HS06 Days</option> 
 <option data-title='CPU Efficiency' data-dojo-props='position:['above']' data-content='100 * Sum CPU Time / Sum (Wallclock Time * Number of Processors).' class='' value='cpueff'>CPU Efficiency</option>
 {% else %}
+<option class='' data-title='Combined Metrics'  data-dojo-props='position:['above']' data-content='Number of discrete jobs launched, independent on completion status.' value='mixed'>Mixed</option>
 <option class='' data-title='Number of jobs'  data-dojo-props='position:['above']' data-content='Number of discrete jobs launched, independent on completion status.' selected="selected" value='njobs'>Number of jobs</option>
 <option class='' data-title='Normalized CPU Hours'  data-dojo-props='position:['above']' data-content='Hours of CPU time consumed in calculations by jobs, normalised using the <a href="http://w3.hepix.org/benchmarks/doku.php">HEPSPEC06 benchmark</a>.' value='normcpu'>Normalized Sum CPU</option> 
 <option data-title='Unnormalized CPU Hours' data-dojo-props='position:['above']' data-content='Hours of not normalised CPU time consumed by jobs.' class='' value='sumcpu'>Sum CPU</option> 
@@ -33,9 +34,9 @@ The metric shown is <span id="metric_description">Total number of jobs</span>, g
 {% endblock %}
 {% block display_funcs %}
 userdnlabel = function(str){ return '<div><span class="UserDN" style="font-size:smaller;text-decoration:none">' + str + '</span></div>';};
-{% if vo_admin  or user_view%}
-{% if user_view %}
-sitelabel = function(str){ return '<b><a style="text-decoration:none" href="/{{wlcg}}{{role}}/site/' + str + '/' + state_url('VO') +'">' + str + '</a></b>';};
+{% if vo_admin  or user%}
+{% if user %}
+sitelabel = function(str){ return '<b><a style="text-decoration:none" href="/{{wlcg}}{{role}}/site/' + str + '/' + state_url('UserRole') +'">' + str + '</a></b>';};
 {% elif vo_admin %}
 sitelabel = function(str){ return '<b><a style="text-decoration:none" href="/{{wlcg}}{{role}}/site/' + str + '/' + state_url('DATE') +'">' + str + '</a></b>';};
 {% endif %}
@@ -52,20 +53,24 @@ countrylabel = function(str){ return '<b><a style="text-decoration:none" href="/
 <option data-title="Year" value="Year" class="">Year</option>
 <option data-title="3M" value="3M" class="">Quarter</option>
 <option data-title="6M" value="6M" class="">Half-year</option>
-{% if vo_admin or user_view %}
+<option value="NUMBER PROCESSORS" class="">Number of processors</option>
+
+{% if vo_admin or user %}
 <option value="COUNTRY" class="">Country</option>
 {% if site %}
-<option value="REGION" class="">Operations Centre</option>
-<option data-title="Resource Centre" value="SITE" class="">Resource Centre</option>
-{% elif ngi %}
+<option value="region" class="">operations centre</option>
+<option data-title="resource centre" value="site" class="">resource centre</option>
+{% elif ngi or country %}
 <option value="REGION" class="">Operations Centre</option>
 <option data-title="Resource Centre" selected="selected" value="SITE" class="">Resource Centre</option>
 {% else %}
+<option value="COUNTRY" class="">Country</option>
 <option selected="selected" value="REGION" class="">Operations Centre</option>
 <option data-title="Resource Centre" value="SITE" class="">Resource Centre</option>
 {% endif %}
-{% else %}
-<option class="" value="VO">VO</option>
+{% endif %}
+{% if site_admin %}
+<option class="" value="VO" selected="selected">VO</option>
 {% endif %}
 {% endblock %} 
 {% block YOptions %} 
@@ -77,7 +82,8 @@ countrylabel = function(str){ return '<b><a style="text-decoration:none" href="/
 <option data-title="Year" value="Year" class="">Year</option>
 <option data-title="3M" value="3M" class="">Quarter</option>
 <option data-title="6M" value="6M" class="">Half-year</option>
-{% if vo_admin or user_view %}
+<option value="NUMBER PROCESSORS" class="">Number of processors</option>
+{% if vo_admin or user %}
 <option value="REGION" class="">Operations Centre</option>
 <option value="COUNTRY" class="">Country</option>
 <option data-title="Resource Centre" value="SITE" class="">Resource Centre</option>
@@ -90,4 +96,4 @@ countrylabel = function(str){ return '<b><a style="text-decoration:none" href="/
 {% block first_level %}<a href="/{{role}}/" class="">{% if vo_admin%}VO Admin{% elif site_admin %}Resource Centre Admin{%else%}User View{%endif%}</a>{% endblock %}
 {% block second_level %}{% if site %}/ <a href="/{{role}}/site/{{site}}" class="">/{{site}}</a>{% elif ngi %}/ <a href="/{{role}}/ngi/{{ngi}}" class="">{{ngi}}</a>{% elif country %}/ <a href="/{{role}}/country/{{country}}" class="">{{country}}</a>{% endif %}{% endblock %}
 {% block third_level %}{% endblock %}
-{% block remote_url %}{% if site_admin %}"{{SUPPORT_SERVER}}user/dn_data.php?&query="+query+"&option=SITE&optval="+site+"&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&localJobs="+localJobs+"&xrange="+xrange+"&role={{role}}&tree="+tree{% elif site %}"{{SUPPORT_SERVER}}user/dn_data.php?&query="+query+"&option=SITE&optval={{site}}&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&role={{role}}&vo="+vo+"&tree="+tree{% elif ngi %}"{{SUPPORT_SERVER}}user/dn_data.php?query="+query+"&option=ROC&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&role={{role}}&vo="+vo+"&tree="+tree+"&optval={{ngi}}"{% elif country %}"{{SUPPORT_SERVER}}user/dn_data.php?query="+query+"&option=COUNTRY&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&role={{role}}&vo="+vo+"&tree="+tree+"&optval={{country}}"{% else %}"{{SUPPORT_SERVER}}user/dn_data.php?query="+query+"&option="+option+"&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&role={{role}}&vo="+vo+"&tree="+tree+"&optval="{% endif %}{% endblock %}
+{% block remote_url %}{% if site_admin %}"{{SUPPORT_SERVER}}user/dn_data.php?&query="+query+"&option=SITE&optval="+site+"&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&localJobs="+localJobs+"&xrange="+xrange+"&role={{role}}&tree="+tree{% elif vo_admin and site %}"{{SUPPORT_SERVER}}user/dn_data.php?&query="+query+"&option=SITE&optval={{site}}&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&role={{role}}&vo="+vo+"&tree="+tree{% elif vo_admin and ngi %}"{{SUPPORT_SERVER}}user/dn_data.php?query="+query+"&option=ROC&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&role={{role}}&vo="+vo+"&tree="+tree+"&optval={{ngi}}"{% elif vo_admin and country %}"{{SUPPORT_SERVER}}user/dn_data.php?query="+query+"&option=COUNTRY&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&role={{role}}&vo="+vo+"&tree="+tree+"&optval={{country}}"{% elif vo_admin%}"{{SUPPORT_SERVER}}user/dn_data.php?query="+query+"&option="+option+"&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&role={{role}}&vo="+vo+"&tree="+tree+"&optval="{% elif user %}"{{SUPPORT_SERVER}}user/dn_data.php?query="+query+"&option="+option+"&sYear="+sYear+"&sMonth="+sMonth+"&eYear="+eYear+"&eMonth="+eMonth+"&yrange="+yrange+"&xrange="+xrange+"&role={{role}}&tree="+tree+"&optval={{optval}}"{% endif %}{% endblock %}

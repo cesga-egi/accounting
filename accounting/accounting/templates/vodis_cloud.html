@@ -11,6 +11,7 @@ The metric shown is <span id="metric_description">Total number of jobs</span>, g
 {% block inputMetric %} 
 <option class='' data-toggle='tooltip' data-title='Number of VMs'  data-dojo-props='position:['above']' data-content='Number of VM instances running in the selected time period.' value='vm_num'>Number of Virtual Machines</option>
 <option data-toggle='tooltip' data-title='Wall Hours' data-dojo-props='position:['above']' data-content='Hours of not normalised wall-clock time consumed by jobs, including I/O, OS and other housekeeping tasks.' selected='selected' class='' value='sum_elap'>Sum Wall hours (Elapsed time)</option> 
+<option data-title='Wall Hours * Number of Processors' data-dojo-props='position:['above']' data-content='Hours of wall-clock time consumed by jobs, including I/O, OS and other housekeeping tasks, multiplied by the number of logical cores used by each job..' class='' value='sum_elap_processors'>Sum Elapsed * Number of Processors</option> 
 <option data-toggle='tooltip' data-title='Monetary cost estimate' data-dojo-props='position:['above']' data-content='Estimated cost in € of the resources allocated in the infrastructure. Currently used only for informative aims.' class='' value='cost'>Monetary Cost</option>
 <option data-toggle='tooltip' data-title='Inbound Network Traffic' data-dojo-props='position:['above']' data-content='Inbound network traffic in bytes towards running VM instances.' class='' value='net_in'>Inbound Network Traffic</option>
 <option data-toggle='tooltip' data-title='Outbound Network Traffic' data-dojo-props='position:['above']' data-content='Outcoming network traffic in bytes from running VM instances.' class='' value='net_out'>Outbound Network Traffic</option>
@@ -51,6 +52,7 @@ countrylabel = function(str) {return str;};
 <option class="" value="VO">VO</option>
 {% endif %}
 <option class="" value="STATUS">Status</option>
+<option value="NUMBER PROCESSORS" class="">Number of processors</option>
 {% endblock %} 
 {% block YOptions %} 
 {% if discipline %}
@@ -74,6 +76,7 @@ countrylabel = function(str) {return str;};
 <option class="" value="VO">VO</option>
 {% endif %}
 <option class="" value="STATUS">Status</option>
+<option value="NUMBER PROCESSORS" class="">Number of processors</option>
 {% endblock %} 
 {% block title %}Scientific Discipline Cloud Accounting{% endblock %}
 {% block first_level %}<a href="/disciplines/cloud/" class="">Scientific Discipline Cloud</a></li></span>{% endblock %}

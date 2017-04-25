@@ -26,6 +26,7 @@ nodelabel = function(str){ return '<b><a style="text-decoration:none" href="/{{w
 <option data-title="Year" value="Year" class="">Year</option>
 <option data-title="3M" value="3M" class="">Quarter</option>
 <option data-title="6M" value="6M" class="">Half-year</option>
+<option value="NUMBER PROCESSORS" class="">Number of processors</option>
 {% if node %}
 <option value="TIER1" class="">TIER1</option>
 <option data-title="Site" value="SITE" class="" selected="selected">Site</option>
@@ -52,6 +53,7 @@ nodelabel = function(str){ return '<b><a style="text-decoration:none" href="/{{w
 <option class="" value="VO">VO</option>
 <option class="" value="STATUS">Status</option>
 <option class="" value="vm_id">VM Id</option>
+<option value="NUMBER PROCESSORS" class="">Number of processors</option>
 {% endblock %} 
 {% block title %}Tier 1 Cloud Accounting{% endblock %}
 {% block first_level %}<a href="/{{wlcg}}tier1/cloud/" class="">Tier1 Cloud</a>{% endblock %}
